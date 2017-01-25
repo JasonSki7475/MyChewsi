@@ -1,0 +1,112 @@
+﻿<Window x:Class="DentrixPlugin.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:DentrixPlugin.UI.Controls"
+        xmlns:viewModels1="clr-namespace:DentrixPlugin.UI.ViewModels"
+        d:DataContext="{d:DesignInstance Type={x:Type viewModels1:MainViewModel}}" 
+        DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
+        mc:Ignorable="d"
+        Title="Chewsi" Height="350" Width="525">
+    <TabControl>
+        <TabItem Header="Claims Submission">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+                <ContentControl Content="{StaticResource Logo}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left"/>
+                <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClaimItems}">
+                    <DataGrid.Resources>
+                        <controls:BindingProxy x:Key="proxy" Data="{Binding}" />
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}" />
+                        <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" />
+                        <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" />
+                        <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" />
+                        <DataGridTemplateColumn Header="Action">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Submit" Background="LightGreen" Foreground="White" VerticalAlignment="Center" 
+                                                HorizontalAlignment="Center" Padding="5" Margin="0,0,15,0" Command="{Binding Path=Data.SubmitCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                        <Button Content="Delete" Background="Red" Foreground="White" VerticalAlignment="Center" 
+                                                HorizontalAlignment="Center" Padding="5"  Margin="0,0,15,0"
+                                                Command="{Binding Path=Data.DeleteCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="History">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+                <ContentControl Content="{StaticResource Logo}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left"/>
+                <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding HistoryItems}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}" />
+                        <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" />
+                        <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" />
+                        <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="835 Download">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="1" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="15"/>
+                    </Grid.ColumnDefinitions>                   
+                    <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
+                    <Button Content="Refresh" Background="DodgerBlue" Foreground="White" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5"/>
+                </Grid>
+                <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding PostedOn}" />
+                        <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

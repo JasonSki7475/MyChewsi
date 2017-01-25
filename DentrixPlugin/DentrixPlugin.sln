@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentrixPlugin.UI", "DentrixPlugin.UI\DentrixPlugin.UI.csproj", "{2A3F38EB-1C8E-4EBF-A2A4-D1D7839B0875}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentrixPlugin.Api", "DentrixPlugin.Api\DentrixPlugin.Api.csproj", "{5AD8EBA3-CE26-4343-8BA4-EE832EA839BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A3F38EB-1C8E-4EBF-A2A4-D1D7839B0875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A3F38EB-1C8E-4EBF-A2A4-D1D7839B0875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A3F38EB-1C8E-4EBF-A2A4-D1D7839B0875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A3F38EB-1C8E-4EBF-A2A4-D1D7839B0875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AD8EBA3-CE26-4343-8BA4-EE832EA839BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AD8EBA3-CE26-4343-8BA4-EE832EA839BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AD8EBA3-CE26-4343-8BA4-EE832EA839BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AD8EBA3-CE26-4343-8BA4-EE832EA839BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
