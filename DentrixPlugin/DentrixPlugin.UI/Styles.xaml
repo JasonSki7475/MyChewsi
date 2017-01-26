@@ -1,90 +1,95 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:DentrixPlugin.UI">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
     <Viewbox x:Key="Logo" Stretch="Uniform" x:Shared="False">
-        <Canvas Name="svg4136" Width="540" Height="270">
-            <Canvas.RenderTransform>
-                <TranslateTransform X="0" Y="0"/>
-            </Canvas.RenderTransform>
+        <Canvas x:Name="svg4136" Width="540" Height="270">
             <Canvas.Resources>
                 <PathGeometry x:Key="clipPath4150" Figures="M 0 216 432 216 432 0 0 0 0 216 Z" FillRule="NonZero"/>
             </Canvas.Resources>
-            <Canvas Name="g4144">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform X="-50" Y="-40"/>
+                    <ScaleTransform ScaleX="1.6" ScaleY="1.6"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Canvas x:Name="g4144">
                 <Canvas.RenderTransform>
                     <MatrixTransform Matrix="1.25 0 0 -1.25 0 270"/>
                 </Canvas.RenderTransform>
-                <Canvas Name="g4146">
-                    <Canvas Name="g4148">
-                        <Canvas Name="g4154">
+                <Canvas x:Name="g4146">
+                    <Canvas x:Name="g4148">
+                        <Canvas x:Name="g4154">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="144.564" Y="106.8281"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4156" Fill="#FF00FB77">
+                            <Path x:Name="path4156" Fill="#FFB1B600">
                                 <Path.Data>
                                     <PathGeometry Figures="m 0 0 0 0.154 c 0 11.314 8.833 20.922 20.533 20.922 7.594 0 12.321 -3.177 16.04 -7.129 L 32.621 9.763 C 29.444 13.095 25.88 15.807 20.456 15.807 12.32 15.807 6.121 8.911 6.121 0.31 l 0 -0.156 c 0 -8.677 6.354 -15.574 14.722 -15.574 5.114 0 9.066 2.558 12.243 5.967 l 3.796 -3.565 C 32.854 -17.512 28.049 -20.766 20.533 -20.766 8.833 -20.766 0 -11.235 0 0" FillRule="nonzero"/>
                                 </Path.Data>
                             </Path>
                         </Canvas>
-                        <Canvas Name="g4158">
+                        <Canvas x:Name="g4158">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="185.4771" Y="143.5557"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4160" Fill="#FF004CBC">
+                            <Path x:Name="path4160" Fill="#FF63A4E1">
                                 <Path.Data>
                                     <PathGeometry Figures="m 0 0 5.966 0 0 -23.478 c 2.635 4.339 6.819 7.826 13.715 7.826 9.686 0 15.342 -6.509 15.342 -16.039 l 0 -24.872 -5.966 0 0 23.4 c 0 7.438 -4.03 12.087 -11.08 12.087 -6.897 0 -12.011 -5.036 -12.011 -12.552 l 0 -22.935 -5.966 0 L 0 0 Z" FillRule="nonzero"/>
                                 </Path.Data>
                             </Path>
                         </Canvas>
-                        <Canvas Name="g4162">
+                        <Canvas x:Name="g4162">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="256.7646" Y="109.3853"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4164" Fill="#FF00FB77">
+                            <Path x:Name="path4164" Fill="#FFB1B600">
                                 <Path.Data>
                                     <PathGeometry Figures="M 0 0 C -0.697 7.283 -4.882 13.482 -12.785 13.482 -19.681 13.482 -24.95 7.748 -25.802 0 L 0 0 Z m -11.7 -18.131 c 5.502 0 9.376 2.247 12.63 5.656 l 3.719 -3.332 c -4.029 -4.494 -8.911 -7.516 -16.504 -7.516 -11.002 0 -19.991 8.446 -19.991 20.92 0 11.623 8.136 20.922 19.216 20.922 11.856 0 18.674 -9.454 18.674 -21.231 0 -0.542 0 -1.163 -0.077 -2.092 l -31.769 0 c 0.852 -8.446 7.051 -13.327 14.102 -13.327" FillRule="nonzero"/>
                                 </Path.Data>
                             </Path>
                         </Canvas>
-                        <Canvas Name="g4166">
+                        <Canvas x:Name="g4166">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="262.1133" Y="127.0513"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4168" Fill="#FF004CBC">
+                            <Path x:Name="path4168" Fill="#FF63A4E1">
                                 <Path.Data>
                                     <PathGeometry Figures="m 0 0 6.354 0 10.538 -32.156 10.769 32.311 4.959 0 L 43.468 -32.156 54.006 0 l 6.199 0 -14.102 -40.37 -5.192 0 -10.77 31.615 -10.848 -31.615 -5.269 0 L 0 0 Z" FillRule="nonzero"/>
                                 </Path.Data>
                             </Path>
                         </Canvas>
-                        <Canvas Name="g4170">
+                        <Canvas x:Name="g4170">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="321.9326" Y="92.1055"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4172" Fill="#FF00FB77">
+                            <Path x:Name="path4172" Fill="#FFB1B600">
                                 <Path.Data>
                                     <PathGeometry Figures="m 0 0 3.021 4.262 c 4.339 -3.254 9.144 -5.114 13.871 -5.114 4.803 0 8.291 2.48 8.291 6.354 l 0 0.155 c 0 4.029 -4.727 5.578 -9.996 7.051 C 8.91 14.49 1.937 16.66 1.937 24.021 l 0 0.155 c 0 6.896 5.734 11.468 13.637 11.468 4.882 0 10.306 -1.706 14.412 -4.417 l -2.712 -4.494 c -3.719 2.402 -7.981 3.874 -11.855 3.874 -4.727 0 -7.748 -2.48 -7.748 -5.812 l 0 -0.154 c 0 -3.797 4.959 -5.269 10.306 -6.896 6.198 -1.86 12.862 -4.263 12.862 -11.469 l 0 -0.154 C 30.839 -1.472 24.562 -5.889 16.581 -5.889 10.848 -5.889 4.494 -3.642 0 0" FillRule="nonzero"/>
                                 </Path.Data>
                             </Path>
                         </Canvas>
-                        <Path Name="path4174" Fill="#FF004CBC">
+                        <Path x:Name="path4174" Fill="#FF63A4E1">
                             <Path.Data>
                                 <PathGeometry Figures="m 358.583 127.051 5.966 0 0 -40.059 -5.966 0 0 40.059 z m -0.388 15.343 6.818 0 0 -6.586 -6.818 0 0 6.586 z" FillRule="nonzero"/>
                             </Path.Data>
                         </Path>
-                        <Canvas Name="g4176">
+                        <Canvas x:Name="g4176">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="70.7948" Y="79.7122"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4178" Fill="#FF00FB77">
+                            <Path x:Name="path4178" Fill="#FFB1B600">
                                 <Path.Data>
                                     <PathGeometry Figures="m 0 0 c -0.032 -0.123 -0.075 -0.241 -0.103 -0.366 -1.428 -6.271 2.498 -12.512 8.768 -13.939 6.271 -1.428 12.512 2.497 13.939 8.768 0.027 0.115 0.038 0.23 0.061 0.346 -1.361 -0.165 -2.732 -0.26 -4.109 -0.26 C 11.889 -5.451 5.465 -3.488 0 0 m 46.198 63.728 c -5.029 4.007 -12.356 3.178 -16.363 -1.852 -0.076 -0.095 -0.139 -0.197 -0.212 -0.295 7.463 -2.556 13.95 -7.639 18.186 -14.489 0.079 0.093 0.164 0.177 0.241 0.272 4.007 5.03 3.178 12.356 -1.852 16.364 M -5.954 53.69 c -5.796 2.787 -12.754 0.348 -15.541 -5.447 -2.787 -5.796 -0.349 -12.754 5.447 -15.541 0.11 -0.053 0.224 -0.092 0.335 -0.141 0.825 7.82 4.302 15.285 10.062 20.964 -0.103 0.053 -0.198 0.114 -0.303 0.165 M 22.523 -0.059 C 21.47 4.028 18.235 7.4 13.836 8.402 9.445 9.402 5.074 7.77 2.355 4.552 c 4.737 -3.13 10.363 -4.887 16.201 -4.887 1.33 0 2.655 0.095 3.967 0.276 M -1.714 50.208 c -5.225 -4.985 -8.33 -11.664 -8.954 -18.645 4.211 0.124 8.209 2.527 10.161 6.586 1.954 4.062 1.332 8.691 -1.207 12.059 m 29.24 6.673 c -0.815 -4.132 0.639 -8.562 4.16 -11.368 3.526 -2.809 8.177 -3.233 12.025 -1.508 -3.681 6.174 -9.497 10.704 -16.185 12.876" FillRule="nonzero"/>
                                 </Path.Data>
                             </Path>
                         </Canvas>
-                        <Canvas Name="g4180">
+                        <Canvas x:Name="g4180">
                             <Canvas.RenderTransform>
                                 <TranslateTransform X="55.3298" Y="105.1038"/>
                             </Canvas.RenderTransform>
-                            <Path Name="path4182" Fill="#FF004CBC">
+                            <Path x:Name="path4182" Fill="#FF63A4E1">
                                 <Path.Data>
                                     <PathGeometry Figures="m 0 0 c -0.109 -0.049 -0.221 -0.086 -0.329 -0.139 -5.793 -2.793 -8.225 -9.753 -5.431 -15.546 2.793 -5.793 9.753 -8.224 15.546 -5.431 0.109 0.052 0.208 0.116 0.314 0.171 -2.14 2.098 -4.021 4.486 -5.57 7.127 C 1.968 -9.447 0.491 -4.738 0 0 m 24.337 46.893 c -6.269 -1.434 -10.189 -7.679 -8.755 -13.948 0.027 -0.116 0.067 -0.225 0.097 -0.34 0.376 0.241 0.753 0.481 1.141 0.709 5.284 3.098 11.297 4.736 17.391 4.736 1.392 0 2.771 -0.096 4.136 -0.262 -0.023 0.117 -0.035 0.234 -0.062 0.351 -1.435 6.269 -7.679 10.189 -13.948 8.754 M 5.037 1.006 c 0.366 -4.193 1.64 -8.37 3.907 -12.236 1.4 -2.387 3.125 -4.524 5.089 -6.387 2.527 3.369 3.14 7.992 1.184 12.047 -1.958 4.061 -5.964 6.461 -10.18 6.576 m 58.745 -15.745 c -0.069 0.087 -0.147 0.163 -0.219 0.248 -2.916 -4.739 -6.965 -8.722 -11.902 -11.617 -2.001 -1.173 -4.107 -2.134 -6.282 -2.879 0.07 -0.093 0.129 -0.19 0.202 -0.281 4.012 -5.026 11.339 -5.848 16.365 -1.836 5.026 4.012 5.848 11.339 1.836 16.365 m -44.374 43.64 c -0.469 -0.275 -0.925 -0.563 -1.372 -0.859 2.722 -3.223 7.099 -4.857 11.495 -3.851 4.394 1.006 7.625 4.378 8.676 8.462 -1.316 0.183 -2.65 0.28 -3.996 0.28 -5.184 0 -10.303 -1.394 -14.803 -4.032 m 40.043 -40.289 c -3.852 1.727 -8.508 1.3 -12.034 -1.515 -3.522 -2.811 -4.971 -7.249 -4.147 -11.383 2.012 0.652 3.961 1.512 5.804 2.592 4.345 2.548 7.878 6.089 10.377 10.306" FillRule="nonzero"/>
                                 </Path.Data>
@@ -95,4 +100,343 @@
             </Canvas>
         </Canvas>
     </Viewbox>
+
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="16,7,16,9"/>
+        <Setter Property="Template" Value="{DynamicResource BlueButton}"/>
+    </Style>
+
+    <ControlTemplate x:Key="BlueButton" TargetType="{x:Type ButtonBase}">
+        <Border CornerRadius="2" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FF3074FC"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF204D74"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FF204C73"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF122B40"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="GreenButton" TargetType="{x:Type ButtonBase}">
+        <Border CornerRadius="2" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FF71C371"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF398439"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FF398339"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF255625"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <ControlTemplate x:Key="RedButton" TargetType="{x:Type ButtonBase}">
+        <Border CornerRadius="2" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FFC9302C"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FFAC2925"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FFAC2925"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FF761C19"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type TabControl}">
+        <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid x:Name="templateRoot" ClipToBounds="True" SnapsToDevicePixels="True" KeyboardNavigation.TabNavigation="Local">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="ColumnDefinition0"/>
+                            <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                            <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TabPanel x:Name="HeaderPanel" Background="Transparent" Grid.Column="0" IsItemsHost="True" Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
+                        <Border x:Name="ContentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentTemplate="{TemplateBinding SelectedContentTemplate}" Content="{TemplateBinding SelectedContent}" ContentStringFormat="{TemplateBinding SelectedContentStringFormat}" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="TabStripPlacement" Value="Bottom">
+                            <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="1"/>
+                            <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                            <Setter Property="Margin" TargetName="HeaderPanel" Value="2,0,2,2"/>
+                        </Trigger>
+                        <Trigger Property="TabStripPlacement" Value="Left">
+                            <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="0"/>
+                            <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Grid.Column" TargetName="HeaderPanel" Value="0"/>
+                            <Setter Property="Grid.Column" TargetName="ContentPanel" Value="1"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                            <Setter Property="Margin" TargetName="HeaderPanel" Value="2,2,0,2"/>
+                        </Trigger>
+                        <Trigger Property="TabStripPlacement" Value="Right">
+                            <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="0"/>
+                            <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Grid.Column" TargetName="HeaderPanel" Value="1"/>
+                            <Setter Property="Grid.Column" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                            <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                            <Setter Property="Margin" TargetName="HeaderPanel" Value="0,2,2,2"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type TabItem}">
+        <Setter Property="Background" Value="#FFEFEFEF"/>
+        <Setter Property="FocusVisualStyle">
+            <Setter.Value>
+                <Style>
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="#FF555A6A"/>
+        <Setter Property="Padding" Value="22,15"/>
+        <Setter Property="BorderBrush" Value="#FFACACAC"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
+                        <Border x:Name="mainBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" Margin="0">
+                            <Border x:Name="innerBorder" BorderBrush="#FFACACAC" BorderThickness="1,1,1,0" Background="#FFEFEFEF" Margin="0" Opacity="0" Visibility="Collapsed"/>
+                        </Border>
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Focusable="False" HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
+                        <Path x:Name="sign" Data="M10,0 20,10 0,10 10,0Z" Height="10" Width="20" VerticalAlignment="Bottom" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="Black"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Left"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                            <Setter Property="Background" TargetName="mainBorder" Value="#FFF0F0F0"/>
+                            <Setter Property="BorderBrush" TargetName="mainBorder" Value="#FFD9D9D9"/>
+                            <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,0,1"/>
+                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                            <Setter Property="Background" TargetName="mainBorder" Value="#FFF0F0F0"/>
+                            <Setter Property="BorderBrush" TargetName="mainBorder" Value="#FFD9D9D9"/>
+                            <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,0,1,1"/>
+                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Right"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                            <Setter Property="Background" TargetName="mainBorder" Value="#FFF0F0F0"/>
+                            <Setter Property="BorderBrush" TargetName="mainBorder" Value="#FFD9D9D9"/>
+                            <Setter Property="BorderThickness" TargetName="innerBorder" Value="0,1,1,1"/>
+                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                            <Setter Property="Background" TargetName="mainBorder" Value="#FFF0F0F0"/>
+                            <Setter Property="BorderBrush" TargetName="mainBorder" Value="#FFD9D9D9"/>
+                            <Setter Property="BorderThickness" TargetName="innerBorder" Value="1,1,1,0"/>
+                            <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                            </MultiDataTrigger.Conditions>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Panel.ZIndex" Value="1"/>
+                            <Setter Property="Fill" TargetName="sign" Value="White"/>
+                        </MultiDataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type DataGrid}">
+        <Setter Property="AlternatingRowBackground" Value="#FFF9F9F9"/>
+        <Setter Property="RowBackground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="#FFDDDDDD"/>
+        <Setter Property="VerticalGridLinesBrush" Value="#FFDDDDDD"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="ColumnHeaderHeight" Value="37"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="RowHeight" Value="52"/>
+        <Setter Property="CanUserAddRows" Value="False"/>
+        <Setter Property="CanUserDeleteRows" Value="False"/>
+        <Setter Property="SelectionMode" Value="Single"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="CanUserReorderColumns" Value="False"/>
+        <Setter Property="CanUserSortColumns" Value="False"/>
+        <Setter Property="Background" Value="White"/>
+    </Style>
+
+    <Style TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="#FFDDDDDD" BorderThickness="0,0,1,2">
+                            <ContentPresenter Margin="10,0" TextElement.FontWeight="Bold" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <!--</Themes:DataGridHeaderBorder>-->
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left">
+                            <Thumb.Style>
+                                <Style TargetType="{x:Type Thumb}">
+                                    <Setter Property="Width" Value="8"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Cursor" Value="SizeWE"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Thumb.Style>
+                        </Thumb>
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right">
+                            <Thumb.Style>
+                                <Style TargetType="{x:Type Thumb}">
+                                    <Setter Property="Width" Value="8"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Cursor" Value="SizeWE"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Thumb.Style>
+                        </Thumb>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type DataGridCell}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter Margin="6" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <!--<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>-->
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <!--<Setter Property="BorderBrush" Value="{DynamicResource {ComponentResourceKey ResourceId=FocusBorderBrushKey, TypeInTargetAssembly={x:Type DataGrid}}}"/>-->
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSelected" Value="True"/>
+                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                </MultiTrigger.Conditions>
+                <!--<Setter Property="Background" Value="{DynamicResource}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource}"/>
+                <Setter Property="Foreground" Value="{DynamicResource}"/>-->
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

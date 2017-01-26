@@ -8,7 +8,7 @@
         d:DataContext="{d:DesignInstance Type={x:Type viewModels1:MainViewModel}}" 
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         mc:Ignorable="d"
-        Title="Chewsi" Height="350" Width="525">
+        Title="Chewsi" Height="600" Width="800" FontSize="15" MinHeight="400" MinWidth="600" Background="#FFEFEFEF">
     <TabControl>
         <TabItem Header="Claims Submission">
             <Grid>
@@ -30,19 +30,18 @@
                         <controls:BindingProxy x:Key="proxy" Data="{Binding}" />
                     </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}" />
-                        <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" />
-                        <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" />
-                        <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" />
-                        <DataGridTemplateColumn Header="Action">
+                        <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}" Width="180" />
+                        <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*" />
+                        <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" Width="*" />
+                        <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" Width="*" />
+                        <DataGridTemplateColumn Header="Action" Width="180">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Content="Submit" Background="LightGreen" Foreground="White" VerticalAlignment="Center" 
-                                                HorizontalAlignment="Center" Padding="5" Margin="0,0,15,0" Command="{Binding Path=Data.SubmitCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
-                                        <Button Content="Delete" Background="Red" Foreground="White" VerticalAlignment="Center" 
-                                                HorizontalAlignment="Center" Padding="5"  Margin="0,0,15,0"
-                                                Command="{Binding Path=Data.DeleteCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                        <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                                Command="{Binding Path=Data.SubmitCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                        <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
+                                                Margin="5,0,0,0" Command="{Binding Path=Data.DeleteCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -68,10 +67,10 @@
                 <ContentControl Content="{StaticResource Logo}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left"/>
                 <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding HistoryItems}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}" />
-                        <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" />
-                        <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" />
-                        <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}" />
+                        <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}"  Width="180" />
+                        <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}"  Width="*"/>
+                        <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}"  Width="*"/>
+                        <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -98,12 +97,12 @@
                         <ColumnDefinition Width="15"/>
                     </Grid.ColumnDefinitions>                   
                     <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
-                    <Button Content="Refresh" Background="DodgerBlue" Foreground="White" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5"/>
+                    <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                 </Grid>
                 <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding PostedOn}" />
-                        <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}" />
+                        <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding PostedOn}"  Width="180"/>
+                        <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}"  Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

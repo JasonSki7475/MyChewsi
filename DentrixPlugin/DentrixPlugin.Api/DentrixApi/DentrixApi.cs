@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Odbc;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32;
@@ -11,7 +12,7 @@ namespace DentrixPlugin.Api.DentrixApi
     public static class DentrixApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly bool _initialized;
+        private static bool _initialized;
         
         static class ApiResult
         {
@@ -22,7 +23,7 @@ namespace DentrixPlugin.Api.DentrixApi
         #region DDP member credentials
         private const string UserId = "dBNa5Agn";
         private const string Password = "XsxJmLGDy";
-        private const string KeyFilePath = @"..\dBNa5Agn.dtxkey";
+        private const string KeyFileName = @"dBNa5Agn.dtxkey";
         #endregion
 
         #region Dll Imports
@@ -49,11 +50,11 @@ namespace DentrixPlugin.Api.DentrixApi
         [DllImport("Dentrix.API.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         static extern int DENTRIXAPI_Initialize(string szUserId, string szPassword);
         #endregion
-
-        public static bool Initialized { get { return _initialized; } }
-
+        
         public static List<Appointment> GetAppointments()
         {
+            Initialize();
+
             string command = "SELECT patid, firstname, lastname FROM admin.patient";
             var connectionString = GetConnectionString();
             if (connectionString.Length > 0)
@@ -84,21 +85,24 @@ namespace DentrixPlugin.Api.DentrixApi
 
         static DentrixApi()
         {
-            _initialized = Initialize();
+            Initialize();
         }
 
-        private static bool Initialize()
+        private static void Initialize()
         {
+            if (_initialized)
+                return;
+
             var version = DENTRIXAPI_GetDentrixVersion();
             Logger.Info("Dentrix version is " + version);
-            bool init = false;
             if ((int) (version*100) >= 1620)
             {
                 // G6.2 or higher
-                if (DENTRIXAPI_RegisterUser(KeyFilePath) == ApiResult.Success)
+                var keyFilePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), KeyFileName);
+                if (DENTRIXAPI_RegisterUser(keyFilePath) == ApiResult.Success)
                 {
                     Logger.Info("Registered user for version >= 6.2");
-                    init = true;
+                    _initialized = true;
                 }
                 else
                 {
@@ -111,14 +115,13 @@ namespace DentrixPlugin.Api.DentrixApi
                 if (DENTRIXAPI_Initialize(UserId, Password) == 1)
                 {
                     Logger.Info("Initialized for version < 6.2");
-                    init = true;
+                    _initialized = true;
                 }
                 else
                 {
                     Logger.Error("Could not register user for version < 6.2");
                 }
             }
-            return init;
         }
 
         private static int GetDentrixExePath(StringBuilder retValue)
