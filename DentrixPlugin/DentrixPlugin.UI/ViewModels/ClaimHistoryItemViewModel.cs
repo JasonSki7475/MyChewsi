@@ -1,9 +1,17 @@
-﻿using DentrixPlugin.Api;
-
-namespace DentrixPlugin.UI.ViewModels
+﻿namespace DentrixPlugin.UI.ViewModels
 {
     public class ClaimHistoryItemViewModel : ClaimItemViewModel
     {
-        public ClaimStatusType Status { get; set; }
+        private string _status;
+
+        public string Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                RaisePropertyChanged(() => Status);
+            }
+        }
     }
 }

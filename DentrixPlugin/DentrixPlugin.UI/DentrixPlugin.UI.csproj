@@ -110,6 +110,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\BindingProxy.cs" />
+    <Compile Include="Controls\LightBox.cs" />
     <Compile Include="ViewModels\ClaimHistoryItemViewModel.cs" />
     <Compile Include="ViewModels\ClaimItemViewModel.cs" />
     <Compile Include="ViewModels\DownloadItemViewModel.cs" />

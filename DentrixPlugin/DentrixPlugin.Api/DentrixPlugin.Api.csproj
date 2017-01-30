@@ -63,6 +63,8 @@
     <Compile Include="DentrixApi\Appointment.cs" />
     <Compile Include="DentrixApi\DentrixApi.cs" />
     <Compile Include="ChewsiApi\ProcedureInformationRequest.cs" />
+    <Compile Include="DentrixApi\PatientInsurance.cs" />
+    <Compile Include="DentrixApi\Provider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ChewsiApi\ProviderInformationRequest.cs" />
     <Compile Include="ChewsiApi\ClaimProcessingStatusResponse.cs" />

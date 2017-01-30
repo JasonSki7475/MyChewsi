@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Odbc;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32;
@@ -13,6 +15,7 @@ namespace DentrixPlugin.Api.DentrixApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static bool _initialized;
+        private const string ChewsiInsuranceCarrierName = "PRINCIPAL";//Chewsi
         
         static class ApiResult
         {
@@ -51,27 +54,142 @@ namespace DentrixPlugin.Api.DentrixApi
         static extern int DENTRIXAPI_Initialize(string szUserId, string szPassword);
         #endregion
         
-        public static List<Appointment> GetAppointments()
+        public static List<PatientInsurance> GetAllPatientsInsurance()
         {
             Initialize();
+            var result = ExecuteCommand($"select patient_id, primary_insured_id from admin.v_patient_insurance where primary_insurance_carrier_name='{ChewsiInsuranceCarrierName}'",
+                new List<string> { "patient_id", "primary_insured_id" }, false);
+            return result.Select(m => new PatientInsurance
+            {
+                Patient_id = m["patient_id"],
+                Primary_insured_id = m["primary_insured_id"]
+            }).ToList();
+        }
 
-            string command = "SELECT patid, firstname, lastname FROM admin.patient";
+        public static List<Appointment> GetAppointmentsForToday(List<PatientInsurance> patientIds)
+        {
+            Initialize();
+            var now = DateTime.Now;
+
+            var dateStart = new DateTime(2012, 1, 1, 23, 59, 59);
+            var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
+
+            /*
+            var dateStart = now.Date;
+            var dateEnd = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+             */
+            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateStart.ToString("G")}' and appointment_date<'{dateEnd.ToString("G")}' and patient_id in ({string.Join(",", patientIds.Select(m => m.Patient_id)).TrimEnd(',')})",
+                new List<string> { "patient_id", "patient_name", "appointment_date", "status_id", "provider_id" },
+                false,
+                new Dictionary<string, string> { { "primary_insurance_carrier_name", ChewsiInsuranceCarrierName } });
+
+            return result.Select(m => new Appointment
+            {
+                Patient_name = m["patient_name"],
+                Patient_id = m["patient_id"],
+                Appointment_date = m["appointment_date"],
+                Status_id = m["status_id"],
+                Provider_id = m["provider_id"],
+                Primary_insured_id = patientIds.FirstOrDefault(n => n.Patient_id == m["patient_id"])?.Primary_insured_id
+            }).ToList();
+        }
+
+        public static Provider GetProvider(string providerId)
+        {
+            Initialize();
+            var result = ExecuteCommand($"select tin, npi, address_line1, state, city, zip_code from admin.v_provider where provider_id=\'{providerId}\'",
+                new List<string> { "tin", "npi", "address_line1", "state", "city", "zip_code" }, false);
+
+            return result.Select(m => new Provider
+            {
+                Address_line1 = m["address_line1"],
+                City = m["city"],
+                Npi = m["npi"],
+                State = m["state"],
+                Tin = m["tin"],
+                Zip_code = m["zip_code"]
+            }).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets data from a view or a stored procedure
+        /// </summary>
+        /// <param name="name">Name of the view or the stored procedure</param>
+        private static List<Dictionary<string, string>> Execute(string name, List<string> outputFields, bool isStoredProcedure = false, Dictionary<string, string> parameters = null)
+        {
+            Initialize();
+            string commandText;
+            if (isStoredProcedure)
+            {
+                commandText = "{call " + name + "(" + (parameters == null
+                    ? ""
+                    : string.Join("", parameters.Keys.Select(m => "?,")).TrimEnd(',')) + ")}";
+            }
+            else
+            {
+                commandText = "select * from " + name;
+                if (parameters != null)
+                {
+                    commandText += " where ";
+                    foreach (var parameter in parameters)
+                    {
+                        commandText += parameter.Key + "=\'" + parameter.Value + "\' and ";
+                    }
+                    commandText = commandText.Remove(commandText.Length - 5, 4);
+                }
+            }
+
+            return ExecuteCommand(commandText, outputFields, isStoredProcedure, parameters);
+        }
+
+        private static List<Dictionary<string, string>> ExecuteCommand(string commandText, List<string> outputFields, bool isStoredProcedure, Dictionary<string, string> parameters = null)
+        {
+            var result = new List<Dictionary<string, string>>();
             var connectionString = GetConnectionString();
             if (connectionString.Length > 0)
             {
                 Logger.Info("Got connection string");
-                using (OdbcConnection conn = new OdbcConnection(connectionString))
+                using (OdbcConnection connection = new OdbcConnection(connectionString))
                 {
-                    conn.Open();
+                    connection.Open();
 
-                    using (OdbcCommand com = new OdbcCommand(command, conn))
+                    using (OdbcCommand command = new OdbcCommand(commandText, connection))
                     {
-                        using (OdbcDataReader reader = com.ExecuteReader())
+                        if (isStoredProcedure)
                         {
-                            while (reader.Read())
+                            if (parameters != null)
                             {
-                                Logger.Info(reader.GetString(0) + " " + reader.GetString(1) + " " + reader.GetString(2));
+                                foreach (var parameter in parameters)
+                                {
+                                    command.Parameters.AddWithValue("@" + parameter.Key, parameter.Value);
+                                }
                             }
+                            command.CommandType = CommandType.StoredProcedure;
+                            Logger.Debug("Executing stored procedure: " + commandText);
+                        }
+                        else
+                        {
+                            Logger.Debug("Executing query: " + commandText);
+                        }
+
+                        try
+                        {
+                            using (OdbcDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    var r = new Dictionary<string, string>();
+                                    foreach (var field in outputFields)
+                                    {
+                                        r[field] = reader[field].ToString();
+                                    }
+                                    result.Add(r);
+                                }
+                            }
+                        }
+                        catch (OdbcException objEx)
+                        {
+                            Logger.Error("Failed to execute " + (isStoredProcedure ? "stored procedure: " : "query: ") + objEx.Message);
                         }
                     }
                 }
@@ -80,7 +198,7 @@ namespace DentrixPlugin.Api.DentrixApi
             {
                 Logger.Error("Could not connect to database.");
             }
-            return null;
+            return result;
         }
 
         static DentrixApi()
