@@ -3,7 +3,6 @@
     public class ProviderInformationRequest
     {
         public string TIN { get; set; }
-        public string License { get; set; }
         public string NPI { get; set; }
         public string RenderingAddress { get; set; }
         public string RenderingState { get; set; }

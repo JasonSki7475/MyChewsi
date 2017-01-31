@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using DentrixPlugin.Api.ChewsiApi;
 using Microsoft.Win32;
 using NLog;
 
@@ -66,19 +67,72 @@ namespace DentrixPlugin.Api.DentrixApi
             }).ToList();
         }
 
-        public static List<Appointment> GetAppointmentsForToday(List<PatientInsurance> patientIds)
+        public static SubscriberInfo GetSubscriberInfo(string patientId)
         {
             Initialize();
+            var result =
+                ExecuteCommand(
+                    $"select pi.first_name, pi.last_name, pi.primary_insured_id, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id where pi.patient_id='{patientId}'",
+                    new List<string> {"first_name", "last_name", "primary_insured_id", "birth_date"}, false);
+            return result.Select(m => new SubscriberInfo
+            {
+                Primary_insured_id = m["primary_insured_id"],
+                Last_name = m["last_name"],
+                First_name = m["first_name"],
+                Birth_date = m["birth_date"]
+            }).FirstOrDefault();
+        }
+
+        public static ProcedureInfo GetProcedure(string patientId)
+        {
+            Initialize();
+            var dateRange = GetTimeRangeForToday();
+            var procedures = Execute("admin.sp_getpatientprocedures",
+                new List<string> {"amt", "proc_code", "proc_date"},
+                true,
+                new Dictionary<string, string>
+                {
+                    {"patient_guid", patientId},
+                    {"BeginDate", dateRange.Item1},
+                    {"EndDate", dateRange.Item2},
+                    {"byCreateDate", "0"}
+                });
+            if (procedures != null && procedures.Count != 0)
+            {
+                var proc = procedures.OrderByDescending(m => DateTime.Parse(m["proc_date"])).First();
+                return new ProcedureInfo
+                {
+                    Amt = proc["amt"],
+                    Proc_code = proc["proc_code"],
+                    Proc_date = proc["proc_date"]
+                };
+            }
+            return null;
+        }
+
+        private static Tuple<string, string> GetTimeRangeForToday()
+        {
             var now = DateTime.Now;
 
-            var dateStart = new DateTime(2012, 1, 1, 23, 59, 59);
-            var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
+            var dateStart = new DateTime(1993, 1, 1, 23, 59, 59);
+            var dateEnd = new DateTime(1996, 6, 1, 23, 59, 59);
 
+           /* var dateStart = new DateTime(2012, 1, 1, 23, 59, 59);
+            var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
+            */
             /*
             var dateStart = now.Date;
             var dateEnd = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
              */
-            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateStart.ToString("G")}' and appointment_date<'{dateEnd.ToString("G")}' and patient_id in ({string.Join(",", patientIds.Select(m => m.Patient_id)).TrimEnd(',')})",
+             return new Tuple<string, string>(dateStart.ToString("G"), dateEnd.ToString("G"));
+        }
+        
+        public static List<Appointment> GetAppointmentsForToday(List<PatientInsurance> patientIds)
+        {
+            Initialize();
+            var dateRange = GetTimeRangeForToday();
+
+            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}' and patient_id in ({string.Join(",", patientIds.Select(m => m.Patient_id)).TrimEnd(',')})",
                 new List<string> { "patient_id", "patient_name", "appointment_date", "status_id", "provider_id" },
                 false,
                 new Dictionary<string, string> { { "primary_insurance_carrier_name", ChewsiInsuranceCarrierName } });

@@ -9,6 +9,7 @@ namespace DentrixPlugin.UI.ViewModels
         private string _insuranceId;
         private string _subscriber;
         private string _provider;
+        private string _patientId;
 
         public DateTime Date
         {
@@ -47,6 +48,16 @@ namespace DentrixPlugin.UI.ViewModels
             {
                 _provider = value;
                 RaisePropertyChanged(() => Provider);
+            }
+        }
+
+        public string PatientId
+        {
+            get { return _patientId; }
+            set
+            {
+                _patientId = value;
+                RaisePropertyChanged(() => PatientId);
             }
         }
     }

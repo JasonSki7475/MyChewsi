@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using DentrixPlugin.Api.ChewsiApi;
 using DentrixPlugin.Api.DentrixApi;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -23,17 +24,22 @@ namespace DentrixPlugin.UI.ViewModels
         private ICommand _refreshDownloadsCommand;
         private ICommand _refreshAppointmentsCommand;
         private ICommand _closeValidationPopupCommand;
+        private ICommand _closeProcessingPaymentPopupCommand;
         private ClaimItemViewModel _selectedClaim;
         private bool _showValidationError;
+        private bool _showPaymentProcessing;
+        private string _paymentProcessingMessage;
         private bool _loadingAppointments;
         private string _validationError;
+        private readonly ChewsiApi _chewsiApi;
 
         public MainViewModel()
         {
             ClaimItems = new ObservableCollection<ClaimItemViewModel>();
             HistoryItems = new ObservableCollection<ClaimItemViewModel>(TestHistoricClaims);
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
-            
+            _chewsiApi = new ChewsiApi();
+
             // Refresh appointments now
             var worker = new BackgroundWorker();
             worker.DoWork += (i, j) =>
@@ -77,7 +83,8 @@ namespace DentrixPlugin.UI.ViewModels
                             Provider = m.Provider_id,
                             Date = DateTime.Parse(m.Appointment_date),
                             Subscriber = m.Patient_name,
-                            InsuranceId = m.Primary_insured_id
+                            InsuranceId = m.Primary_insured_id,
+                            PatientId = m.Patient_id
                         });
                 }
                 catch (Exception ex)
@@ -92,6 +99,7 @@ namespace DentrixPlugin.UI.ViewModels
             return new List<ClaimItemViewModel>();
         }
 
+        #region Test data
         public ClaimItemViewModel[] TestClaims
         {
             get { return Enumerable.Range(0, 30).Select(m => GetTestClaim()).ToArray(); }
@@ -123,6 +131,7 @@ namespace DentrixPlugin.UI.ViewModels
                 Status = _random.Next(2) == 0 ? "Payment payment processing...." : "A payment authorization request sent to the subscriber. Please aks them to open the Cheswi app on their mobile device to authorized payment."
             };
         }
+        #endregion
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; private set; }
         public ObservableCollection<ClaimItemViewModel> HistoryItems { get; private set; }
@@ -148,6 +157,26 @@ namespace DentrixPlugin.UI.ViewModels
             }
         }
 
+        public bool ShowPaymentProcessing
+        {
+            get { return _showPaymentProcessing; }
+            set
+            {
+                _showPaymentProcessing = value;
+                RaisePropertyChanged(() => ShowPaymentProcessing);
+            }
+        }
+
+        public string PaymentProcessingMessage
+        {
+            get { return _paymentProcessingMessage; }
+            set
+            {
+                _paymentProcessingMessage = value;
+                RaisePropertyChanged(() => PaymentProcessingMessage);
+            }
+        }
+
         public string ValidationError
         {
             get { return _validationError; }
@@ -166,9 +195,71 @@ namespace DentrixPlugin.UI.ViewModels
 
         private void OnSubmitCommandExecute()
         {
-            var provider = DentrixApi.GetProvider(SelectedClaim.Provider);
-            //DisplayValidationError("Please Validate that the Subscriber's Insurance ID and First Name match the information shown before proceeding. ");
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, (Action) (() =>
+            {
+                var provider = DentrixApi.GetProvider(SelectedClaim.Provider);
+                if (provider != null)
+                {
+                    var subscriberInfo = DentrixApi.GetSubscriberInfo(SelectedClaim.PatientId);
+                    if (subscriberInfo != null)
+                    {
+                        var providerParam = new ProviderInformationRequest
+                        {
+                            NPI = provider.Npi,
+                            RenderingAddress = provider.Address_line1,
+                            RenderingCity = provider.City,
+                            RenderingState = provider.State,
+                            RenderingZip = provider.Zip_code,
+                            TIN = provider.Tin
+                        };
+                        var subscriberParam = new SubscriberInformationRequest
+                        {
+                            SubscriberDateOfBirth = subscriberInfo.Birth_date,
+                            SubscriberFirstName = subscriberInfo.First_name,
+                            SubscriberLastName = subscriberInfo.Last_name
+                        };
+
+                        var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerParam, subscriberParam);
+                        Logger.Debug($"Validated subscriber '{SelectedClaim.PatientId}' and provider '{SelectedClaim.Provider}': '{validationResponse.ValidationPassed}'");
+                        if (validationResponse.ValidationPassed)
+                        {
+                            var procedure = DentrixApi.GetProcedure(SelectedClaim.PatientId);
+                            if (procedure != null)
+                            {
+                                var claimNumberResponse = _chewsiApi.ProcessClaim(providerParam, subscriberParam,
+                                    new ProcedureInformationRequest
+                                    {
+                                        SubscriberDateOfBirth = subscriberParam.SubscriberDateOfBirth,
+                                        DateOfServices = procedure.Proc_date,
+                                        ProcedureCharge = procedure.Amt,
+                                        ProcedureCode = procedure.Proc_code
+                                    });
+
+                                Logger.Debug($"Processed claim, procedure code '{procedure.Proc_code}': '{claimNumberResponse}'");
+                            }
+                            else
+                            {
+                                Logger.Error("Cannot find procedure for patient " + SelectedClaim.PatientId);
+                            }
+                        }
+                        else
+                        {
+                            //DisplayValidationError("Please Validate that the Subscriber's Insurance ID and First Name match the information shown before proceeding. ");
+                            DisplayValidationError(validationResponse.Message);                            
+                        }
+                    }
+                    else
+                    {
+                        Logger.Error("Cannot find patient " + SelectedClaim.PatientId);
+                    }
+                }
+                else
+                {
+                    Logger.Error("Cannot find provider " + SelectedClaim.Provider);
+                }
+            }));
         }
+
         #endregion
 
         #region DeleteCommand
@@ -220,6 +311,18 @@ namespace DentrixPlugin.UI.ViewModels
         private void OnCloseValidationPopupCommandExecute()
         {
             ShowValidationError = false;
+        }
+        #endregion
+
+        #region CloseProcessingPaymentPopupCommand
+        public ICommand CloseProcessingPaymentPopupCommand
+        {
+            get { return _closeProcessingPaymentPopupCommand ?? (_closeProcessingPaymentPopupCommand = new RelayCommand(OnCloseProcessingPaymentPopupCommandExecute)); }
+        }
+
+        private void OnCloseProcessingPaymentPopupCommandExecute()
+        {
+            ShowPaymentProcessing = false;
         }
         #endregion
 
