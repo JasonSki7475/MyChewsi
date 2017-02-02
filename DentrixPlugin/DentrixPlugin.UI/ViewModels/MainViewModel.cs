@@ -36,7 +36,6 @@ namespace DentrixPlugin.UI.ViewModels
         public MainViewModel()
         {
             ClaimItems = new ObservableCollection<ClaimItemViewModel>();
-            HistoryItems = new ObservableCollection<ClaimItemViewModel>(TestHistoricClaims);
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
             _chewsiApi = new ChewsiApi();
 
@@ -104,25 +103,11 @@ namespace DentrixPlugin.UI.ViewModels
         {
             get { return Enumerable.Range(0, 30).Select(m => GetTestClaim()).ToArray(); }
         }
-        public ClaimHistoryItemViewModel[] TestHistoricClaims
-        {
-            get { return Enumerable.Range(0, 30).Select(m => GetTestHistoricClaim()).ToArray(); }
-        }
 
         readonly Random _random = new Random();
         ClaimItemViewModel GetTestClaim()
         {
             return new ClaimItemViewModel
-            {
-                InsuranceId = _random.Next(10000, 100000).ToString(),
-                Date = DateTime.Now,
-                Provider = "Dr. Jason Hamel",
-                Subscriber = "John Smith #" + _random.Next(100, 1000)
-            };
-        }
-        ClaimHistoryItemViewModel GetTestHistoricClaim()
-        {
-            return new ClaimHistoryItemViewModel
             {
                 InsuranceId = _random.Next(10000, 100000).ToString(),
                 Date = DateTime.Now,

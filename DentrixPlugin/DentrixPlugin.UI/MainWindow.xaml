@@ -8,7 +8,7 @@
         d:DataContext="{d:DesignInstance Type={x:Type viewModels1:MainViewModel}}" 
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         mc:Ignorable="d"
-        Title="Chewsi" Height="600" Width="800" FontSize="15" MinHeight="400" MinWidth="600" Background="#FFEFEFEF">
+        Title="Chewsi" Height="600" Width="1050" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
     <Grid>
         <TabControl>
             <TabItem Header="Claims Submission">
@@ -44,6 +44,13 @@
                             <DataGridTextColumn Header="Insurance ID" IsReadOnly="True" Binding="{Binding InsuranceId}" Width="*" />
                             <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" Width="*" />
                             <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" Width="*" />
+                            <DataGridTemplateColumn Header="Status" Width="3*" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap" ToolTip="{Binding Status}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Action" Width="180">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -53,37 +60,6 @@
                                             <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
                                                 Margin="5,0,0,0" Command="{Binding Path=Data.DeleteCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
                                         </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-            <TabItem Header="History">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="5"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="80"/>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="5"/>
-                    </Grid.RowDefinitions>
-                    <ContentControl Content="{StaticResource Logo}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left"/>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding HistoryItems}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Date" IsReadOnly="True" Binding="{Binding Date}"  Width="180" />
-                            <DataGridTextColumn Header="Subscriber" IsReadOnly="True" Binding="{Binding Subscriber}" Width="*" />
-                            <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" Width="*"/>
-                            <DataGridTemplateColumn Header="Status" Width="3*" IsReadOnly="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap" ToolTip="{Binding Status}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

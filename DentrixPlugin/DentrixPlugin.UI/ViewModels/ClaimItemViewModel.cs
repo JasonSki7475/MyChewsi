@@ -10,6 +10,7 @@ namespace DentrixPlugin.UI.ViewModels
         private string _subscriber;
         private string _provider;
         private string _patientId;
+        private string _status;
 
         public DateTime Date
         {
@@ -58,6 +59,16 @@ namespace DentrixPlugin.UI.ViewModels
             {
                 _patientId = value;
                 RaisePropertyChanged(() => PatientId);
+            }
+        }
+
+        public string Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                RaisePropertyChanged(() => Status);
             }
         }
     }
