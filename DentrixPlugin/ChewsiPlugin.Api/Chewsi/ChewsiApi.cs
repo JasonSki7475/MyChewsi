@@ -5,7 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 using NLog;
 
-namespace ChewsiPlugin.Api.ChewsiApi
+namespace ChewsiPlugin.Api.Chewsi
 {
     public class ChewsiApi
     {

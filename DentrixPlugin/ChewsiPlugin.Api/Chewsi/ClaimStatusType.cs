@@ -1,4 +1,4 @@
-﻿namespace ChewsiPlugin.Api
+﻿namespace ChewsiPlugin.Api.Chewsi
 {
     public enum ClaimStatusType
     {

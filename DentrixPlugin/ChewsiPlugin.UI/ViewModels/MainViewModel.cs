@@ -7,8 +7,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ChewsiPlugin.Api.ChewsiApi;
-using ChewsiPlugin.Api.DentrixApi;
+using ChewsiPlugin.Api.Chewsi;
+using ChewsiPlugin.Api.Interfaces;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using NLog;
@@ -32,9 +32,11 @@ namespace ChewsiPlugin.UI.ViewModels
         private bool _loadingAppointments;
         private string _validationError;
         private readonly ChewsiApi _chewsiApi;
+        private readonly IDentalApi _dentalApi;
 
-        public MainViewModel()
+        public MainViewModel(IDentalApi dentalApi)
         {
+            _dentalApi = dentalApi;
             ClaimItems = new ObservableCollection<ClaimItemViewModel>();
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
             _chewsiApi = new ChewsiApi();
@@ -75,15 +77,15 @@ namespace ChewsiPlugin.UI.ViewModels
 
                 try
                 {
-                    var list = DentrixApi.GetAppointmentsForToday(DentrixApi.GetAllPatientsInsurance());
+                    var list = _dentalApi.GetAppointmentsForToday();
                     return list.OrderBy(m => m.IsCompleted)
                         .Select(m => new ClaimItemViewModel
                         {
-                            Provider = m.Provider_id,
-                            Date = DateTime.Parse(m.Appointment_date),
-                            Subscriber = m.Patient_name,
-                            InsuranceId = m.Primary_insured_id,
-                            PatientId = m.Patient_id
+                            Provider = m.ProviderId,
+                            Date = m.Date,
+                            Subscriber = m.PatientName,
+                            InsuranceId = m.InsuranceId,
+                            PatientId = m.PatientId
                         });
                 }
                 catch (Exception ex)
@@ -182,45 +184,45 @@ namespace ChewsiPlugin.UI.ViewModels
         {
             Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, (Action) (() =>
             {
-                var provider = DentrixApi.GetProvider(SelectedClaim.Provider);
+                var provider = _dentalApi.GetProvider(SelectedClaim.Provider);
                 if (provider != null)
                 {
-                    var subscriberInfo = DentrixApi.GetSubscriberInfo(SelectedClaim.PatientId);
+                    var subscriberInfo = _dentalApi.GetSubscriberInfo(SelectedClaim.PatientId);
                     if (subscriberInfo != null)
                     {
                         var providerParam = new ProviderInformationRequest
                         {
                             NPI = provider.Npi,
-                            RenderingAddress = provider.Address_line1,
+                            RenderingAddress = provider.AddressLine,
                             RenderingCity = provider.City,
                             RenderingState = provider.State,
-                            RenderingZip = provider.Zip_code,
+                            RenderingZip = provider.ZipCode,
                             TIN = provider.Tin
                         };
                         var subscriberParam = new SubscriberInformationRequest
                         {
-                            SubscriberDateOfBirth = subscriberInfo.Birth_date,
-                            SubscriberFirstName = subscriberInfo.First_name,
-                            SubscriberLastName = subscriberInfo.Last_name
+                            SubscriberDateOfBirth = subscriberInfo.BirthDate.ToString("G"),
+                            SubscriberFirstName = subscriberInfo.FirstName,
+                            SubscriberLastName = subscriberInfo.LastName
                         };
 
                         var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerParam, subscriberParam);
                         Logger.Debug($"Validated subscriber '{SelectedClaim.PatientId}' and provider '{SelectedClaim.Provider}': '{validationResponse.ValidationPassed}'");
                         if (validationResponse.ValidationPassed)
                         {
-                            var procedure = DentrixApi.GetProcedure(SelectedClaim.PatientId);
+                            var procedure = _dentalApi.GetProcedure(SelectedClaim.PatientId);
                             if (procedure != null)
                             {
                                 var claimNumberResponse = _chewsiApi.ProcessClaim(providerParam, subscriberParam,
                                     new ProcedureInformationRequest
                                     {
                                         SubscriberDateOfBirth = subscriberParam.SubscriberDateOfBirth,
-                                        DateOfServices = procedure.Proc_date,
-                                        ProcedureCharge = procedure.Amt,
-                                        ProcedureCode = procedure.Proc_code
+                                        DateOfServices = procedure.Date.ToString("G"),
+                                        ProcedureCharge = procedure.Amount,
+                                        ProcedureCode = procedure.Code
                                     });
 
-                                Logger.Debug($"Processed claim, procedure code '{procedure.Proc_code}': '{claimNumberResponse}'");
+                                Logger.Debug($"Processed claim, procedure code '{procedure.Code}': '{claimNumberResponse}'");
                             }
                             else
                             {

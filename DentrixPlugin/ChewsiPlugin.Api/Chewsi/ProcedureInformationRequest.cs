@@ -1,4 +1,4 @@
-﻿namespace ChewsiPlugin.Api.ChewsiApi
+﻿namespace ChewsiPlugin.Api.Chewsi
 {
     public class ProcedureInformationRequest
     {

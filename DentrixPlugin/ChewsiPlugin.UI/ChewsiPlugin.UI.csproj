@@ -155,9 +155,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="dBNa5Agn.dtxkey">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -184,6 +181,10 @@
     <ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">
       <Project>{5ad8eba3-ce26-4343-8ba4-ee832ea839bd}</Project>
       <Name>ChewsiPlugin.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
+      <Project>{d1582bd8-ef79-493a-aad9-4f39ca3995d2}</Project>
+      <Name>ChewsiPlugin.OpenDentalApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

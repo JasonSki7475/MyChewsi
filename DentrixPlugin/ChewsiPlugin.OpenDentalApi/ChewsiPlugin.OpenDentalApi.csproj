@@ -48,12 +48,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OpenDentalApi.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\OpenDental.exe" />
     <Content Include="Lib\OpenDentBusiness.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">
+      <Project>{5ad8eba3-ce26-4343-8ba4-ee832ea839bd}</Project>
+      <Name>ChewsiPlugin.Api</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

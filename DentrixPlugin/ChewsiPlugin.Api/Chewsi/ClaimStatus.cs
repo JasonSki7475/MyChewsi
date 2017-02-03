@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChewsiPlugin.Api
+namespace ChewsiPlugin.Api.Chewsi
 {
     public class ClaimStatus
     {
