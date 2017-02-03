@@ -58,21 +58,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chewsi\ChewsiApi.cs" />
+    <Compile Include="Chewsi\InitializeRequest.cs" />
     <Compile Include="Interfaces\IAppointment.cs" />
-    <Compile Include="Dentrix\ProcedureInfo.cs" />
+    <Compile Include="Common\ProcedureInfo.cs" />
     <Compile Include="Chewsi\ClaimStatus.cs" />
     <Compile Include="Chewsi\ClaimStatusType.cs" />
-    <Compile Include="Dentrix\Appointment.cs" />
+    <Compile Include="Common\Appointment.cs" />
     <Compile Include="Dentrix\DentrixApi.cs" />
     <Compile Include="Chewsi\ProcedureInformationRequest.cs" />
-    <Compile Include="Dentrix\Provider.cs" />
-    <Compile Include="Dentrix\SubscriberInfo.cs" />
+    <Compile Include="Common\Provider.cs" />
+    <Compile Include="Common\SubscriberInfo.cs" />
     <Compile Include="Interfaces\IDentalApi.cs" />
+    <Compile Include="PluginType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Chewsi\ProviderInformationRequest.cs" />
     <Compile Include="Chewsi\ClaimProcessingStatusResponse.cs" />
     <Compile Include="Chewsi\SubscriberInformationRequest.cs" />
     <Compile Include="Chewsi\ValidateSubscriberAndProviderResponse.cs" />
+    <Compile Include="..\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../Certificate.pfx" />

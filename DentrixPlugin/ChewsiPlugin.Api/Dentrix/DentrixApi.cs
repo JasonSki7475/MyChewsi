@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Odbc;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using Microsoft.Win32;
 using NLog;
@@ -117,12 +119,12 @@ namespace ChewsiPlugin.Api.Dentrix
         {
             var now = DateTime.Now;
 
-            var dateStart = new DateTime(1993, 1, 1, 23, 59, 59);
+            /*var dateStart = new DateTime(1993, 1, 1, 23, 59, 59);
             var dateEnd = new DateTime(1996, 6, 1, 23, 59, 59);
-
-           /* var dateStart = new DateTime(2012, 1, 1, 23, 59, 59);
+ */
+            var dateStart = new DateTime(2012, 1, 1, 23, 59, 59);
             var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
-            */
+           
             /*
             var dateStart = now.Date;
             var dateEnd = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
@@ -172,6 +174,11 @@ namespace ChewsiPlugin.Api.Dentrix
                 Tin = m["tin"],
                 ZipCode = m["zip_code"]
             }).FirstOrDefault();
+        }
+
+        public string GetVersion()
+        {
+            return DENTRIXAPI_GetDentrixVersion().ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>

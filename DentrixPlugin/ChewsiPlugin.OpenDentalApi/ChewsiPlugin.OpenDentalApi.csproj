@@ -51,6 +51,7 @@
     <Compile Include="OpenDentalApi.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\OpenDental.exe" />

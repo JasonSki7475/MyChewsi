@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChewsiPlugin.Api.Dentrix
+namespace ChewsiPlugin.Api.Common
 {
     public class SubscriberInfo
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ChewsiPlugin.Api.Dentrix;
+using ChewsiPlugin.Api.Common;
 
 namespace ChewsiPlugin.Api.Interfaces
 {
@@ -9,5 +9,6 @@ namespace ChewsiPlugin.Api.Interfaces
         ProcedureInfo GetProcedure(string patientId);
         List<IAppointment> GetAppointmentsForToday();
         Provider GetProvider(string providerId);
+        string GetVersion();
     }
 }

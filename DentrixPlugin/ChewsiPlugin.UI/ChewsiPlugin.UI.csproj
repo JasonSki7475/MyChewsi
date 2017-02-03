@@ -111,6 +111,7 @@
     </ApplicationDefinition>
     <Compile Include="Controls\BindingProxy.cs" />
     <Compile Include="Controls\LightBox.cs" />
+    <Compile Include="..\SharedAssemblyInfo.cs" />
     <Compile Include="ViewModels\ClaimItemViewModel.cs" />
     <Compile Include="ViewModels\DownloadItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

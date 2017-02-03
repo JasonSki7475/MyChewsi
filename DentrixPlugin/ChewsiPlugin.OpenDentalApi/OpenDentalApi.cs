@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ChewsiPlugin.Api.Dentrix;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 
 namespace ChewsiPlugin.OpenDentalApi
@@ -23,6 +23,11 @@ namespace ChewsiPlugin.OpenDentalApi
         }
 
         public Provider GetProvider(string providerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetVersion()
         {
             throw new NotImplementedException();
         }

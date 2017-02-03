@@ -1,4 +1,4 @@
-﻿namespace ChewsiPlugin.Api.Dentrix
+﻿namespace ChewsiPlugin.Api.Common
 {
     public class Provider
     {

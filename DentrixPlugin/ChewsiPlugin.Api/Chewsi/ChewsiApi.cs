@@ -14,6 +14,7 @@ namespace ChewsiPlugin.Api.Chewsi
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider()";
         private const string ProcessClaimUri = "ProcessClaim()";
         private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus()";
+        private const string InitializeUri = "Init";
 
         /// <summary>
         /// Validates the subscriber and provider.
@@ -53,6 +54,11 @@ namespace ChewsiPlugin.Api.Chewsi
                 provider = provider
             }, 
             RequestClaimProcessingStatusUri);
+        }
+
+        public void Initialize(InitializeRequest request)
+        {
+            Post<string>(request, RequestClaimProcessingStatusUri);
         }
 
         private T Post<T>(object request, string uri)

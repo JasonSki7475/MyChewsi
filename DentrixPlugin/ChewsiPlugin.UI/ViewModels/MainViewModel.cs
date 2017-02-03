@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Interfaces;
 using GalaSoft.MvvmLight;
@@ -286,6 +287,16 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshDownloadsCommandExecute()
         {
+            var provider = _dentalApi.GetProvider(SelectedClaim.Provider);
+            _chewsiApi.Initialize(new InitializeRequest(PluginType.Dentrix, _dentalApi.GetVersion(), new ProviderInformationRequest
+            {
+                NPI = provider.Npi,
+                RenderingAddress = provider.AddressLine,
+                RenderingCity = provider.City,
+                RenderingState = provider.State,
+                RenderingZip = provider.ZipCode,
+                TIN = provider.Tin
+            }));
         }
         #endregion
         
