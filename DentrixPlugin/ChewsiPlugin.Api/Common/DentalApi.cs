@@ -5,7 +5,9 @@ namespace ChewsiPlugin.Api.Common
     public abstract class DentalApi
     {
         //TODO
-        protected const string InsuranceCarrierName = "PRINCIPAL";//Chewsi
+        protected const string InsuranceCarrierName =
+            //"PRINCIPAL";// value for Dentrix G with test database
+            "Chewsi";// value for OpenDental
 
         protected Tuple<DateTime, DateTime> GetTimeRangeForToday()
         {

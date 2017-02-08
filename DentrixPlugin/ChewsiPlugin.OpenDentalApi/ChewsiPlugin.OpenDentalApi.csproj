@@ -34,14 +34,6 @@
       <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenDental, Version=15.4.53.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Lib\OpenDental.exe</HintPath>
-    </Reference>
-    <Reference Include="OpenDentBusiness, Version=15.4.53.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Lib\OpenDentBusiness.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -63,10 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
     <Compile Include="Proxy.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Lib\OpenDental.exe" />
-    <Content Include="Lib\OpenDentBusiness.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">

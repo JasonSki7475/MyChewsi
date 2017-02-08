@@ -6,57 +6,51 @@ using System.Linq;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using NLog;
-using OpenDentBusiness;
 using Provider = ChewsiPlugin.Api.Common.Provider;
 
 namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
+        // TODO Find path to installed application
+        private const string OpenDentalInstallationDirectory = @"C:\Program Files (x86)\Open Dental\";
+        private const string OpenDentalExeName = @"OpenDental.exe";
+        private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly string _path;
-        private readonly Dictionary<long, string> _procedureCodes;
+        private Dictionary<long, string> _procedureCodes;
         private readonly Proxy _proxy;
-        private readonly bool _initialized;
+        private bool _initialized;
 
         public OpenDentalApi()
         {
-            // TODO Find path to installed application
-            _path = @"C:\Program Files (x86)\Open Dental\OpenDentBusiness.dll";
-            var exePath = @"C:\Program Files (x86)\Open Dental\OpenDental.exe";
-            
+            // Create new app domain and load OpenDental assemblies, then we will load data from them
             AppDomainSetup setup = new AppDomainSetup
             {
-                ApplicationBase = Path.GetDirectoryName(_path)
+                ApplicationBase = OpenDentalInstallationDirectory
             };
             AppDomain domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
-            _proxy =
-                (Proxy) domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
-
-            _proxy.InstantiateObject(exePath, "OpenDental.FormChooseDatabase", null);
+            _proxy = (Proxy) domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+            Logger.Debug("Created proxy class");
+            _proxy.InstantiateObject(Path.Combine(OpenDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
             // Set these fields to make it load values from config file
             _proxy.SetField("WebServiceUri", "");
             _proxy.SetField("DatabaseName", "");
             _proxy.InvokeMethod("GetConfig", null);
             //_proxy.InvokeMethod("GetCmdLine", null);
+            Logger.Debug("Loaded " + OpenDentalExeName);
 
-            _initialized = (bool) _proxy.InvokeMethod("TryToConnect", null);
-
-            AssertApiInitialized();
-
-            //_procedureCodes = ProcedureCodes.GetAllCodes().ToDictionary(m => m.CodeNum, m => m.ProcCode);
-            _procedureCodes = _proxy.GetAllCodes().ToDictionary(m => m.CodeNum, m => m.ProcCode);
+            Initialize();
         }
 
-        public Api.Common.PatientInfo GetPatientInfo(string patientId)
+        public PatientInfo GetPatientInfo(string patientId)
         {
-            AssertApiInitialized();
-
-            //var patient = Patients.GetPat(long.Parse(patientId));
+            Initialize();
+            
             var patient = _proxy.GetPatient(long.Parse(patientId));
             if (patient != null)
             {
-                return new Api.Common.PatientInfo
+                return new PatientInfo
                 {
                     BirthDate = patient.Birthdate,
                     FirstName = patient.FName,
@@ -66,21 +60,32 @@ namespace ChewsiPlugin.OpenDentalApi
             return null;
         }
 
-        private void AssertApiInitialized()
+        private void Initialize()
         {
             if (!_initialized)
-                throw new InvalidOperationException(@"OpenDental API failed to initialize");
+            {
+                _proxy.Initialize(Path.Combine(OpenDentalInstallationDirectory, OpenDentalBusinessName));
+                if ((bool) _proxy.InvokeMethod("TryToConnect", null))
+                {
+                    Logger.Info("Successfully initialized DB connection. OpenDental version: " + GetVersion());
+                    _procedureCodes = _proxy.GetAllCodes().ToDictionary(m => m.CodeNum, m => m.ProcCode);
+                    _initialized = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException(@"Failed to initialize OpenDental API");
+                }
+            }
         }
 
-        public List<Api.Common.ProcedureInfo> GetProcedures(string patientId)
+        public List<ProcedureInfo> GetProcedures(string patientId)
         {
-            AssertApiInitialized();
-
-            //var procedures = Procedures.GetCompleteForPats(new List<long> {long.Parse(patientId)});
+            Initialize();
+            
             var procedures = _proxy.GetProcedures(long.Parse(patientId));
             if (procedures != null && procedures.Any())
             {
-                return procedures.Select(p => new Api.Common.ProcedureInfo
+                return procedures.Select(p => new ProcedureInfo
                 {
                     Amount = p.ProcFee,
                     Code = _procedureCodes[p.CodeNum],
@@ -93,7 +98,7 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public List<IAppointment> GetAppointmentsForToday()
         {
-            AssertApiInitialized();
+            Initialize();
 
             // Find insurance plan by carrier
             //var plan = InsPlans.GetByCarrierName(InsuranceCarrierName);
@@ -103,7 +108,7 @@ namespace ChewsiPlugin.OpenDentalApi
             var dateRange = GetTimeRangeForToday();
             //var appointments = Appointments.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
             var appointments = _proxy.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
-            return new List<IAppointment>(appointments.Where(m => m.AptStatus != ApptStatus.UnschedList && m.AptStatus != ApptStatus.Broken
+            return new List<IAppointment>(appointments.Where(m => m.AptStatus != "UnschedList" && m.AptStatus != "Broken"
             && (m.InsPlan1 == plan.PlanNum || m.InsPlan2 == plan.PlanNum))
                 .Select(m =>
                 {
@@ -112,7 +117,7 @@ namespace ChewsiPlugin.OpenDentalApi
                     {
                         Date = m.AptDateTime,
                         InsuranceId = plan.PlanNum.ToString(),
-                        IsCompleted = m.AptStatus == ApptStatus.Complete,
+                        IsCompleted = m.AptStatus == "Complete",
                         PatientId = m.PatNum.ToString(),
                         PatientName = $"{patient.FName} {patient.LName}",
                         ProviderId = m.ProvNum.ToString()
@@ -124,7 +129,7 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public Provider GetProvider(string providerId)
         {
-            AssertApiInitialized();
+            Initialize();
 
             //var provider = Providers.GetProv(long.Parse(providerId));
             var provider = _proxy.GetProvider(long.Parse(providerId));
@@ -145,7 +150,7 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public string GetVersion()
         {
-            return FileVersionInfo.GetVersionInfo(_path).ProductVersion;
+            return FileVersionInfo.GetVersionInfo(Path.Combine(OpenDentalInstallationDirectory, OpenDentalBusinessName)).ProductVersion;
         }
     }
 }
