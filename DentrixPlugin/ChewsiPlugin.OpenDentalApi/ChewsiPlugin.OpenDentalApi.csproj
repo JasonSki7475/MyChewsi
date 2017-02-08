@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="OpenDental, Version=15.4.53.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\OpenDental.exe</HintPath>
@@ -48,10 +52,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Appointment.cs" />
+    <Compile Include="DTO\AppointmentInfo.cs" />
+    <Compile Include="DTO\InsPlanInfo.cs" />
+    <Compile Include="DTO\PatientInfo.cs" />
+    <Compile Include="DTO\ProcedureCodeInfo.cs" />
+    <Compile Include="DTO\ProcedureInfo.cs" />
+    <Compile Include="DTO\ProviderInfo.cs" />
     <Compile Include="OpenDentalApi.cs" />
-    <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
+    <Compile Include="Proxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\OpenDental.exe" />
@@ -62,6 +73,9 @@
       <Project>{5ad8eba3-ce26-4343-8ba4-ee832ea839bd}</Project>
       <Name>ChewsiPlugin.Api</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

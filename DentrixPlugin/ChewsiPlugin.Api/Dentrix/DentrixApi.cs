@@ -14,11 +14,10 @@ using NLog;
 
 namespace ChewsiPlugin.Api.Dentrix
 {
-    public class DentrixApi : IDentalApi
+    public class DentrixApi : DentalApi, IDentalApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private bool _initialized;
-        private const string ChewsiInsuranceCarrierName = "PRINCIPAL";//Chewsi
         
         private static class ApiResult
         {
@@ -67,19 +66,19 @@ namespace ChewsiPlugin.Api.Dentrix
         /// </summary>
         private Dictionary<string, string> GetAllPatientsInsurance()
         {
-            var result = ExecuteCommand($"select patient_id, primary_insured_id from admin.v_patient_insurance where primary_insurance_carrier_name='{ChewsiInsuranceCarrierName}'",
+            var result = ExecuteCommand($"select patient_id, primary_insured_id from admin.v_patient_insurance where primary_insurance_carrier_name='{InsuranceCarrierName}'",
                 new List<string> { "patient_id", "primary_insured_id" }, false);
             return result.ToDictionary(m => m["patient_id"], m => m["primary_insured_id"]);
         }
 
-        public SubscriberInfo GetSubscriberInfo(string patientId)
+        public PatientInfo GetPatientInfo(string patientId)
         {
             Initialize();
             var result =
                 ExecuteCommand(
                     $"select pi.first_name, pi.last_name, pi.primary_insured_id, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id where pi.patient_id='{patientId}'",
                     new List<string> {"first_name", "last_name", "primary_insured_id", "birth_date"}, false);
-            return result.Select(m => new SubscriberInfo
+            return result.Select(m => new PatientInfo
             {
                 //InsuranceId = m["primary_insured_id"],
                 LastName = m["last_name"],
@@ -88,7 +87,7 @@ namespace ChewsiPlugin.Api.Dentrix
             }).FirstOrDefault();
         }
 
-        public ProcedureInfo GetProcedure(string patientId)
+        public List<ProcedureInfo> GetProcedures(string patientId)
         {
             Initialize();
             var dateRange = GetTimeRangeForToday();
@@ -98,40 +97,24 @@ namespace ChewsiPlugin.Api.Dentrix
                 new Dictionary<string, string>
                 {
                     {"patient_guid", patientId},
-                    {"BeginDate", dateRange.Item1},
-                    {"EndDate", dateRange.Item2},
+                    {"BeginDate", dateRange.Item1.ToString("G")},
+                    {"EndDate", dateRange.Item2.ToString("G")},
                     {"byCreateDate", "0"}
                 });
             if (procedures != null && procedures.Count != 0)
             {
-                var proc = procedures.OrderByDescending(m => DateTime.Parse(m["proc_date"])).First();
-                return new ProcedureInfo
+                return procedures.Select(proc => 
+                new ProcedureInfo
                 {
-                    Amount = proc["amt"],
+                    Amount = double.Parse(proc["amt"]),
                     Code = proc["proc_code"],
                     Date = DateTime.Parse(proc["proc_date"])
-                };
+                })
+                .ToList();
             }
-            return null;
+            return new List<ProcedureInfo>();
         }
-
-        private Tuple<string, string> GetTimeRangeForToday()
-        {
-            var now = DateTime.Now;
-
-            /*var dateStart = new DateTime(1993, 1, 1, 23, 59, 59);
-            var dateEnd = new DateTime(1996, 6, 1, 23, 59, 59);
- */
-            var dateStart = new DateTime(2012, 1, 1, 23, 59, 59);
-            var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
-           
-            /*
-            var dateStart = now.Date;
-            var dateEnd = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
-             */
-             return new Tuple<string, string>(dateStart.ToString("G"), dateEnd.ToString("G"));
-        }
-        
+       
         public List<IAppointment> GetAppointmentsForToday()
         {
             Initialize();
@@ -141,7 +124,7 @@ namespace ChewsiPlugin.Api.Dentrix
             var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}' and patient_id in ({string.Join(",", patientIds.Keys).TrimEnd(',')})",
                 new List<string> { "patient_id", "patient_name", "appointment_date", "status_id", "provider_id" },
                 false,
-                new Dictionary<string, string> { { "primary_insurance_carrier_name", ChewsiInsuranceCarrierName } });
+                new Dictionary<string, string> { { "primary_insurance_carrier_name", InsuranceCarrierName } });
             
             return new List<IAppointment>(result.Select(m =>
             {

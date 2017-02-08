@@ -59,15 +59,16 @@
   <ItemGroup>
     <Compile Include="Chewsi\ChewsiApi.cs" />
     <Compile Include="Chewsi\InitializeRequest.cs" />
+    <Compile Include="Common\DentalApi.cs" />
     <Compile Include="Interfaces\IAppointment.cs" />
     <Compile Include="Common\ProcedureInfo.cs" />
     <Compile Include="Chewsi\ClaimStatus.cs" />
     <Compile Include="Chewsi\ClaimStatusType.cs" />
-    <Compile Include="Common\Appointment.cs" />
+    <Compile Include="Dentrix\Appointment.cs" />
     <Compile Include="Dentrix\DentrixApi.cs" />
     <Compile Include="Chewsi\ProcedureInformationRequest.cs" />
     <Compile Include="Common\Provider.cs" />
-    <Compile Include="Common\SubscriberInfo.cs" />
+    <Compile Include="Common\PatientInfo.cs" />
     <Compile Include="Interfaces\IDentalApi.cs" />
     <Compile Include="PluginType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

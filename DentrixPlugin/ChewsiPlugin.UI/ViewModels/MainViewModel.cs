@@ -122,7 +122,6 @@ namespace ChewsiPlugin.UI.ViewModels
         #endregion
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; private set; }
-        public ObservableCollection<ClaimItemViewModel> HistoryItems { get; private set; }
         public ObservableCollection<DownloadItemViewModel> DownloadItems { get; private set; }
 
         public ClaimItemViewModel SelectedClaim
@@ -188,7 +187,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 var provider = _dentalApi.GetProvider(SelectedClaim.Provider);
                 if (provider != null)
                 {
-                    var subscriberInfo = _dentalApi.GetSubscriberInfo(SelectedClaim.PatientId);
+                    var subscriberInfo = _dentalApi.GetPatientInfo(SelectedClaim.PatientId);
                     if (subscriberInfo != null)
                     {
                         var providerParam = new ProviderInformationRequest
@@ -211,19 +210,21 @@ namespace ChewsiPlugin.UI.ViewModels
                         Logger.Debug($"Validated subscriber '{SelectedClaim.PatientId}' and provider '{SelectedClaim.Provider}': '{validationResponse.ValidationPassed}'");
                         if (validationResponse.ValidationPassed)
                         {
-                            var procedure = _dentalApi.GetProcedure(SelectedClaim.PatientId);
-                            if (procedure != null)
+                            var procedures = _dentalApi.GetProcedures(SelectedClaim.PatientId);
+                            if (procedures.Any())
                             {
                                 var claimNumberResponse = _chewsiApi.ProcessClaim(providerParam, subscriberParam,
                                     new ProcedureInformationRequest
                                     {
                                         SubscriberDateOfBirth = subscriberParam.SubscriberDateOfBirth,
-                                        DateOfServices = procedure.Date.ToString("G"),
-                                        ProcedureCharge = procedure.Amount,
-                                        ProcedureCode = procedure.Code
+                                        Procedures = procedures.Select(m => new ProcedureInfo
+                                        {
+                                            DateOfServices = m.Date.ToString("G"),
+                                            ProcedureCode = m.Code,
+                                            ProcedureCharge = m.Amount.ToString("F")
+                                        }).ToList()
                                     });
-
-                                Logger.Debug($"Processed claim, procedure code '{procedure.Code}': '{claimNumberResponse}'");
+                                Logger.Debug($"Processed claim, found '{procedures.Count}' procedures. Result: '{claimNumberResponse}'");
                             }
                             else
                             {
@@ -287,16 +288,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshDownloadsCommandExecute()
         {
-            var provider = _dentalApi.GetProvider(SelectedClaim.Provider);
-            _chewsiApi.Initialize(new InitializeRequest(PluginType.Dentrix, _dentalApi.GetVersion(), new ProviderInformationRequest
-            {
-                NPI = provider.Npi,
-                RenderingAddress = provider.AddressLine,
-                RenderingCity = provider.City,
-                RenderingState = provider.State,
-                RenderingZip = provider.ZipCode,
-                TIN = provider.Tin
-            }));
+            new OpenDentalApi.OpenDentalApi();
         }
         #endregion
         

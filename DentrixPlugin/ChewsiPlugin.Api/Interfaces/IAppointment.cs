@@ -10,6 +10,6 @@ namespace ChewsiPlugin.Api.Interfaces
         string PatientId { get; set; }
         string PatientName { get; set; }
         string ProviderId { get; set; }
-        string StatusId { get; set; }
+        //string StatusId { get; set; }
     }
 }

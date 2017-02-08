@@ -6,6 +6,6 @@ namespace ChewsiPlugin.Api.Common
     {
         public DateTime Date { get; set; }
         public string Code { get; set; }
-        public string Amount { get; set; }
+        public double Amount { get; set; }
     }
 }

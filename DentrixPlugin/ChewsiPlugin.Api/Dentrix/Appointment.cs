@@ -1,7 +1,7 @@
 ﻿using System;
 using ChewsiPlugin.Api.Interfaces;
 
-namespace ChewsiPlugin.Api.Common
+namespace ChewsiPlugin.Api.Dentrix
 {
     internal class Appointment : IAppointment
     {

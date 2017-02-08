@@ -2,7 +2,8 @@
 
 namespace ChewsiPlugin.Api.Common
 {
-    public class SubscriberInfo
+    [Serializable]
+    public class PatientInfo: MarshalByRefObject
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -5,8 +5,8 @@ namespace ChewsiPlugin.Api.Interfaces
 {
     public interface IDentalApi
     {
-        SubscriberInfo GetSubscriberInfo(string patientId);
-        ProcedureInfo GetProcedure(string patientId);
+        PatientInfo GetPatientInfo(string patientId);
+        List<ProcedureInfo> GetProcedures(string patientId);
         List<IAppointment> GetAppointmentsForToday();
         Provider GetProvider(string providerId);
         string GetVersion();

@@ -24,7 +24,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private IDentalApi LoadDentalApi()
         {
-            return new DentrixApi();
+            return new OpenDentalApi.OpenDentalApi();
         }
 
         public MainViewModel MainViewModel
