@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
+using ChewsiPlugin.Api.Repository;
 using Microsoft.Win32;
 using NLog;
 
@@ -164,6 +165,14 @@ namespace ChewsiPlugin.Api.Dentrix
             return DENTRIXAPI_GetDentrixVersion().ToString(CultureInfo.InvariantCulture);
         }
 
+        public bool IsInstalled(out string folder)
+        {
+            return GetDentrixExePath(out folder);
+        }
+
+        public string Name { get { return "Dentrix"; } }
+        public Settings.PMS.Types Type { get { return Settings.PMS.Types.Dentrix; } }
+
         /// <summary>
         /// Gets data from a view or a stored procedure
         /// </summary>
@@ -289,9 +298,9 @@ namespace ChewsiPlugin.Api.Dentrix
             }
         }
 
-        private int GetDentrixExePath(StringBuilder retValue)
+        private bool GetDentrixExePath(out string path)
         {
-            int retv = ApiResult.Fail;
+            var result = false;
             try
             {
                 RegistryKey hKey = Registry.CurrentUser.OpenSubKey(@"Software\Dentrix Dental Systems, Inc.\Dentrix\General");
@@ -300,8 +309,8 @@ namespace ChewsiPlugin.Api.Dentrix
                     Object value = hKey.GetValue("ExePath");
                     if (value != null)
                     {
-                        retValue.Append(value + "Dentrix.API.dll");
-                        retv = ApiResult.Success;
+                        path = value + "Dentrix.API.dll";
+                        result = true;
                     }
                 }
             }
@@ -309,7 +318,8 @@ namespace ChewsiPlugin.Api.Dentrix
             {
                 Console.WriteLine("Could not read registry value");
             }
-            return retv;
+            path = null;
+            return result;
         }
 
         private string GetConnectionString()

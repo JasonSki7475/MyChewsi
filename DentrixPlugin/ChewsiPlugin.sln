@@ -18,6 +18,8 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "ChewsiPlugin.Setup", "Chews
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.OpenDentalApi", "ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj", "{D1582BD8-EF79-493A-AAD9-4F39CA3995D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Setup.CustomActions", "ChewsiPlugin.Setup.CustomActions\ChewsiPlugin.Setup.CustomActions.csproj", "{C0FE5D5D-4948-4706-8591-CD44C620400C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -112,6 +114,26 @@ Global
 		{D1582BD8-EF79-493A-AAD9-4F39CA3995D2}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 		{D1582BD8-EF79-493A-AAD9-4F39CA3995D2}.SingleImage|x86.ActiveCfg = Release|Any CPU
 		{D1582BD8-EF79-493A-AAD9-4F39CA3995D2}.SingleImage|x86.Build.0 = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.CD_ROM|x86.ActiveCfg = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.CD_ROM|x86.Build.0 = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Debug|x86.Build.0 = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.DVD-5|x86.ActiveCfg = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.DVD-5|x86.Build.0 = Debug|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Release|x86.ActiveCfg = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.Release|x86.Build.0 = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.SingleImage|x86.ActiveCfg = Release|Any CPU
+		{C0FE5D5D-4948-4706-8591-CD44C620400C}.SingleImage|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

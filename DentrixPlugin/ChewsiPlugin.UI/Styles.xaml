@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:Controls="clr-namespace:ChewsiPlugin.UI.Controls">
+                    xmlns:Controls="clr-namespace:ChewsiPlugin.UI.Controls"
+                    xmlns:dialogService="clr-namespace:ChewsiPlugin.UI.ViewModels.DialogService">
     
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
@@ -509,4 +510,16 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <DataTemplate DataType="{x:Type dialogService:Message}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="{Binding Text}"/>
+            <Button x:Name="ButtonOk" Grid.Row="2" HorizontalAlignment="Right" Style="{DynamicResource RedButtonStyle}" Content="OK" Command="{Binding CloseCommand}"/>
+        </Grid>
+    </DataTemplate>
 </ResourceDictionary>

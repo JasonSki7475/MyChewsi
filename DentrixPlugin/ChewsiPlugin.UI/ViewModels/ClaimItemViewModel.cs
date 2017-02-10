@@ -6,8 +6,9 @@ namespace ChewsiPlugin.UI.ViewModels
     public class ClaimItemViewModel : ViewModelBase
     {
         private DateTime _date;
+        private string _chewsiId;
         private string _insuranceId;
-        private string _subscriber;
+        private string _patient;
         private string _provider;
         private string _patientId;
         private string _status;
@@ -32,13 +33,23 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public string Subscriber
+        public string ChewsiId
         {
-            get { return _subscriber; }
+            get { return _chewsiId; }
             set
             {
-                _subscriber = value;
-                RaisePropertyChanged(() => Subscriber);
+                _chewsiId = value;
+                RaisePropertyChanged(() => ChewsiId);
+            }
+        }
+
+        public string Patient
+        {
+            get { return _patient; }
+            set
+            {
+                _patient = value;
+                RaisePropertyChanged(() => Patient);
             }
         }
 

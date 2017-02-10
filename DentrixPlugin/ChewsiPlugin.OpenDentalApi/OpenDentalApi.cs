@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
+using ChewsiPlugin.Api.Repository;
 using NLog;
 using Provider = ChewsiPlugin.Api.Common.Provider;
 
@@ -12,8 +13,8 @@ namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
-        // TODO Find path to installed application
-        private const string OpenDentalInstallationDirectory = @"C:\Program Files (x86)\Open Dental\";
+        private readonly Repository _repository;
+        private readonly string _openDentalInstallationDirectory;
         private const string OpenDentalExeName = @"OpenDental.exe";
         private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
 
@@ -22,17 +23,19 @@ namespace ChewsiPlugin.OpenDentalApi
         private readonly Proxy _proxy;
         private bool _initialized;
 
-        public OpenDentalApi()
+        public OpenDentalApi(Repository repository)
         {
+            _repository = repository;
+            _openDentalInstallationDirectory = repository.GetSettingValue<string>(Settings.PMS.PathKey);
             // Create new app domain and load OpenDental assemblies, then we will load data from them
             AppDomainSetup setup = new AppDomainSetup
             {
-                ApplicationBase = OpenDentalInstallationDirectory
+                ApplicationBase = _openDentalInstallationDirectory
             };
             AppDomain domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
             _proxy = (Proxy) domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
             Logger.Debug("Created proxy class");
-            _proxy.InstantiateObject(Path.Combine(OpenDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
+            _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
             // Set these fields to make it load values from config file
             _proxy.SetField("WebServiceUri", "");
             _proxy.SetField("DatabaseName", "");
@@ -64,7 +67,7 @@ namespace ChewsiPlugin.OpenDentalApi
         {
             if (!_initialized)
             {
-                _proxy.Initialize(Path.Combine(OpenDentalInstallationDirectory, OpenDentalBusinessName));
+                _proxy.Initialize(Path.Combine(_openDentalInstallationDirectory, OpenDentalBusinessName));
                 if ((bool) _proxy.InvokeMethod("TryToConnect", null))
                 {
                     Logger.Info("Successfully initialized DB connection. OpenDental version: " + GetVersion());
@@ -150,7 +153,30 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public string GetVersion()
         {
-            return FileVersionInfo.GetVersionInfo(Path.Combine(OpenDentalInstallationDirectory, OpenDentalBusinessName)).ProductVersion;
+            return FileVersionInfo.GetVersionInfo(Path.Combine(_openDentalInstallationDirectory, OpenDentalBusinessName)).ProductVersion;
         }
+
+        public bool IsInstalled(out string folder)
+        {
+            List<string> paths = new List<string>();
+            foreach (var drive in DriveInfo.GetDrives().Where(m => m.IsReady && m.DriveType == DriveType.Fixed))
+            {
+                paths.Add($"{drive}Program Files (x86)\\Open Dental\\OpenDental.exe");
+                paths.Add($"{drive}Program Files\\Open Dental\\OpenDental.exe");
+            }
+            foreach (var path in paths)
+            {
+                if (File.Exists(path))
+                {
+                    folder = Path.GetDirectoryName(path);
+                    return true;
+                }
+            }
+            folder = null;
+            return false;
+        }
+
+        public string Name { get { return "Open Dental"; } }
+        public Settings.PMS.Types Type { get { return Settings.PMS.Types.OpenDental; } }
     }
 }

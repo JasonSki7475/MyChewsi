@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Interfaces;
+using ChewsiPlugin.Api.Repository;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using NLog;
@@ -21,6 +20,8 @@ namespace ChewsiPlugin.UI.ViewModels
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private ICommand _submitCommand;
+        private ICommand _downloadReportCommand;
+        private ICommand _downloadCommand;
         private ICommand _deleteCommand;
         private ICommand _refreshDownloadsCommand;
         private ICommand _refreshAppointmentsCommand;
@@ -34,11 +35,15 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _validationError;
         private readonly ChewsiApi _chewsiApi;
         private readonly IDentalApi _dentalApi;
+        private readonly Repository _repository;
+        private readonly DialogService.DialogService _dialogService;
 
-        public MainViewModel(IDentalApi dentalApi)
+        public MainViewModel(IDentalApi dentalApi, Repository repository, DialogService.DialogService dialogService)
         {
             _dentalApi = dentalApi;
-            ClaimItems = new ObservableCollection<ClaimItemViewModel>();
+            _repository = repository;
+            _dialogService = dialogService;
+            ClaimItems = new ObservableCollection<ClaimItemViewModel>(TestClaims);
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
             _chewsiApi = new ChewsiApi();
 
@@ -72,10 +77,7 @@ namespace ChewsiPlugin.UI.ViewModels
             if (!_loadingAppointments)
             {
                 _loadingAppointments = true;
-
-                //TODO Remove
-                Thread.Sleep(3000);
-
+                
                 try
                 {
                     var list = _dentalApi.GetAppointmentsForToday();
@@ -84,7 +86,7 @@ namespace ChewsiPlugin.UI.ViewModels
                         {
                             Provider = m.ProviderId,
                             Date = m.Date,
-                            Subscriber = m.PatientName,
+                            Patient = m.PatientName,
                             InsuranceId = m.InsuranceId,
                             PatientId = m.PatientId
                         });
@@ -113,9 +115,10 @@ namespace ChewsiPlugin.UI.ViewModels
             return new ClaimItemViewModel
             {
                 InsuranceId = _random.Next(10000, 100000).ToString(),
+                ChewsiId = _random.Next(100, 1000).ToString(),
                 Date = DateTime.Now,
                 Provider = "Dr. Jason Hamel",
-                Subscriber = "John Smith #" + _random.Next(100, 1000),
+                Patient = "John Smith #" + _random.Next(100, 1000),
                 Status = _random.Next(2) == 0 ? "Payment payment processing...." : "A payment authorization request sent to the subscriber. Please aks them to open the Cheswi app on their mobile device to authorized payment."
             };
         }
@@ -123,6 +126,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; private set; }
         public ObservableCollection<DownloadItemViewModel> DownloadItems { get; private set; }
+        public DialogService.DialogService DialogService { get { return _dialogService; } }
 
         public ClaimItemViewModel SelectedClaim
         {
@@ -288,7 +292,6 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshDownloadsCommandExecute()
         {
-            new OpenDentalApi.OpenDentalApi();
         }
         #endregion
         
@@ -313,6 +316,28 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnCloseProcessingPaymentPopupCommandExecute()
         {
             ShowPaymentProcessing = false;
+        }
+        #endregion
+
+        #region DownloadReportCommand
+        public ICommand DownloadReportCommand
+        {
+            get { return _downloadReportCommand ?? (_downloadReportCommand = new RelayCommand(OnDownloadReportCommandExecute)); }
+        }
+
+        private void OnDownloadReportCommandExecute()
+        {
+        }
+        #endregion
+
+        #region DownloadCommand
+        public ICommand DownloadCommand
+        {
+            get { return _downloadCommand ?? (_downloadCommand = new RelayCommand(OnDownloadCommandExecute)); }
+        }
+
+        private void OnDownloadCommandExecute()
+        {
         }
         #endregion
 
