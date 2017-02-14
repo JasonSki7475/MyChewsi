@@ -3,7 +3,7 @@ using GalaSoft.MvvmLight;
 
 namespace ChewsiPlugin.UI.ViewModels.DialogService
 {
-    public class DialogService : ViewModelBase
+    public class DialogService : ViewModelBase, IDialogService
     {
         private readonly Queue<Message> _lightBoxes = new Queue<Message>();
 

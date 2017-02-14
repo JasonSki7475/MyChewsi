@@ -5,7 +5,7 @@ using Dapper;
 
 namespace ChewsiPlugin.Api.Repository
 {
-    public class Repository
+    public class Repository : IRepository
     {
         private const string Password = "vAekLEYNnuv239hwNAX2";
 

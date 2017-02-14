@@ -7,7 +7,7 @@ using NLog;
 
 namespace ChewsiPlugin.Api.Chewsi
 {
-    public class ChewsiApi
+    public class ChewsiApi : IChewsiApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const string Url = "https://www.chewsidental.com/PMSApi/";

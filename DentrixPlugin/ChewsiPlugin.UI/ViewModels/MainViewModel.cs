@@ -33,30 +33,42 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _paymentProcessingMessage;
         private bool _loadingAppointments;
         private string _validationError;
-        private readonly ChewsiApi _chewsiApi;
+        private readonly IChewsiApi _chewsiApi;
         private readonly IDentalApi _dentalApi;
-        private readonly Repository _repository;
-        private readonly DialogService.DialogService _dialogService;
+        private readonly IRepository _repository;
+        private readonly DialogService.IDialogService _dialogService;
 
-        public MainViewModel(IDentalApi dentalApi, Repository repository, DialogService.DialogService dialogService)
+        public MainViewModel(IDentalApi dentalApi, IRepository repository, DialogService.IDialogService dialogService, IChewsiApi chewsiApi)
         {
             _dentalApi = dentalApi;
             _repository = repository;
             _dialogService = dialogService;
             ClaimItems = new ObservableCollection<ClaimItemViewModel>(TestClaims);
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
-            _chewsiApi = new ChewsiApi();
+            _chewsiApi = chewsiApi;
 
-            // Refresh appointments now
-            var worker = new BackgroundWorker();
-            worker.DoWork += (i, j) =>
+            if (AssertDentalApiSet())
             {
-                RefreshAppointments();
+                // Refresh appointments now
+                var worker = new BackgroundWorker();
+                worker.DoWork += (i, j) =>
+                {
+                    RefreshAppointments();
 
-                // Refresh appointments every 3 minutes
-                new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background, (m, n) => RefreshAppointments(), Dispatcher.CurrentDispatcher);
-            };
-            worker.RunWorkerAsync();
+                    // Refresh appointments every 3 minutes
+                    new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background, (m, n) => RefreshAppointments(), Dispatcher.CurrentDispatcher);
+                };
+                worker.RunWorkerAsync();                
+            }
+        }
+
+        private bool AssertDentalApiSet()
+        {
+            if (_dentalApi != null)
+                return true;
+
+            _dialogService.Show("Practice Management System is not set. Please reinstall application.", "Error");
+            return false;
         }
 
         private void RefreshAppointments()
@@ -126,7 +138,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; private set; }
         public ObservableCollection<DownloadItemViewModel> DownloadItems { get; private set; }
-        public DialogService.DialogService DialogService { get { return _dialogService; } }
+        public DialogService.IDialogService DialogService { get { return _dialogService; } }
 
         public ClaimItemViewModel SelectedClaim
         {
@@ -275,7 +287,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private bool CanExecuteRefreshAppointmentsCommand()
         {
-            return !_loadingAppointments;
+            return _dentalApi != null && !_loadingAppointments;
         }
 
         private void OnRefreshAppointmentsCommandExecute()
@@ -287,14 +299,20 @@ namespace ChewsiPlugin.UI.ViewModels
         #region RefreshDownloadsCommand
         public ICommand RefreshDownloadsCommand
         {
-            get { return _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute)); }
+            get { return _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute, CanExecuteRefreshDownloadsCommand)); }
         }
 
         private void OnRefreshDownloadsCommandExecute()
         {
+
+        }
+
+        private bool CanExecuteRefreshDownloadsCommand()
+        {
+            return _dentalApi != null;
         }
         #endregion
-        
+
         #region CloseValidationPopupCommand
         public ICommand CloseValidationPopupCommand
         {

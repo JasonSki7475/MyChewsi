@@ -13,7 +13,7 @@ namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
-        private readonly Repository _repository;
+        private readonly IRepository _repository;
         private readonly string _openDentalInstallationDirectory;
         private const string OpenDentalExeName = @"OpenDental.exe";
         private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
@@ -23,7 +23,7 @@ namespace ChewsiPlugin.OpenDentalApi
         private readonly Proxy _proxy;
         private bool _initialized;
 
-        public OpenDentalApi(Repository repository)
+        public OpenDentalApi(IRepository repository)
         {
             _repository = repository;
             _openDentalInstallationDirectory = repository.GetSettingValue<string>(Settings.PMS.PathKey);

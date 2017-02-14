@@ -497,8 +497,8 @@
                         <Border x:Name="Border1" Background="Black" Opacity="0.5" />
                         <Border Margin="5,5,0,0" Background="Black" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
                                 Width="{Binding ElementName=PART_Container, Path=ActualWidth}" Height="{Binding ElementName=PART_Container, Path=ActualHeight}"/>
-                        <Border x:Name="PART_Container" Background="{DynamicResource ViewBackgroundColor}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <ContentPresenter x:Name="PART_Content" Content="{TemplateBinding Content}" SnapsToDevicePixels="True" />
+                        <Border x:Name="PART_Container" Background="White" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <ContentPresenter x:Name="PART_Content" Content="{TemplateBinding Content}" SnapsToDevicePixels="True" Margin="15,10" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -512,14 +512,27 @@
     </Style>
 
     <DataTemplate DataType="{x:Type dialogService:Message}">
-        <Grid>
+        <Grid Background="White" MinWidth="200" MinHeight="150">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="20"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="{Binding Text}"/>
-            <Button x:Name="ButtonOk" Grid.Row="2" HorizontalAlignment="Right" Style="{DynamicResource RedButtonStyle}" Content="OK" Command="{Binding CloseCommand}"/>
+            <TextBlock Grid.Row="0" Text="{Binding Header}"/>            
+            <Button Grid.Row="0" Template="{StaticResource TransparentButton}" Background="White" 
+                            BorderBrush="White" HorizontalAlignment="Right" Command="{Binding CloseCommand}">
+                <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
+            </Button>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="{Binding Text}"/>
+                <Button Grid.Row="2" Content="Ok" Command="{Binding CloseCommand}" Background="White" Foreground="Black" BorderBrush="LightGray" 
+                            Template="{StaticResource WhiteButton}" HorizontalAlignment="Right" />
+            </Grid>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

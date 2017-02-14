@@ -218,7 +218,6 @@
                         Command="{Binding CloseProcessingPaymentPopupCommand}"/>
             </Grid>
         </controls1:LightBox>
-        <controls1:LightBox Content="{Binding DialogService.Message}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Visibility="Collapsed"/>
+        <controls1:LightBox Content="{Binding DialogService.Message}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
     </Grid>
 </Window>

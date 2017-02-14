@@ -1,8 +1,9 @@
 using System;
-using System.Windows;
+using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Dentrix;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using ChewsiPlugin.UI.ViewModels.DialogService;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using NLog;
@@ -23,15 +24,16 @@ namespace ChewsiPlugin.UI.ViewModels
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-            SimpleIoc.Default.Register<DialogService.DialogService>();
+            SimpleIoc.Default.Register<IDialogService, DialogService.DialogService>();
+            SimpleIoc.Default.Register<IChewsiApi, ChewsiApi>();
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<Repository>();
+            SimpleIoc.Default.Register<IRepository, Repository>();
             SimpleIoc.Default.Register<IDentalApi>(LoadDentalApi);
         }
 
         private IDentalApi LoadDentalApi()
         {
-            var repository = SimpleIoc.Default.GetInstance<Repository>();
+            var repository = SimpleIoc.Default.GetInstance<IRepository>();
             var pmsType = repository.GetSettingValue<string>(Settings.PMS.TypeKey);
             if (pmsType != null)
             {
@@ -47,8 +49,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 }                
             }
             Logger.Error("PMS system type is not set");
-            MessageBox.Show("Cannot initialize settings. Please reinstall application.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            throw new InvalidOperationException("PMS system type is not set");
+            return null;
         }
 
         public MainViewModel MainViewModel
