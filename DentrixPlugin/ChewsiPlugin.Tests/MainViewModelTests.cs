@@ -29,7 +29,7 @@ namespace ChewsiPlugin.Tests
         public void WhenDentalApiIsNotSet_DontCallItAndShowMessage()
         {
             // Arrange
-            var repositoryMock = new Mock<Repository>();
+            var repositoryMock = new Mock<IRepository>();
             var dialogServiceMock = new Mock<IDialogService>();
             dialogServiceMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>()));
             var apiMock = new Mock<IChewsiApi>();
@@ -47,7 +47,7 @@ namespace ChewsiPlugin.Tests
         public void WhenDentalApiIsSet_ShouldLoadAppointments()
         {
             // Arrange
-            var repositoryMock = new Mock<Repository>();
+            var repositoryMock = new Mock<IRepository>();
 
             var dentalApiMock = new Mock<IDentalApi>();
             var appointments = GetAppointments();
