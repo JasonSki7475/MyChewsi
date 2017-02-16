@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 
 namespace ChewsiPlugin.UI.ViewModels.DialogService
@@ -17,9 +18,9 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
             }
         }
 
-        public void Show(string message, string header = null)
+        public void Show(string message, string header = null, Action onDialogClosed = null)
         {
-            Message = new Message(this, message, header);
+            Message = new Message(this, message, header, onDialogClosed);
         }
 
         public void Close()

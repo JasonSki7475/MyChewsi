@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -63,6 +65,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net40\System.Data.SQLite.dll</HintPath>
@@ -85,8 +88,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chewsi\ChewsiApi.cs" />
+    <Compile Include="Chewsi\DownoadFileRequest.cs" />
     <Compile Include="Chewsi\IChewsiApi.cs" />
-    <Compile Include="Chewsi\InitializeRequest.cs" />
+    <Compile Include="Chewsi\ProcessClaimRequest.cs" />
+    <Compile Include="Chewsi\ProviderInformation.cs" />
+    <Compile Include="Chewsi\RegisterPluginRequest.cs" />
+    <Compile Include="Chewsi\RegisterPluginResponse.cs" />
+    <Compile Include="Chewsi\ReceiveMemberAuthorizationRequest.cs" />
+    <Compile Include="Chewsi\Request835Downloads.cs" />
+    <Compile Include="Chewsi\Request835DownloadsResponse.cs" />
+    <Compile Include="Chewsi\ClaimProcessingStatusRequest.cs" />
+    <Compile Include="Chewsi\UpdatePluginRegistrationRequest.cs" />
+    <Compile Include="Chewsi\ValidateSubscriberAndProviderRequest.cs" />
     <Compile Include="Common\DentalApi.cs" />
     <Compile Include="Interfaces\IAppointment.cs" />
     <Compile Include="Common\ProcedureInfo.cs" />
@@ -94,21 +107,22 @@
     <Compile Include="Chewsi\ClaimStatusType.cs" />
     <Compile Include="Dentrix\Appointment.cs" />
     <Compile Include="Dentrix\DentrixApi.cs" />
-    <Compile Include="Chewsi\ProcedureInformationRequest.cs" />
+    <Compile Include="Chewsi\ProcedureInformation.cs" />
     <Compile Include="Common\Provider.cs" />
     <Compile Include="Common\PatientInfo.cs" />
     <Compile Include="Interfaces\IDentalApi.cs" />
+    <Compile Include="ISettings.cs" />
     <Compile Include="PluginType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Chewsi\ProviderInformationRequest.cs" />
     <Compile Include="Chewsi\ClaimProcessingStatusResponse.cs" />
-    <Compile Include="Chewsi\SubscriberInformationRequest.cs" />
+    <Compile Include="Chewsi\SubscriberInformation.cs" />
     <Compile Include="Chewsi\ValidateSubscriberAndProviderResponse.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
     <Compile Include="Repository\Appointment.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\Setting.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>

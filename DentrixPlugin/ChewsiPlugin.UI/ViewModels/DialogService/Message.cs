@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -7,11 +8,13 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
     public class Message : ViewModelBase
     {
         private readonly DialogService _dialogService;
+        private readonly Action _dialogResultCallback;
         private RelayCommand _closeCommand;
 
-        public Message(DialogService dialogService, string text, string header = null)
+        public Message(DialogService dialogService, string text, string header = null, Action dialogResultCallback = null)
         {
             _dialogService = dialogService;
+            _dialogResultCallback = dialogResultCallback;
             Text = text;
             Header = header;
         }
@@ -27,7 +30,15 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
 
         private void OnCloseCommandExecute()
         {
+            RaiseDialogResultCallback();
             _dialogService.Close();
+        }
+        private void RaiseDialogResultCallback()
+        {
+            if (_dialogResultCallback != null)
+            {
+                _dialogResultCallback();
+            }
         }
     }
 }

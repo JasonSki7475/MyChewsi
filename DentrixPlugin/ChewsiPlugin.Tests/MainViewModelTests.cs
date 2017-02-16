@@ -5,6 +5,7 @@ using System.Threading;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using ChewsiPlugin.UI;
 using ChewsiPlugin.UI.ViewModels;
 using ChewsiPlugin.UI.ViewModels.DialogService;
 using Moq;
@@ -31,16 +32,18 @@ namespace ChewsiPlugin.Tests
             // Arrange
             var repositoryMock = new Mock<IRepository>();
             var dialogServiceMock = new Mock<IDialogService>();
-            dialogServiceMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>()));
+            dialogServiceMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Action>()));
             var apiMock = new Mock<IChewsiApi>();
-            apiMock.Setup(m => m.Initialize(It.IsAny<InitializeRequest>()));
-            
+            apiMock.Setup(m => m.RegisterPlugin(It.IsAny<RegisterPluginRequest>()));
+            var appLoaderMock = new Mock<IAppLoader>();
+            appLoaderMock.Setup(m => m.GetDentalApi()).Returns((IDentalApi)null);
+
             // Act
-            var model = new MainViewModel(null, repositoryMock.Object, dialogServiceMock.Object, apiMock.Object);
+            var model = new MainViewModel(dialogServiceMock.Object, apiMock.Object, appLoaderMock.Object);
 
             // Assert
-            dialogServiceMock.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            apiMock.Verify(m => m.Initialize(It.IsAny<InitializeRequest>()), Times.Never);
+            dialogServiceMock.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Action>()), Times.Once);
+            apiMock.Verify(m => m.RegisterPlugin(It.IsAny<RegisterPluginRequest>()), Times.Never);
         }
 
         [Test]
@@ -54,18 +57,21 @@ namespace ChewsiPlugin.Tests
             dentalApiMock.Setup(m => m.GetAppointmentsForToday()).Returns(appointments);
             
             var apiMock = new Mock<IChewsiApi>();
-            apiMock.Setup(m => m.Initialize(It.IsAny<InitializeRequest>()));
+            apiMock.Setup(m => m.RegisterPlugin(It.IsAny<RegisterPluginRequest>()));
 
             var dialogServiceMock = new Mock<IDialogService>();
 
+            var appLoaderMock = new Mock<IAppLoader>();
+            appLoaderMock.Setup(m => m.GetDentalApi()).Returns(dentalApiMock.Object);
+
             // Act
-            var model = new MainViewModel(dentalApiMock.Object, repositoryMock.Object, dialogServiceMock.Object, apiMock.Object);
+            var model = new MainViewModel(dialogServiceMock.Object, apiMock.Object, appLoaderMock.Object);
             Thread.Sleep(3000); // wait till background thread loads appointments
 
             // Assert
-            dialogServiceMock.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            dialogServiceMock.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Action>()), Times.Never);
             dentalApiMock.Verify(m => m.GetAppointmentsForToday(), Times.Once);
-            apiMock.Verify(m => m.Initialize(It.IsAny<InitializeRequest>()), Times.Never);
+            apiMock.Verify(m => m.RegisterPlugin(It.IsAny<RegisterPluginRequest>()), Times.Never);
             foreach (var claimItem in model.ClaimItems)
             {
                 Assert.IsTrue(

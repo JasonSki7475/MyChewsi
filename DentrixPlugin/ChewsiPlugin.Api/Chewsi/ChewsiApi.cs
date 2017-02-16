@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -10,11 +11,15 @@ namespace ChewsiPlugin.Api.Chewsi
     public class ChewsiApi : IChewsiApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string Url = "https://www.chewsidental.com/PMSApi/";
-        private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider()";
-        private const string ProcessClaimUri = "ProcessClaim()";
-        private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus()";
-        private const string InitializeUri = "Init";
+        private const string Url = "https://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
+        private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
+        private const string ProcessClaimUri = "ProcessClaim";
+        private const string RegisterPluginUri = "RegisterPlugin";
+        private const string Request835DownloadsUri = "Request835Downloads";
+        private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus";
+        private const string ReceiveMemberAuthorizationUri = "ReceiveMemberAuthorization";
+        private const string DownoadFileRequestUri = "DownoadFileRequest";
+        private const string UpdatePluginRegistrationUri = "UpdatePluginRegistration";
 
         /// <summary>
         /// Validates the subscriber and provider.
@@ -22,43 +27,77 @@ namespace ChewsiPlugin.Api.Chewsi
         /// <param name="provider">The provider.</param>
         /// <param name="subscriber">The subscriber.</param>
         /// <returns>Chewsi Provider ID</returns>
-        public ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformationRequest provider, SubscriberInformationRequest subscriber)
+        public ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider, SubscriberInformation subscriber)
         {
-            return Post<ValidateSubscriberAndProviderResponse>(new
+            return Post<ValidateSubscriberAndProviderResponse>(new ValidateSubscriberAndProviderRequest
             {
-                provider = provider,
-                subscriber = subscriber
-            }, 
+                TIN = provider.TIN,
+                RenderingState = provider.RenderingState,
+                RenderingZip = provider.RenderingZip,
+                RenderingCity = provider.RenderingCity,
+                RenderingAddress = provider.RenderingAddress,
+                NPI = provider.NPI,
+                SubscriberDOB = subscriber.SubscriberDateOfBirth,
+                SubscriberFirstName = subscriber.SubscriberFirstName,
+                SubscriberLastName = subscriber.SubscriberLastName,
+                // TODO ChewsiID = 
+            },
             ValidateSubscriberAndProviderUri);
         }
 
-        /// <summary>
-        /// Processes the claim.
-        /// </summary>
-        /// <returns>Claim Number</returns>
-        public string ProcessClaim(ProviderInformationRequest provider, SubscriberInformationRequest subscriber, ProcedureInformationRequest procedure)
+        public void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ProcedureInformation> procedures)
         {
-            return Post<string>(new
+            Post<string>(new ProcessClaimRequest
             {
-                provider = provider,
-                subscriber = subscriber,
-                procedure = procedure
-            }, 
+                TIN = provider.TIN,
+                RenderingState = provider.RenderingState,
+                RenderingZip = provider.RenderingZip,
+                RenderingCity = provider.RenderingCity,
+                RenderingAddress = provider.RenderingAddress,
+                ClaimLines = procedures,
+                NPI = provider.NPI,
+                // TODO PIN = ,
+                ProviderID = provider.Id,
+                SubscriberDOB = subscriber.SubscriberDateOfBirth,
+                SubscriberFirstName = subscriber.SubscriberFirstName,
+                SubscriberID = subscriber.Id,
+                SubscriberLastName = subscriber.SubscriberLastName
+            },
             ProcessClaimUri);
         }
 
-        public void RequestClaimProcessingStatus(ProviderInformationRequest provider)
+        /// <summary>
+        /// Registers the plugin. Returns machine Id.
+        /// </summary>
+        public string RegisterPlugin(RegisterPluginRequest request)
         {
-            Post<string>(new
-            {
-                provider = provider
-            }, 
-            RequestClaimProcessingStatusUri);
+            var response = Post<RegisterPluginResponse>(request, RegisterPluginUri);
+            return response?.Token;
         }
 
-        public void Initialize(InitializeRequest request)
+        public void UpdatePluginRegistration(UpdatePluginRegistrationRequest request)
         {
-            Post<string>(request, RequestClaimProcessingStatusUri);
+            Post<string>(request, UpdatePluginRegistrationUri);
+        }
+
+        public Request835DownloadsResponse Get835Downloads(Request835Downloads request)
+        {
+            return Post<Request835DownloadsResponse>(request, Request835DownloadsUri);
+        }
+
+        public void ReceiveMemberAuthorization(ReceiveMemberAuthorizationRequest request)
+        {
+            Post<string>(request, ReceiveMemberAuthorizationUri);
+        }
+
+        public ClaimProcessingStatusResponse GetClaimProcessingStatus(ClaimProcessingStatusRequest request)
+        {
+            return Post<ClaimProcessingStatusResponse>(request, RequestClaimProcessingStatusUri);
+        }
+
+        public string DownoadFile(DownoadFileRequest request)
+        {
+            return Post<string>(request, DownoadFileRequestUri);
         }
 
         private T Post<T>(object request, string uri)

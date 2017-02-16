@@ -171,7 +171,7 @@ namespace ChewsiPlugin.Api.Dentrix
         }
 
         public string Name { get { return "Dentrix"; } }
-        public Settings.PMS.Types Type { get { return Settings.PMS.Types.Dentrix; } }
+        public Repository.Settings.PMS.Types Type { get { return Repository.Settings.PMS.Types.Dentrix; } }
 
         /// <summary>
         /// Gets data from a view or a stored procedure

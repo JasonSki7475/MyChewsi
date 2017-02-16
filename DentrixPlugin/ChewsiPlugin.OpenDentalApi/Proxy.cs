@@ -19,7 +19,7 @@ namespace ChewsiPlugin.OpenDentalApi
             var assembly = Assembly.LoadFrom(assemblyPath);
 
             _type = assembly.GetType(typeName);
-            _object = Activator.CreateInstance(_type, args); ;
+            _object = Activator.CreateInstance(_type, args);
         }
 
         public object InvokeMethod(string name, object[] args)

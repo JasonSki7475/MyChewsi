@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Interfaces;
-using ChewsiPlugin.Api.Repository;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using NLog;
@@ -34,32 +33,67 @@ namespace ChewsiPlugin.UI.ViewModels
         private bool _loadingAppointments;
         private string _validationError;
         private readonly IChewsiApi _chewsiApi;
-        private readonly IDentalApi _dentalApi;
-        private readonly IRepository _repository;
+        private readonly IAppLoader _appLoader;
+        private IDentalApi _dentalApi;
         private readonly DialogService.IDialogService _dialogService;
+        private bool _isBusy;
+        private bool _showPmsSettings;
 
-        public MainViewModel(IDentalApi dentalApi, IRepository repository, DialogService.IDialogService dialogService, IChewsiApi chewsiApi)
+        public MainViewModel(DialogService.IDialogService dialogService, IChewsiApi chewsiApi, IAppLoader appLoader)
         {
-            _dentalApi = dentalApi;
-            _repository = repository;
             _dialogService = dialogService;
             ClaimItems = new ObservableCollection<ClaimItemViewModel>(TestClaims);
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
             _chewsiApi = chewsiApi;
+            _appLoader = appLoader;
 
-            if (AssertDentalApiSet())
+            // Refresh appointments now
+            var loadAppointmentsWorker = new BackgroundWorker();
+            loadAppointmentsWorker.DoWork += (i, j) =>
             {
-                // Refresh appointments now
-                var worker = new BackgroundWorker();
-                worker.DoWork += (i, j) =>
+                if (AssertDentalApiSet())
                 {
                     RefreshAppointments();
 
                     // Refresh appointments every 3 minutes
                     new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background, (m, n) => RefreshAppointments(), Dispatcher.CurrentDispatcher);
-                };
-                worker.RunWorkerAsync();                
-            }
+                }
+            };
+
+            // Initialize application
+            IsBusy = true;
+            // Refresh appointments now
+            var initWorker = new BackgroundWorker();
+            initWorker.DoWork += (i, j) =>
+            {
+                // if internal DB file is missing
+                if (!_appLoader.IsInitialized())
+                {
+                    // ask user to choose PMS type and location
+                    IsBusy = false;
+                    ShowPmsSettings = true;
+                    SettingsViewModel = new SettingsViewModel(m =>
+                    {
+                        // create internal DB file
+                        _appLoader.Initialize(m.SelectedType, m.Path, m.Address1, m.Address2, m.Tin);
+                        
+                        ShowPmsSettings = false;
+                        _dentalApi = _appLoader.GetDentalApi();
+
+                        _appLoader.RegisterPlugin(m.SelectedType, m.Address1, m.Address2, m.Tin, _dentalApi.GetVersion());
+
+                        loadAppointmentsWorker.RunWorkerAsync();
+                    });
+                }
+                else
+                {
+                    _dentalApi = _appLoader.GetDentalApi();
+                    // Short version of the UpdatePluginRegistration method, full version will be called only if we allow user to open settings view and change other settings
+                    _appLoader.UpdatePluginRegistration(_dentalApi.GetVersion());
+                    loadAppointmentsWorker.RunWorkerAsync();
+                }
+            };
+            initWorker.RunWorkerAsync();
         }
 
         private bool AssertDentalApiSet()
@@ -73,6 +107,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void RefreshAppointments()
         {
+            IsBusy = true;
             var list = LoadAppointments();
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, (Action) (() =>
             {
@@ -81,6 +116,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 {
                     ClaimItems.Add(item);
                 }
+                IsBusy = false;
             }));
         }
 
@@ -122,6 +158,8 @@ namespace ChewsiPlugin.UI.ViewModels
         }
 
         readonly Random _random = new Random();
+        private SettingsViewModel _settingsViewModel;
+
         ClaimItemViewModel GetTestClaim()
         {
             return new ClaimItemViewModel
@@ -190,6 +228,36 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                RaisePropertyChanged(() => IsBusy);
+            }
+        }
+
+        public bool ShowPmsSettings
+        {
+            get { return _showPmsSettings; }
+            set
+            {
+                _showPmsSettings = value;
+                RaisePropertyChanged(() => ShowPmsSettings);
+            }
+        }
+
+        public SettingsViewModel SettingsViewModel
+        {
+            get { return _settingsViewModel; }
+            set
+            {
+                _settingsViewModel = value;
+                RaisePropertyChanged(() => SettingsViewModel);
+            }
+        }
+
         #region SubmitCommand
         public ICommand SubmitCommand
         {
@@ -206,7 +274,7 @@ namespace ChewsiPlugin.UI.ViewModels
                     var subscriberInfo = _dentalApi.GetPatientInfo(SelectedClaim.PatientId);
                     if (subscriberInfo != null)
                     {
-                        var providerParam = new ProviderInformationRequest
+                        var providerParam = new ProviderInformation
                         {
                             NPI = provider.Npi,
                             RenderingAddress = provider.AddressLine,
@@ -215,7 +283,7 @@ namespace ChewsiPlugin.UI.ViewModels
                             RenderingZip = provider.ZipCode,
                             TIN = provider.Tin
                         };
-                        var subscriberParam = new SubscriberInformationRequest
+                        var subscriberParam = new SubscriberInformation
                         {
                             SubscriberDateOfBirth = subscriberInfo.BirthDate.ToString("G"),
                             SubscriberFirstName = subscriberInfo.FirstName,
@@ -229,18 +297,14 @@ namespace ChewsiPlugin.UI.ViewModels
                             var procedures = _dentalApi.GetProcedures(SelectedClaim.PatientId);
                             if (procedures.Any())
                             {
-                                var claimNumberResponse = _chewsiApi.ProcessClaim(providerParam, subscriberParam,
-                                    new ProcedureInformationRequest
+                                _chewsiApi.ProcessClaim(providerParam, subscriberParam, procedures.Select(m => 
+                                    new ProcedureInformation
                                     {
-                                        SubscriberDateOfBirth = subscriberParam.SubscriberDateOfBirth,
-                                        Procedures = procedures.Select(m => new ProcedureInfo
-                                        {
-                                            DateOfServices = m.Date.ToString("G"),
-                                            ProcedureCode = m.Code,
-                                            ProcedureCharge = m.Amount.ToString("F")
-                                        }).ToList()
-                                    });
-                                Logger.Debug($"Processed claim, found '{procedures.Count}' procedures. Result: '{claimNumberResponse}'");
+                                        ProcedureCode = m.Code,
+                                        ProcedureCharge = m.Amount.ToString("F"),
+                                        DateOfService = m.Date.ToString("G")
+                                    }).ToList());
+                                Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
                             }
                             else
                             {
@@ -250,7 +314,7 @@ namespace ChewsiPlugin.UI.ViewModels
                         else
                         {
                             //DisplayValidationError("Please Validate that the Subscriber's Insurance ID and First Name match the information shown before proceeding. ");
-                            DisplayValidationError(validationResponse.Message);                            
+                            DisplayValidationError($"{validationResponse.ProviderValidationMessage} {validationResponse.SubscriberValidationMessage}");                            
                         }
                     }
                     else

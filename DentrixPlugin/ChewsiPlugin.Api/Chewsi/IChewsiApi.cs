@@ -1,10 +1,16 @@
-﻿namespace ChewsiPlugin.Api.Chewsi
+﻿using System.Collections.Generic;
+
+namespace ChewsiPlugin.Api.Chewsi
 {
     public interface IChewsiApi
     {
-        void Initialize(InitializeRequest request);
-        string ProcessClaim(ProviderInformationRequest provider, SubscriberInformationRequest subscriber, ProcedureInformationRequest procedure);
-        void RequestClaimProcessingStatus(ProviderInformationRequest provider);
-        ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformationRequest provider, SubscriberInformationRequest subscriber);
+        string RegisterPlugin(RegisterPluginRequest request);
+        void UpdatePluginRegistration(UpdatePluginRegistrationRequest request);
+        void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ProcedureInformation> procedures);
+        ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider, SubscriberInformation subscriber);
+        Request835DownloadsResponse Get835Downloads(Request835Downloads request);
+        void ReceiveMemberAuthorization(ReceiveMemberAuthorizationRequest request);
+        ClaimProcessingStatusResponse GetClaimProcessingStatus(ClaimProcessingStatusRequest request);
+        string DownoadFile(DownoadFileRequest request);
     }
 }

@@ -1,22 +1,18 @@
 ﻿using System;
-using System.IO;
+using System.Reflection;
 
 namespace ChewsiPlugin.Api
 {
-    internal static class Utils
+    public static class Utils
     {
-        private const string SettingsFolderName = "Chewsi"; // The same folder as specified in NLog.config
-        private const string DatabaseFileName = "Database.sqlite";
-
-        public static string DatabaseFilePath
+        public static string GetPluginVersion()
         {
-            get { return Path.Combine(SettingsFolder, DatabaseFileName); }
+            return Assembly.GetCallingAssembly().GetName().Version.ToString();
         }
 
-        public static string SettingsFolder
+        public static string GetOperatingSystemInfo()
         {
-            // TODO use either current user's roaming folder or all-users folder
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), SettingsFolderName); }
+            return Environment.OSVersion.ToString();
         }
     }
 }

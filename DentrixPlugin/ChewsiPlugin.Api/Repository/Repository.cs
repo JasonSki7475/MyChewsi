@@ -7,43 +7,17 @@ namespace ChewsiPlugin.Api.Repository
 {
     public class Repository : IRepository
     {
+        private readonly ISettings _settings;
         private const string Password = "vAekLEYNnuv239hwNAX2";
 
-        public Repository()
+        public Repository(ISettings settings)
         {
-            if (!File.Exists(Utils.DatabaseFilePath))
-            {
-                if (!Directory.Exists(Utils.SettingsFolder))
-                {
-                    Directory.CreateDirectory(Utils.SettingsFolder);
-                }
-
-                SQLiteConnection.CreateFile(Utils.DatabaseFilePath);
-
-                // Create tables
-                using (var connection = GetConnection())
-                {
-                    connection.Execute(
-                        @"create table Settings
-                          (
-                             Key        TEXT primary key,
-                             Value      TEXT not null
-                          )");
-                    connection.Execute(
-                        @"create table Appointments
-                          (
-                             Id         TEXT primary key,
-                             ChewsiId   TEXT not null,
-                             DateTime   DATETIME not null,
-                             Deleted    boolean not null
-                          )");
-                }
-            }
+            _settings = settings;
         }
 
         private SQLiteConnection GetConnection()
         {
-            var connection = new SQLiteConnection($"Data Source={Utils.DatabaseFilePath};Password={Password};");
+            var connection = new SQLiteConnection($"Data Source={_settings.DatabaseFilePath};Password={Password};");
             connection.Open();
             return connection;
         }
@@ -85,6 +59,39 @@ namespace ChewsiPlugin.Api.Repository
             using (var connection = GetConnection())
             {
                 connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, Deleted = @Deleted WHERE Id = @Id", item);
+            }
+        }
+
+        public bool Initialized()
+        {
+            return File.Exists(_settings.DatabaseFilePath)
+                && GetSettingValue<string>(Settings.PMS.TypeKey) != null
+                && GetSettingValue<string>(Settings.PMS.PathKey) != null;
+        }
+
+        public void Initialize()
+        {
+            if (!File.Exists(_settings.DatabaseFilePath))
+            {
+                SQLiteConnection.CreateFile(_settings.DatabaseFilePath);
+                // Create tables
+                using (var connection = GetConnection())
+                {
+                    connection.Execute(
+                        @"create table Settings
+                              (
+                                 Key        TEXT primary key,
+                                 Value      TEXT not null
+                              )");
+                    connection.Execute(
+                        @"create table Appointments
+                              (
+                                 Id         TEXT primary key,
+                                 ChewsiId   TEXT not null,
+                                 DateTime   DATETIME not null,
+                                 Deleted    boolean not null
+                              )");
+                }
             }
         }
 

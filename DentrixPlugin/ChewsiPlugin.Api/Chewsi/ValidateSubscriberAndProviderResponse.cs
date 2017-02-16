@@ -2,8 +2,12 @@
 {
     public class ValidateSubscriberAndProviderResponse
     {
-        public string ProviderId { get; set; }
-        public string SubscriberId { get; set; }
+        public string ProviderID { get; set; }
+        public string SubscriberID { get; set; }
+        public string SubscriberValidationStatus { get; set; }
+        public string SubscriberValidationMessage { get; set; }
+        public string ProviderValidationStatus { get; set; }
+        public string ProviderValidationMessage { get; set; }
 
         /*
          *      •	Valid
@@ -17,12 +21,13 @@
                       -TIN 
                       -NPI
                       -License & State
-         */
+         
         public string Message { get; set; }
-
+*/
+// TODO
         public bool ValidationPassed
         {
-            get { return Message == "Valid"; }
+            get { return SubscriberValidationMessage == "Valid" && ProviderValidationMessage == "Valid"; }
         }
     }
 }

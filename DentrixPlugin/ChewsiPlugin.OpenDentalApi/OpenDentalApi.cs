@@ -13,7 +13,6 @@ namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
-        private readonly IRepository _repository;
         private readonly string _openDentalInstallationDirectory;
         private const string OpenDentalExeName = @"OpenDental.exe";
         private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
@@ -25,7 +24,6 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public OpenDentalApi(IRepository repository)
         {
-            _repository = repository;
             _openDentalInstallationDirectory = repository.GetSettingValue<string>(Settings.PMS.PathKey);
             // Create new app domain and load OpenDental assemblies, then we will load data from them
             AppDomainSetup setup = new AppDomainSetup
