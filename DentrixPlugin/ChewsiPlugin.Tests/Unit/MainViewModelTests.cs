@@ -11,7 +11,7 @@ using ChewsiPlugin.UI.ViewModels.DialogService;
 using Moq;
 using NUnit.Framework;
 
-namespace ChewsiPlugin.Tests
+namespace ChewsiPlugin.Tests.Unit
 {
     internal class Appointment : IAppointment
     {

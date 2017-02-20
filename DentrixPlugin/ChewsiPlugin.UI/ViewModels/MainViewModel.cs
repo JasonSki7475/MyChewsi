@@ -285,7 +285,7 @@ namespace ChewsiPlugin.UI.ViewModels
                         };
                         var subscriberParam = new SubscriberInformation
                         {
-                            SubscriberDateOfBirth = subscriberInfo.BirthDate.ToString("G"),
+                            SubscriberDateOfBirth = subscriberInfo.BirthDate,
                             SubscriberFirstName = subscriberInfo.FirstName,
                             SubscriberLastName = subscriberInfo.LastName
                         };

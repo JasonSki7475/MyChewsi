@@ -11,7 +11,7 @@ namespace ChewsiPlugin.Api.Chewsi
     public class ChewsiApi : IChewsiApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string Url = "https://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
+        private const string Url = "http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";
@@ -37,10 +37,10 @@ namespace ChewsiPlugin.Api.Chewsi
                 RenderingCity = provider.RenderingCity,
                 RenderingAddress = provider.RenderingAddress,
                 NPI = provider.NPI,
-                SubscriberDOB = subscriber.SubscriberDateOfBirth,
+                SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
                 SubscriberLastName = subscriber.SubscriberLastName,
-                // TODO ChewsiID = 
+                ChewsiID = subscriber.Id
             },
             ValidateSubscriberAndProviderUri);
         }
@@ -58,7 +58,7 @@ namespace ChewsiPlugin.Api.Chewsi
                 NPI = provider.NPI,
                 // TODO PIN = ,
                 ProviderID = provider.Id,
-                SubscriberDOB = subscriber.SubscriberDateOfBirth,
+                SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
                 SubscriberID = subscriber.Id,
                 SubscriberLastName = subscriber.SubscriberLastName
@@ -108,6 +108,9 @@ namespace ChewsiPlugin.Api.Chewsi
             webRequest.Accept = "application/json";
             webRequest.ContentType = "application/json";
             webRequest.Method = "POST";
+            
+            // TODO
+            // webRequest.Proxy = new WebProxy("http://localhost:8888");
 
             byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
             webRequest.ContentLength = data.Length;
