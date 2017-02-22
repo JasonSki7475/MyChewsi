@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
-using ChewsiPlugin.Api.Repository;
 using Microsoft.Win32;
 using NLog;
 
@@ -172,6 +171,9 @@ namespace ChewsiPlugin.Api.Dentrix
 
         public string Name { get { return "Dentrix"; } }
         public Repository.Settings.PMS.Types Type { get { return Repository.Settings.PMS.Types.Dentrix; } }
+        public void Unload()
+        {
+        }
 
         /// <summary>
         /// Gets data from a view or a stored procedure

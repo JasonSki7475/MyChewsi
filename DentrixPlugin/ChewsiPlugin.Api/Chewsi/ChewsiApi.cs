@@ -11,6 +11,12 @@ namespace ChewsiPlugin.Api.Chewsi
     public class ChewsiApi : IChewsiApi
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private string _token;
+        private bool _useProxy;
+        private string _proxyAddress;
+        private int _proxyPort;
+        private string _proxyUserName;
+        private string _proxyPassword;
         private const string Url = "http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
@@ -25,17 +31,19 @@ namespace ChewsiPlugin.Api.Chewsi
         /// Validates the subscriber and provider.
         /// </summary>
         /// <param name="provider">The provider.</param>
+        /// <param name="providerAddress"></param>
         /// <param name="subscriber">The subscriber.</param>
         /// <returns>Chewsi Provider ID</returns>
-        public ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider, SubscriberInformation subscriber)
+        public ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider, ProviderAddressInformation providerAddress, 
+            SubscriberInformation subscriber)
         {
             return Post<ValidateSubscriberAndProviderResponse>(new ValidateSubscriberAndProviderRequest
             {
                 TIN = provider.TIN,
-                RenderingState = provider.RenderingState,
-                RenderingZip = provider.RenderingZip,
-                RenderingCity = provider.RenderingCity,
-                RenderingAddress = provider.RenderingAddress,
+                RenderingState = providerAddress.RenderingState,
+                RenderingZip = providerAddress.RenderingZip,
+                RenderingCity = providerAddress.RenderingCity,
+                RenderingAddress = providerAddress.RenderingAddress,
                 NPI = provider.NPI,
                 SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
@@ -50,10 +58,7 @@ namespace ChewsiPlugin.Api.Chewsi
             Post<string>(new ProcessClaimRequest
             {
                 TIN = provider.TIN,
-                RenderingState = provider.RenderingState,
-                RenderingZip = provider.RenderingZip,
-                RenderingCity = provider.RenderingCity,
-                RenderingAddress = provider.RenderingAddress,
+                OfficeNbr = provider.OfficeNbr,
                 ClaimLines = procedures,
                 NPI = provider.NPI,
                 // TODO PIN = ,
@@ -100,15 +105,35 @@ namespace ChewsiPlugin.Api.Chewsi
             return Post<string>(request, DownoadFileRequestUri);
         }
 
-        private T Post<T>(object request, string uri)
+        public void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword)
+        {
+            _token = token;
+            _useProxy = useProxy;
+            _proxyAddress = proxyAddress;
+            _proxyPort = proxyPort;
+            _proxyUserName = proxyUserName;
+            _proxyPassword = proxyPassword;
+        }
+
+        private T Post<T>(object request, string uri) where T: class 
         {
             var url = new Uri(new Uri(Url, UriKind.Absolute), uri);
             var webRequest = WebRequest.Create(url) as HttpWebRequest;
             webRequest.Headers.Clear();
+            webRequest.Headers.Add("x-chewsi-token", _token);
             webRequest.Accept = "application/json";
             webRequest.ContentType = "application/json";
             webRequest.Method = "POST";
-            
+
+            if (_useProxy)
+            {
+                var proxy = new WebProxy(_proxyAddress, _proxyPort)
+                {
+                    Credentials = new NetworkCredential(_proxyUserName, _proxyPassword)
+                };
+                webRequest.Proxy = proxy;
+            }
+
             // TODO
             // webRequest.Proxy = new WebProxy("http://localhost:8888");
 
@@ -131,6 +156,11 @@ namespace ChewsiPlugin.Api.Chewsi
                             var reader = new StreamReader(stream);
                             return JsonConvert.DeserializeObject<T>(reader.ReadToEnd());
                         }
+                    }
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        // 204
+                        return null;
                     }
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {

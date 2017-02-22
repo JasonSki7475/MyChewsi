@@ -1,6 +1,6 @@
-using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Repository;
+using ChewsiPlugin.UI.Services;
 using ChewsiPlugin.UI.ViewModels.DialogService;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -23,8 +23,7 @@ namespace ChewsiPlugin.UI.ViewModels
             SimpleIoc.Default.Register<IChewsiApi, ChewsiApi>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<IRepository, Repository>();
-            SimpleIoc.Default.Register<IAppLoader, AppLoader>();
-            SimpleIoc.Default.Register<ISettings, Api.Settings>();
+            SimpleIoc.Default.Register<IAppService, AppService>();
         }
 
         public MainViewModel MainViewModel

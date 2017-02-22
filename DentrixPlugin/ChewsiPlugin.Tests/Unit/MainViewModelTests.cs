@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Interfaces;
-using ChewsiPlugin.Api.Repository;
-using ChewsiPlugin.UI;
+using ChewsiPlugin.UI.Services;
 using ChewsiPlugin.UI.ViewModels;
 using ChewsiPlugin.UI.ViewModels.DialogService;
 using Moq;
@@ -30,13 +29,12 @@ namespace ChewsiPlugin.Tests.Unit
         public void WhenDentalApiIsNotSet_DontCallItAndShowMessage()
         {
             // Arrange
-            var repositoryMock = new Mock<IRepository>();
             var dialogServiceMock = new Mock<IDialogService>();
             dialogServiceMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Action>()));
             var apiMock = new Mock<IChewsiApi>();
             apiMock.Setup(m => m.RegisterPlugin(It.IsAny<RegisterPluginRequest>()));
-            var appLoaderMock = new Mock<IAppLoader>();
-            appLoaderMock.Setup(m => m.GetDentalApi()).Returns((IDentalApi)null);
+            var appLoaderMock = new Mock<IAppService>();
+            appLoaderMock.Setup(m => m.DentalApi).Returns((IDentalApi)null);
 
             // Act
             var model = new MainViewModel(dialogServiceMock.Object, apiMock.Object, appLoaderMock.Object);
@@ -50,8 +48,6 @@ namespace ChewsiPlugin.Tests.Unit
         public void WhenDentalApiIsSet_ShouldLoadAppointments()
         {
             // Arrange
-            var repositoryMock = new Mock<IRepository>();
-
             var dentalApiMock = new Mock<IDentalApi>();
             var appointments = GetAppointments();
             dentalApiMock.Setup(m => m.GetAppointmentsForToday()).Returns(appointments);
@@ -61,8 +57,8 @@ namespace ChewsiPlugin.Tests.Unit
 
             var dialogServiceMock = new Mock<IDialogService>();
 
-            var appLoaderMock = new Mock<IAppLoader>();
-            appLoaderMock.Setup(m => m.GetDentalApi()).Returns(dentalApiMock.Object);
+            var appLoaderMock = new Mock<IAppService>();
+            appLoaderMock.Setup(m => m.DentalApi).Returns(dentalApiMock.Object);
 
             // Act
             var model = new MainViewModel(dialogServiceMock.Object, apiMock.Object, appLoaderMock.Object);

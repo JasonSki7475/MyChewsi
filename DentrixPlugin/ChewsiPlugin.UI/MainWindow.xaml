@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls1="clr-namespace:ChewsiPlugin.UI.Controls"
         xmlns:viewModels="clr-namespace:ChewsiPlugin.UI.ViewModels"
-        xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
+        xmlns:views="clr-namespace:ChewsiPlugin.UI.Views"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         mc:Ignorable="d"
@@ -220,59 +220,15 @@
             </Grid>
         </controls1:LightBox>
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                           Visibility="{Binding ShowPmsSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid DataContext="{Binding SettingsViewModel}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="57"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="65"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" VerticalAlignment="Center" Margin="15,0,0,0">
-                    <TextBlock Text="Practice Management System settings" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center"/>
-                    <Button Template="{StaticResource TransparentButton}" Background="White" 
-                            BorderBrush="White" HorizontalAlignment="Right" Margin="0,0,0,15"
-                            Command="{Binding CloseCommand}">
-                        <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
-                    </Button>
-                </Grid>
-                <Rectangle Grid.Row="1" Height="1" Fill="LightGray"/>
-                <Grid Grid.Row="2" Margin="10,20" MinWidth="400">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="15"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" Text="PMS Type"/>
-                    <ComboBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" />
-                    <TextBlock Grid.Row="2" Grid.Column="0" TextWrapping="Wrap" Text="PMS Folder"/>
-                    <TextBox Grid.Row="2" Grid.Column="2" TextWrapping="Wrap" Text="{Binding Path}" IsEnabled="{Binding NeedsPath}"/>
-                    <TextBlock Grid.Row="4" Grid.Column="0" TextWrapping="Wrap" Text="Address Line 1"/>
-                    <TextBox Grid.Row="4" Grid.Column="2" TextWrapping="Wrap" Text="{Binding Address1}"/>
-                    <TextBlock Grid.Row="6" Grid.Column="0" TextWrapping="Wrap" Text="Address Line 2"/>
-                    <TextBox Grid.Row="6" Grid.Column="2" TextWrapping="Wrap" Text="{Binding Address2}"/>
-                    <TextBlock Grid.Row="8" Grid.Column="0" TextWrapping="Wrap" Text="TIN"/>
-                    <TextBox Grid.Row="8" Grid.Column="2" TextWrapping="Wrap" Text="{Binding Tin}"/>
-                </Grid>
-                <Rectangle Grid.Row="3" Height="1" Fill="LightGray"/>
-                <Button Grid.Row="4" Content="Save" Background="White" Foreground="Black" BorderBrush="LightGray" 
-                        Template="{StaticResource WhiteButton}" HorizontalAlignment="Right" Margin="15,0"
-                        Command="{Binding CloseCommand}"/>
-            </Grid>
+                           Visibility="{Binding SettingsViewModel, Converter={StaticResource NullToVisibilityConverter}}">
+            <views:SettingsView DataContext="{Binding SettingsViewModel}"/>
         </controls1:LightBox>
         <controls1:LightBox Content="{Binding DialogService.Message}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         <controls1:LoadingControl Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Button Template="{StaticResource TransparentButton}" Background="Transparent" 
+                            BorderBrush="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Height="35" Width="50"
+                            Command="{Binding OpenSettingsCommand}">
+            <ContentControl Content="{StaticResource SettingsIcon}" />
+        </Button>
     </Grid>
 </Window>

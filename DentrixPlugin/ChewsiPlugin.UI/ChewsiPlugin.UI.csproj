@@ -116,14 +116,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AppLoader.cs" />
+    <Compile Include="Services\AppService.cs" />
     <Compile Include="Controls\BindingProxy.cs" />
     <Compile Include="Controls\LightBox.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
     <Compile Include="Controls\LoadingControl.xaml.cs">
       <DependentUpon>LoadingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IAppLoader.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Services\IAppService.cs" />
+    <Compile Include="Services\SettingsDto.cs" />
     <Compile Include="ViewModels\DialogService\DialogService.cs" />
     <Compile Include="ViewModels\DialogService\IDialogService.cs" />
     <Compile Include="ViewModels\DialogService\Message.cs" />
@@ -132,6 +134,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\LoadingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -154,6 +159,10 @@
       <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
     </Page>
     <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

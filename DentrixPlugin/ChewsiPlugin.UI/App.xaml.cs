@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using ChewsiPlugin.UI.ViewModels.DialogService;
-using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
 using NLog;
 

@@ -21,6 +21,7 @@ namespace ChewsiPlugin.OpenDentalApi
         private Dictionary<long, string> _procedureCodes;
         private readonly Proxy _proxy;
         private bool _initialized;
+        private AppDomain _domain;
 
         public OpenDentalApi(IRepository repository)
         {
@@ -30,8 +31,8 @@ namespace ChewsiPlugin.OpenDentalApi
             {
                 ApplicationBase = _openDentalInstallationDirectory
             };
-            AppDomain domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
-            _proxy = (Proxy) domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+            _domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
+            _proxy = (Proxy) _domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
             Logger.Debug("Created proxy class");
             _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
             // Set these fields to make it load values from config file
@@ -40,7 +41,7 @@ namespace ChewsiPlugin.OpenDentalApi
             _proxy.InvokeMethod("GetConfig", null);
             //_proxy.InvokeMethod("GetCmdLine", null);
             Logger.Debug("Loaded " + OpenDentalExeName);
-
+            
             Initialize();
         }
 
@@ -176,5 +177,13 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public string Name { get { return "Open Dental"; } }
         public Settings.PMS.Types Type { get { return Settings.PMS.Types.OpenDental; } }
+        public void Unload()
+        {
+            if (_domain != null)
+            {
+                AppDomain.Unload(_domain);
+                _domain = null;
+            }
+        }
     }
 }

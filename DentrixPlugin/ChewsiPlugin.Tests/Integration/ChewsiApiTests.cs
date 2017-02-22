@@ -43,11 +43,7 @@ namespace ChewsiPlugin.Tests.Integration
             return new ProviderInformation
             {
                 NPI = "1013101740",
-                TIN = "002480857",
-                RenderingAddress = "1368 BEACON ST NO 105",
-                RenderingCity = "BROOKLINE",
-                RenderingState = "MA",
-                RenderingZip = "02446"
+                TIN = "002480857"
             };
         }
 
@@ -62,6 +58,18 @@ namespace ChewsiPlugin.Tests.Integration
             };
         }
 
+
+        private ProviderAddressInformation GetValidProviderAddress()
+        {
+            return new ProviderAddressInformation
+            {
+                RenderingAddress = "1368 BEACON ST NO 105",
+                RenderingCity = "BROOKLINE",
+                RenderingState = "MA",
+                RenderingZip = "02446"
+            };
+        }
+
         [Test]
         public void ValidateSubscriberAndProvider_ShouldReturnValidStatus()
         {
@@ -69,9 +77,10 @@ namespace ChewsiPlugin.Tests.Integration
             var api = new ChewsiApi();
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
+            ProviderAddressInformation providerAddress = GetValidProviderAddress();
 
             // Act
-            ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, subscriber);
+            ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, providerAddress, subscriber);
             
             // Assert
             // Validate provider
@@ -82,6 +91,9 @@ namespace ChewsiPlugin.Tests.Integration
             Assert.AreEqual("4", response.SubscriberID);
             Assert.IsNull(response.SubscriberValidationMessage);
             Assert.AreEqual("Valid", response.SubscriberValidationStatus);
+
+            //TODO
+            Assert.AreEqual("", response.OfficeNumber);
 
             Assert.AreEqual(true, response.ValidationPassed);
         }
@@ -93,9 +105,10 @@ namespace ChewsiPlugin.Tests.Integration
             var api = new ChewsiApi();
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
+            ProviderAddressInformation providerAddress = GetValidProviderAddress();
 
             // Act
-            ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, subscriber);
+            ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, providerAddress, subscriber);
             
             // Assert
             // Validate provider
@@ -107,6 +120,10 @@ namespace ChewsiPlugin.Tests.Integration
             Assert.AreEqual("4", response.SubscriberID);
             Assert.IsNull(response.SubscriberValidationMessage);
             Assert.AreEqual("Valid", response.SubscriberValidationStatus);
+
+            //TODO
+            Assert.AreEqual("", response.OfficeNumber);
+
             Assert.AreEqual(false, response.ValidationPassed);
         }
 
@@ -118,9 +135,10 @@ namespace ChewsiPlugin.Tests.Integration
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
             subscriber.Id = "123456"; // API checks First Name and Chewsi Id
+            ProviderAddressInformation providerAddress = GetValidProviderAddress();
 
             // Act
-            ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, subscriber);
+            ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, providerAddress, subscriber);
 
             // Assert
             // Validate provider
@@ -132,6 +150,9 @@ namespace ChewsiPlugin.Tests.Integration
             Assert.AreEqual("Please validate that the subscriber's Chewsi ID and First Name match the information shown before proceeding. If the information does not match, the Chewsi ID may have been keyed into the practice management system incorrectly. Please ask the subscriber for their Chewsi ID to validate.", 
                 response.SubscriberValidationMessage);
             Assert.AreEqual("Subscriber Not Found", response.SubscriberValidationStatus);
+
+            //TODO
+            Assert.AreEqual("", response.OfficeNumber);
 
             Assert.AreEqual(false, response.ValidationPassed);
         }

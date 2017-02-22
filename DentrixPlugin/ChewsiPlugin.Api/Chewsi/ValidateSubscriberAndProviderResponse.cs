@@ -4,6 +4,7 @@
     {
         public string ProviderID { get; set; }
         public string SubscriberID { get; set; }
+        public string OfficeNumber { get; set; }
         
         /// <summary>
         /// Possible statuses: Valid, Subscriber Not Found

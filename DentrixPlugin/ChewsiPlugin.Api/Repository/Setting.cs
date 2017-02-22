@@ -28,5 +28,10 @@
         public const string Address2Key = "Address2";
         public const string OsKey = "Os";
         public const string AppVersionKey = "AppVersion";
+        public const string UseProxy = "UseProxy";
+        public const string ProxyAddress = "ProxyAddress";
+        public const string ProxyPort = "ProxyPort";
+        public const string ProxyLogin = "ProxyLogin";
+        public const string ProxyPassword = "ProxyPassword";
     }
 }

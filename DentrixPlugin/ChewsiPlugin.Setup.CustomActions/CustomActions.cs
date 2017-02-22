@@ -11,7 +11,7 @@ namespace ChewsiPlugin.Setup.CustomActions
         private static readonly List<IDentalApi> DentalApis = new List<IDentalApi>
             {
                 new DentrixApi(),
-                new OpenDentalApi.OpenDentalApi(new Repository(new Api.Settings()))
+                new OpenDentalApi.OpenDentalApi(new Repository())
             }; 
 
         public static List<string> GetInstalledPMS()
@@ -25,7 +25,7 @@ namespace ChewsiPlugin.Setup.CustomActions
 
         public static void SetCurrentPMS(string name, string path)
         {
-            var repository = new Repository(new Api.Settings());
+            var repository = new Repository();
             repository.SaveSetting(Settings.PMS.TypeKey, DentalApis.First(m => m.Name == name).Type);
             repository.SaveSetting(Settings.PMS.PathKey, path);
             // repository.SaveSetting(Settings.PMS.TypeKey, Settings.PMS.Types.OpenDental);

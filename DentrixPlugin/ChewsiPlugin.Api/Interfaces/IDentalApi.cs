@@ -13,6 +13,7 @@ namespace ChewsiPlugin.Api.Interfaces
         string GetVersion();
         bool IsInstalled(out string folder);
         string Name { get; }
-        Repository.Settings.PMS.Types Type { get; }
+        Settings.PMS.Types Type { get; }
+        void Unload();
     }
 }

@@ -91,6 +91,7 @@
     <Compile Include="Chewsi\DownoadFileRequest.cs" />
     <Compile Include="Chewsi\IChewsiApi.cs" />
     <Compile Include="Chewsi\ProcessClaimRequest.cs" />
+    <Compile Include="Chewsi\ProviderAddressInformation.cs" />
     <Compile Include="Chewsi\ProviderInformation.cs" />
     <Compile Include="Chewsi\RegisterPluginRequest.cs" />
     <Compile Include="Chewsi\RegisterPluginResponse.cs" />
@@ -111,7 +112,6 @@
     <Compile Include="Common\Provider.cs" />
     <Compile Include="Common\PatientInfo.cs" />
     <Compile Include="Interfaces\IDentalApi.cs" />
-    <Compile Include="ISettings.cs" />
     <Compile Include="PluginType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Chewsi\ClaimProcessingStatusResponse.cs" />
@@ -122,7 +122,6 @@
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\Setting.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
