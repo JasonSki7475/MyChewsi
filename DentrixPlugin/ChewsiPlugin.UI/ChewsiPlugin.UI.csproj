@@ -127,7 +127,6 @@
     <Compile Include="Services\IAppService.cs" />
     <Compile Include="Services\SettingsDto.cs" />
     <Compile Include="ViewModels\DialogService\DialogService.cs" />
-    <Compile Include="ViewModels\DialogService\IDialogService.cs" />
     <Compile Include="ViewModels\DialogService\Message.cs" />
     <Compile Include="ViewModels\ClaimItemViewModel.cs" />
     <Compile Include="ViewModels\DownloadItemViewModel.cs" />

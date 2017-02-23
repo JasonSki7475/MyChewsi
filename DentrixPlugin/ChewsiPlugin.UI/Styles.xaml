@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Controls="clr-namespace:ChewsiPlugin.UI.Controls"
-                    xmlns:dialogService="clr-namespace:ChewsiPlugin.UI.ViewModels.DialogService"
                     xmlns:converters="clr-namespace:ChewsiPlugin.UI.Converters">
     
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -506,7 +505,36 @@
                         <Border Margin="5,5,0,0" Background="Black" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
                                 Width="{Binding ElementName=PART_Container, Path=ActualWidth}" Height="{Binding ElementName=PART_Container, Path=ActualHeight}"/>
                         <Border x:Name="PART_Container" Background="White" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <ContentPresenter x:Name="PART_Content" Content="{TemplateBinding Content}" SnapsToDevicePixels="True" />
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="57"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="65"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="15"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="15"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="15,0,0,0">
+                                    <TextBlock Text="{TemplateBinding Header}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center"/>
+                                    <Button Template="{StaticResource TransparentButton}" Background="White" 
+                                        BorderBrush="White" HorizontalAlignment="Right" Margin="0,0,0,15"
+                                        Command="{TemplateBinding CloseCommand}">
+                                        <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
+                                    </Button>
+                                </Grid>
+                                <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="1" Fill="LightGray"/>
+                                <ContentPresenter Grid.Row="3" Grid.Column="1" x:Name="PART_Content" Content="{TemplateBinding Content}" SnapsToDevicePixels="True" />
+                                <Rectangle Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Height="1" Fill="LightGray"/>
+                                <Button Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Content="{TemplateBinding ButtonText}" Background="White" Foreground="Black" BorderBrush="LightGray" 
+                                    Template="{StaticResource WhiteButton}" HorizontalAlignment="Right" Margin="15,0"
+                                    Command="{TemplateBinding ButtonCommand}"/>
+                            </Grid>
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -518,29 +546,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
-    <DataTemplate DataType="{x:Type dialogService:Message}">
-        <Grid Background="White" MinWidth="200" MinHeight="150">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="{Binding Header}"/>            
-            <Button Grid.Row="0" Template="{StaticResource TransparentButton}" Background="White" 
-                            BorderBrush="White" HorizontalAlignment="Right" Command="{Binding CloseCommand}">
-                <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
-            </Button>
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="{Binding Text}"/>
-                <Button Grid.Row="2" Content="Ok" Command="{Binding CloseCommand}" Background="White" Foreground="Black" BorderBrush="LightGray" 
-                            Template="{StaticResource WhiteButton}" HorizontalAlignment="Right" />
-            </Grid>
-        </Grid>
-    </DataTemplate>
 </ResourceDictionary>

@@ -1,6 +1,8 @@
 ﻿using System;
 using ChewsiPlugin.Api.Chewsi;
+using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using Moq;
 using NUnit.Framework;
 
 namespace ChewsiPlugin.Tests.Integration
@@ -12,7 +14,8 @@ namespace ChewsiPlugin.Tests.Integration
         public void RegisterPlugin_ShouldReturnMachindeId()
         {
             // Arrange
-            var api = new ChewsiApi();
+            var dialogServiceMock = new Mock<IDialogService>();
+            var api = new ChewsiApi(dialogServiceMock.Object);
             var request = new RegisterPluginRequest("002480857", "1368 BEACON ST NO 105", "", Settings.PMS.Types.Dentrix, "6.2");
 
             // Act
@@ -27,7 +30,8 @@ namespace ChewsiPlugin.Tests.Integration
         public void RegisterPluginWithWrongParameters_ShouldReturnMachindeId()
         {
             // Arrange
-            var api = new ChewsiApi();
+            var dialogServiceMock = new Mock<IDialogService>();
+            var api = new ChewsiApi(dialogServiceMock.Object);
             var request = new RegisterPluginRequest("123456789", "Test", "", Settings.PMS.Types.Dentrix, "6.2");
 
             // Act
@@ -74,7 +78,8 @@ namespace ChewsiPlugin.Tests.Integration
         public void ValidateSubscriberAndProvider_ShouldReturnValidStatus()
         {
             // Arrange
-            var api = new ChewsiApi();
+            var dialogServiceMock = new Mock<IDialogService>();
+            var api = new ChewsiApi(dialogServiceMock.Object);
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
             ProviderAddressInformation providerAddress = GetValidProviderAddress();
@@ -102,7 +107,8 @@ namespace ChewsiPlugin.Tests.Integration
         public void ValidateSubscriberAndProvider_WhenProviderDataIsIncorrect_ShouldReturnProviderNotFoundStatus()
         {
             // Arrange
-            var api = new ChewsiApi();
+            var dialogServiceMock = new Mock<IDialogService>();
+            var api = new ChewsiApi(dialogServiceMock.Object);
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
             ProviderAddressInformation providerAddress = GetValidProviderAddress();
@@ -131,7 +137,8 @@ namespace ChewsiPlugin.Tests.Integration
         public void ValidateSubscriberAndProvider_WhenSubscriberDataIsIncorrect_ShouldReturnSubscriberNotFoundStatus()
         {
             // Arrange
-            var api = new ChewsiApi();
+            var dialogServiceMock = new Mock<IDialogService>();
+            var api = new ChewsiApi(dialogServiceMock.Object);
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
             subscriber.Id = "123456"; // API checks First Name and Chewsi Id

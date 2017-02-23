@@ -10,7 +10,7 @@ namespace ChewsiPlugin.Api.Repository
         T GetSettingValue<T>(string key);
         void SaveSetting(string key, object value);
         void UpdateAppointment(Appointment item);
-        bool Initialized();
+        bool Initialized { get; }
         void Initialize();
     }
 }

@@ -7,7 +7,6 @@ namespace ChewsiPlugin.UI.ViewModels
     {
         private DateTime _date;
         private string _chewsiId;
-        private string _insuranceId;
         private string _patient;
         private string _provider;
         private string _patientId;
@@ -20,16 +19,6 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _date = value;
                 RaisePropertyChanged(() => Date);
-            }
-        }
-
-        public string InsuranceId
-        {
-            get { return _insuranceId; }
-            set
-            {
-                _insuranceId = value;
-                RaisePropertyChanged(() => InsuranceId);
             }
         }
 
@@ -81,6 +70,14 @@ namespace ChewsiPlugin.UI.ViewModels
                 _status = value;
                 RaisePropertyChanged(() => Status);
             }
+        }
+
+        public bool Equals(ClaimItemViewModel item)
+        {
+            return Date == item.Date
+                   && PatientId == item.PatientId
+                   && ChewsiId == item.ChewsiId
+                   && Provider == item.Provider;
         }
     }
 }

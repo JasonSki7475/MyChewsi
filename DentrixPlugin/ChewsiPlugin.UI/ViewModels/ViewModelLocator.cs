@@ -1,7 +1,7 @@
 using ChewsiPlugin.Api.Chewsi;
+using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
-using ChewsiPlugin.UI.ViewModels.DialogService;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 

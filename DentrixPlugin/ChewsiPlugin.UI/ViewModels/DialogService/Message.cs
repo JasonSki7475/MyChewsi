@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Input;
+using ChewsiPlugin.Api.Interfaces;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
 namespace ChewsiPlugin.UI.ViewModels.DialogService
 {
-    public class Message : ViewModelBase
+    public class Message : ViewModelBase, IMessage
     {
         private readonly DialogService _dialogService;
         private readonly Action _dialogResultCallback;
@@ -33,6 +34,7 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
             RaiseDialogResultCallback();
             _dialogService.Close();
         }
+
         private void RaiseDialogResultCallback()
         {
             if (_dialogResultCallback != null)

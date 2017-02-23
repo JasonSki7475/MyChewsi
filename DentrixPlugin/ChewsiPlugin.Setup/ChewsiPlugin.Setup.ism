@@ -103,12 +103,15 @@
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
 		<row><td>AssemblyFiles</td><td>{E90B13E6-E59A-4EE1-87E1-06C848E61940}</td><td>PROGRAMFILES64</td><td>0</td><td/><td>system.windows.interactivity</td><td>52753</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>AssemblyFiles1</td><td>{13A169F7-4F62-4079-A3A2-B77924AD3B3B}</td><td>CHEWSI_PLUGIN</td><td>0</td><td/><td>system.windows.interactivity1</td><td>52753</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AssemblyFiles1</td><td>{13A169F7-4F62-4079-A3A2-B77924AD3B3B}</td><td>CHEWSI_PLUGIN</td><td>0</td><td/><td>system.windows.interactivity</td><td>52753</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AssemblyFiles2</td><td>{3B52B663-412D-41F9-9AA4-865A07EC9246}</td><td>TARGETDIR</td><td>0</td><td/><td>system.windows.interactivity</td><td>52753</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.UI.Primary output</td><td>{66D7F626-3D7E-4996-8736-CDA6714B362B}</td><td>PROGRAMFILES</td><td>0</td><td/><td>chewsiplugin.ui.primary_outp</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>DefaultComponent</td><td>{4D8D4EE5-F2D6-42F2-B83C-B07AEF0C79B8}</td><td>TARGETDIR</td><td>0</td><td/><td/><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>DefaultComponent</td><td>{4D8D4EE5-F2D6-42F2-B83C-B07AEF0C79B8}</td><td>TARGETDIR</td><td>0</td><td/><td>dbna5agn.dtxkey</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Files</td><td>{47189B19-23DE-416D-BB1C-FB0669BE7A68}</td><td>PROGRAMFILES64</td><td>8</td><td/><td>nlog.config</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Files1</td><td>{46B78826-7550-4592-BE4F-E8D2BA718C24}</td><td>PROGRAMFILES64</td><td>0</td><td/><td>dbna5agn.dtxkey</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>Files2</td><td>{CDFBD365-DD84-4CB7-A500-CD02BC268085}</td><td>CHEWSI_PLUGIN</td><td>0</td><td/><td/><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Files2</td><td>{CDFBD365-DD84-4CB7-A500-CD02BC268085}</td><td>CHEWSI_PLUGIN</td><td>0</td><td/><td>dbna5agn.dtxkey1</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Files3</td><td>{F96882C8-F555-49C7-AAA2-BA9357A942ED}</td><td>X64</td><td>0</td><td/><td>sqlite.interop.dll</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Files4</td><td>{3BABF19B-C47A-4D39-9EE5-03D516ACEACB}</td><td>X86</td><td>0</td><td/><td>sqlite.interop.dll1</td><td>51729</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
 	<table name="Control">
@@ -170,6 +173,8 @@
 		<row><td>WINDIR</td><td/><td>Windows</td><td/><td>0</td><td/></row>
 		<row><td>WINSYSDIR</td><td>WINDIR</td><td>Windows System</td><td/><td>0</td><td/></row>
 		<row><td>WINSYSDIR64</td><td>WINDIR</td><td>Windows System (64-bit)</td><td/><td>0</td><td/></row>
+		<row><td>X64</td><td>CHEWSI_PLUGIN</td><td>x64</td><td/><td>0</td><td/></row>
+		<row><td>X86</td><td>CHEWSI_PLUGIN</td><td>x86</td><td/><td>0</td><td/></row>
 		<row><td>chewsi_dental</td><td>ProgramMenuFolder</td><td>Chewsi Dental</td><td/><td>1</td><td>chewsi_dental</td></row>
 		<row><td>chewsiplugin.setup</td><td>chewsi_dental</td><td>##ID_STRING2##</td><td/><td>1</td><td>chewsiplugin.setup</td></row>
 		<row><td>chewsiplugin.setup1</td><td>chewsi_dental</td><td>ChewsiPlugin.Setup</td><td/><td>1</td><td>chewsiplugin.setup1</td></row>
@@ -196,11 +201,14 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>AssemblyFiles</td></row>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>AssemblyFiles1</td></row>
+		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>AssemblyFiles2</td></row>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>ChewsiPlugin.UI.Primary output</td></row>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>DefaultComponent</td></row>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>Files</td></row>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>Files1</td></row>
 		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>Files2</td></row>
+		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>Files3</td></row>
+		<row><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td><td>Files4</td></row>
 	</table>
 
 	<table name="File">
@@ -215,20 +223,29 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
+		<row><td>chewsiplugin.api.dll</td><td>AssemblyFiles2</td><td>ChewsiPlugin.Api.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.Api.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.api.dll1</td><td>AssemblyFiles1</td><td>ChewsiPlugin.Api.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.Api.dll</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.opendentalapi.d</td><td>AssemblyFiles2</td><td>ChewsiPlugin.OpenDentalApi.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.OpenDentalApi.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.opendentalapi.d1</td><td>AssemblyFiles1</td><td>ChewsiPlugin.OpenDentalApi.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.OpenDentalApi.dll</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.ui.exe</td><td>AssemblyFiles2</td><td>ChewsiPlugin.UI.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.UI.exe</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.ui.exe.config</td><td>DefaultComponent</td><td>ChewsiPlugin.UI.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.UI.exe.config</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.ui.exe.config1</td><td>Files2</td><td>ChewsiPlugin.UI.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.UI.exe.config</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe1</td><td>AssemblyFiles1</td><td>ChewsiPlugin.UI.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\ChewsiPlugin.UI.exe</td><td>1</td><td/></row>
+		<row><td>dapper.dll</td><td>AssemblyFiles2</td><td>Dapper.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\Dapper.dll</td><td>1</td><td/></row>
 		<row><td>dapper.dll1</td><td>AssemblyFiles1</td><td>Dapper.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\Dapper.dll</td><td>1</td><td/></row>
+		<row><td>dbna5agn.dtxkey</td><td>DefaultComponent</td><td>dBNa5Agn.dtxkey</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\dBNa5Agn.dtxkey</td><td>1</td><td/></row>
 		<row><td>dbna5agn.dtxkey1</td><td>Files2</td><td>dBNa5Agn.dtxkey</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\dBNa5Agn.dtxkey</td><td>1</td><td/></row>
-		<row><td>galasoft.mvvmlight.dll1</td><td>AssemblyFiles1</td><td>GalaSoft.MvvmLight.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\GalaSoft.MvvmLight.dll</td><td>1</td><td/></row>
-		<row><td>galasoft.mvvmlight.extras.dl1</td><td>AssemblyFiles1</td><td>GalaSoft.MvvmLight.Extras.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\GalaSoft.MvvmLight.Extras.dll</td><td>1</td><td/></row>
-		<row><td>microsoft.practices.servicel1</td><td>AssemblyFiles1</td><td>Microsoft.Practices.ServiceLocation.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\Microsoft.Practices.ServiceLocation.dll</td><td>1</td><td/></row>
-		<row><td>newtonsoft.json.dll1</td><td>AssemblyFiles1</td><td>Newtonsoft.Json.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\Newtonsoft.Json.dll</td><td>1</td><td/></row>
-		<row><td>nlog.config1</td><td>Files2</td><td>NLog.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\NLog.config</td><td>1</td><td/></row>
-		<row><td>nlog.dll1</td><td>AssemblyFiles1</td><td>NLog.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\NLog.dll</td><td>1</td><td/></row>
-		<row><td>system.data.sqlite.dll1</td><td>AssemblyFiles1</td><td>System.Data.SQLite.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\System.Data.SQLite.dll</td><td>1</td><td/></row>
-		<row><td>system.net.http.dll1</td><td>AssemblyFiles1</td><td>System.Net.Http.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\System.Net.Http.dll</td><td>1</td><td/></row>
-		<row><td>system.windows.interactivity1</td><td>AssemblyFiles1</td><td>System.Windows.Interactivity.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\System.Windows.Interactivity.dll</td><td>1</td><td/></row>
+		<row><td>galasoft.mvvmlight.dll</td><td>AssemblyFiles1</td><td>GalaSoft.MvvmLight.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\GalaSoft.MvvmLight.dll</td><td>1</td><td/></row>
+		<row><td>galasoft.mvvmlight.extras.dl</td><td>AssemblyFiles1</td><td>GalaSoft.MvvmLight.Extras.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\GalaSoft.MvvmLight.Extras.dll</td><td>1</td><td/></row>
+		<row><td>microsoft.practices.servicel</td><td>AssemblyFiles1</td><td>Microsoft.Practices.ServiceLocation.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\Microsoft.Practices.ServiceLocation.dll</td><td>1</td><td/></row>
+		<row><td>newtonsoft.json.dll</td><td>AssemblyFiles1</td><td>Newtonsoft.Json.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\Newtonsoft.Json.dll</td><td>1</td><td/></row>
+		<row><td>nlog.config</td><td>Files2</td><td>NLog.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\NLog.config</td><td>1</td><td/></row>
+		<row><td>nlog.dll</td><td>AssemblyFiles1</td><td>NLog.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\NLog.dll</td><td>1</td><td/></row>
+		<row><td>sqlite.interop.dll</td><td>Files3</td><td>SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\x64\SQLite.Interop.dll</td><td>1</td><td/></row>
+		<row><td>sqlite.interop.dll1</td><td>Files4</td><td>SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\x86\SQLite.Interop.dll</td><td>1</td><td/></row>
+		<row><td>system.data.sqlite.dll</td><td>AssemblyFiles1</td><td>System.Data.SQLite.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\System.Data.SQLite.dll</td><td>1</td><td/></row>
+		<row><td>system.net.http.dll</td><td>AssemblyFiles1</td><td>System.Net.Http.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\System.Net.Http.dll</td><td>1</td><td/></row>
+		<row><td>system.windows.interactivity</td><td>AssemblyFiles1</td><td>System.Windows.Interactivity.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Debug\System.Windows.Interactivity.dll</td><td>1</td><td/></row>
 	</table>
 
 	<table name="Font">
@@ -247,7 +264,7 @@
 		<col def="S255">Data</col>
 		<row><td>PROJECT_ASSISTANT_DEFAULT_FEATURE</td><td>{62676D4E-1E1C-4C89-95CB-8C119FF05F88}</td></row>
 		<row><td>PROJECT_ASSISTANT_FEATURES</td><td>NonSelectable</td></row>
-		<row><td>PROJECT_ASSISTANT_LICENSE_FILE</td><td>SetupFile7</td></row>
+		<row><td>PROJECT_ASSISTANT_LICENSE_FILE</td><td>SetupFile8</td></row>
 	</table>
 
 	<table name="ISComponentExtended">
@@ -261,11 +278,14 @@
 		<col def="S0">Miscellaneous</col>
 		<row><td>AssemblyFiles</td><td/><td/><td>_291ECB60_920B_453C_8DD6_CC3F1F42B1BB_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>AssemblyFiles1</td><td/><td/><td>_619E43EC_F6C4_4809_98C2_64B2A1B6C4EB_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AssemblyFiles2</td><td/><td/><td>_19334CA8_0039_4237_BB10_986FADF977D8_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.UI.Primary output</td><td/><td/><td>_A8309CB9_0B52_447B_ACA5_1A0C09E4C69D_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>DefaultComponent</td><td/><td/><td>_E174E4DA_33DF_48F0_865B_D358B1FECB72_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Files</td><td/><td/><td>_7D9ED50F_1B25_4CDD_838E_17BFF2C5D8D1_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Files1</td><td/><td/><td>_3E3B9C8D_39F5_429C_9C2E_D5C2240DE3C4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Files2</td><td/><td/><td>_9F8AE6BB_103A_4315_8A96_7FC3ECEC0B19_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Files3</td><td/><td/><td>_B31682EB_92E2_408E_92FF_81CE2F2DA1BB_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Files4</td><td/><td/><td>_4C1A551B_B08A_4CA7_92F2_F7A17581DD9B_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISComponentSubFolder">
@@ -724,6 +744,7 @@
 		<row><td>SetupFile5</td><td>LicenseAgreement.txt</td><td/><td>0</td><td>0</td><td>.\LicenseAgreement.txt</td></row>
 		<row><td>SetupFile6</td><td>LicenseAgreement.txt</td><td/><td>0</td><td>0</td><td>.\LicenseAgreement.txt</td></row>
 		<row><td>SetupFile7</td><td>LicenseAgreement.txt</td><td/><td>0</td><td>0</td><td>D:\Project\1218_Giraffe_Labs\Sources\Dentrix-Plugin\DentrixPlugin\ChewsiPlugin.Setup\LicenseAgreement.txt</td></row>
+		<row><td>SetupFile8</td><td>LicenseAgreement.txt</td><td/><td>0</td><td>0</td><td>D:\Project\1218_Giraffe_Labs\Sources\Dentrix-Plugin\DentrixPlugin\ChewsiPlugin.Setup\LicenseAgreement.txt</td></row>
 	</table>
 
 	<table name="ISSetupPrerequisites">
@@ -754,8 +775,10 @@
 	<table name="ISShortcutComponents">
 		<col key="yes" def="s38">Shortcut_</col>
 		<col key="yes" def="s72">Component_</col>
-		<row><td>ChewsiPlugin.UI.exe</td><td>AssemblyFiles</td></row>
-		<row><td>ChewsiPlugin.UI.exe1</td><td>AssemblyFiles</td></row>
+		<row><td>ChewsiPlugin.UI.exe</td><td>AssemblyFiles1</td></row>
+		<row><td>ChewsiPlugin.UI.exe1</td><td>AssemblyFiles1</td></row>
+		<row><td>ChewsiPlugin.UI.exe2</td><td>AssemblyFiles2</td></row>
+		<row><td>ChewsiPlugin.UI.exe3</td><td>AssemblyFiles1</td></row>
 	</table>
 
 	<table name="ISStorages">
@@ -776,11 +799,15 @@
 		<row><td>IDPROP_SETUPTYPE_CUSTOM_DESC_PRO</td><td>1033</td><td>Custom</td><td>0</td><td/><td>1495653058</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>Launch chewsiplugin.ui.primary_outp</td><td>0</td><td/><td>-1591364912</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME2</td><td>1033</td><td>Launch Chewsi Plugin</td><td>0</td><td/><td>-1591409360</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME3</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1188735728</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME4</td><td>1033</td><td>Launch ChewsiPlugin.UI.exe</td><td>0</td><td/><td>-1188717104</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME5</td><td>1033</td><td>Launch ChewsiPlugin.UI.exe</td><td>0</td><td/><td>-1188747760</td></row>
 		<row><td>IDS_SQLSCRIPT_INSTALLING</td><td>1033</td><td>Executing SQL Install Script...</td><td>0</td><td/><td>1495653058</td></row>
 		<row><td>IDS_SQLSCRIPT_UNINSTALLING</td><td>1033</td><td>Executing SQL Uninstall Script...</td><td>0</td><td/><td>1495653058</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td>Launch chewsiplugin.ui.primary_outp</td><td>0</td><td/><td>-1591358768</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>Chewsi Plugin</td><td>0</td><td/><td>-1591407824</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>Launch Chewsi Plugin</td><td>0</td><td/><td>-1591407312</td></row>
+		<row><td>ID_STRING4</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1188723376</td></row>
 	</table>
 
 	<table name="ISVirtualDirectory">
@@ -1047,8 +1074,10 @@ UgBlAGwAZQBhAHMAZQABAE0AZQBkAGkAYQA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
-		<row><td>ChewsiPlugin.UI.exe</td><td>chewsiplugin.setup1</td><td>##IDS_SHORTCUT_DISPLAY_NAME2##</td><td/><td>&lt;PROGRAMFILES64&gt;\ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td>PROGRAMFILES64</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.UI.exe</td><td>18</td></row>
-		<row><td>ChewsiPlugin.UI.exe1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME2##</td><td/><td>&lt;PROGRAMFILES64&gt;\ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td>PROGRAMFILES64</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.UI.exe1</td><td>18</td></row>
+		<row><td>ChewsiPlugin.UI.exe</td><td>chewsiplugin.setup</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td/><td>&lt;PROGRAMFILES64&gt;\Chewsi Plugin\ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td>CHEWSI_PLUGIN</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.UI.exe</td><td>18</td></row>
+		<row><td>ChewsiPlugin.UI.exe1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td/><td>&lt;PROGRAMFILES64&gt;\Chewsi Plugin\ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td>CHEWSI_PLUGIN</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.UI.exe1</td><td>18</td></row>
+		<row><td>ChewsiPlugin.UI.exe2</td><td>chewsiplugin.setup</td><td>##IDS_SHORTCUT_DISPLAY_NAME4##</td><td/><td>&lt;TARGETDIR&gt;\ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td>TARGETDIR</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.UI.exe2</td><td>18</td></row>
+		<row><td>ChewsiPlugin.UI.exe3</td><td>chewsiplugin.setup</td><td>##IDS_SHORTCUT_DISPLAY_NAME5##</td><td/><td>&lt;PROGRAMFILES64&gt;\Chewsi Plugin\ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td>CHEWSI_PLUGIN</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.UI.exe3</td><td>18</td></row>
 	</table>
 
 	<table name="TextStyle">

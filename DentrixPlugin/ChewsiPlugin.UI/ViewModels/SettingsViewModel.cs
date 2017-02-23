@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
@@ -13,6 +14,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IAppService _appService;
         private readonly Action _onClose;
+        private readonly IDialogService _dialogService;
         private Settings.PMS.Types _selectedType;
         private string _path;
         private ICommand _closeCommand;
@@ -27,13 +29,14 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _saveCommand;
         private readonly bool _firstAppRun;
 
-        public SettingsViewModel(IAppService appService, Action onClose)
+        public SettingsViewModel(IAppService appService, Action onClose, IDialogService dialogService)
         {
             _appService = appService;
             _onClose = onClose;
+            _dialogService = dialogService;
             Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.OpenDental };
 
-            _firstAppRun = !_appService.Initialized();
+            _firstAppRun = !_appService.Initialized;
             if (_firstAppRun)
             {
                 _path = @"C:\Program Files (x86)\Open Dental";
@@ -188,7 +191,15 @@ namespace ChewsiPlugin.UI.ViewModels
         
         private void OnSaveCommandExecute()
         {
-            _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword));
+            try
+            {
+                _dialogService.ShowLoadingIndicator();
+                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword));
+            }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
             Logger.Debug("Settings were saved");
             _onClose?.Invoke();
         }

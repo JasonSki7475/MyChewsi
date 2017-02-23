@@ -10,15 +10,11 @@ using System.Text;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using Microsoft.Win32;
-using NLog;
 
 namespace ChewsiPlugin.Api.Dentrix
 {
     public class DentrixApi : DentalApi, IDentalApi
-    {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private bool _initialized;
-        
+    {      
         private static class ApiResult
         {
             public static int Success = 0;
@@ -56,8 +52,9 @@ namespace ChewsiPlugin.Api.Dentrix
         static extern int DENTRIXAPI_Initialize(string szUserId, string szPassword);
         #endregion
 
-        public DentrixApi()
+        public DentrixApi(IDialogService dialogService)
         {
+            _dialogService = dialogService;
             Initialize();
         }
 
@@ -66,21 +63,20 @@ namespace ChewsiPlugin.Api.Dentrix
         /// </summary>
         private Dictionary<string, string> GetAllPatientsInsurance()
         {
-            var result = ExecuteCommand($"select patient_id, primary_insured_id from admin.v_patient_insurance where primary_insurance_carrier_name='{InsuranceCarrierName}'",
-                new List<string> { "patient_id", "primary_insured_id" }, false);
-            return result.ToDictionary(m => m["patient_id"], m => m["primary_insured_id"]);
+            var result = ExecuteCommand($"select pi.patient_id, ins.id_num from admin.v_patient_insurance pi join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where primary_insurance_carrier_name='{InsuranceCarrierName}'",
+                new List<string> { "patient_id", "id_num" }, false);
+            return result.ToDictionary(m => m["patient_id"], m => m["id_num"]);
         }
 
         public PatientInfo GetPatientInfo(string patientId)
         {
-            Initialize();
             var result =
                 ExecuteCommand(
-                    $"select pi.first_name, pi.last_name, pi.primary_insured_id, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id where pi.patient_id='{patientId}'",
-                    new List<string> {"first_name", "last_name", "primary_insured_id", "birth_date"}, false);
+                    $"select pi.first_name, pi.last_name, ins.id_num, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where pi.patient_id='{patientId}'",
+                    new List<string> {"first_name", "last_name", "id_num", "birth_date" }, false);
             return result.Select(m => new PatientInfo
             {
-                //InsuranceId = m["primary_insured_id"],
+                PrimaryInsuredId = m["id_num"],
                 LastName = m["last_name"],
                 FirstName = m["first_name"],
                 BirthDate = DateTime.Parse(m["birth_date"])
@@ -89,7 +85,6 @@ namespace ChewsiPlugin.Api.Dentrix
 
         public List<ProcedureInfo> GetProcedures(string patientId)
         {
-            Initialize();
             var dateRange = GetTimeRangeForToday();
             var procedures = Execute("admin.sp_getpatientprocedures",
                 new List<string> {"amt", "proc_code", "proc_date"},
@@ -117,11 +112,11 @@ namespace ChewsiPlugin.Api.Dentrix
        
         public List<IAppointment> GetAppointmentsForToday()
         {
-            Initialize();
             Dictionary<string, string> patientIds = GetAllPatientsInsurance();
             var dateRange = GetTimeRangeForToday();
 
-            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}' and patient_id in ({string.Join(",", patientIds.Keys).TrimEnd(',')})",
+            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
+                (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
                 new List<string> { "patient_id", "patient_name", "appointment_date", "status_id", "provider_id" },
                 false,
                 new Dictionary<string, string> { { "primary_insurance_carrier_name", InsuranceCarrierName } });
@@ -135,16 +130,15 @@ namespace ChewsiPlugin.Api.Dentrix
                     PatientName = m["patient_name"],
                     PatientId = m["patient_id"],
                     Date = DateTime.Parse(m["appointment_date"]),
-                    StatusId = m["status_id"],
                     ProviderId = m["provider_id"],
-                    InsuranceId = insuranceId
+                    PrimaryInsuredId = insuranceId,
+                    StatusId = m["status_id"]
                 };
             }).ToList());
         }
 
         public Provider GetProvider(string providerId)
         {
-            Initialize();
             var result = ExecuteCommand($"select tin, npi, address_line1, state, city, zip_code from admin.v_provider where provider_id=\'{providerId}\'",
                 new List<string> { "tin", "npi", "address_line1", "state", "city", "zip_code" }, false);
 
@@ -161,7 +155,11 @@ namespace ChewsiPlugin.Api.Dentrix
 
         public string GetVersion()
         {
-            return DENTRIXAPI_GetDentrixVersion().ToString(CultureInfo.InvariantCulture);
+            if (_initialized)
+            {
+                return DENTRIXAPI_GetDentrixVersion().ToString(CultureInfo.InvariantCulture);
+            }
+            return null;
         }
 
         public bool IsInstalled(out string folder)
@@ -208,6 +206,11 @@ namespace ChewsiPlugin.Api.Dentrix
         private List<Dictionary<string, string>> ExecuteCommand(string commandText, List<string> outputFields, bool isStoredProcedure, Dictionary<string, string> parameters = null)
         {
             var result = new List<Dictionary<string, string>>();
+            if (!_initialized)
+            {
+                return result;
+            }
+
             var connectionString = GetConnectionString();
             if (connectionString.Length > 0)
             {
@@ -269,34 +272,41 @@ namespace ChewsiPlugin.Api.Dentrix
             if (_initialized)
                 return;
 
-            var version = DENTRIXAPI_GetDentrixVersion();
-            Logger.Info("Dentrix version is " + version);
-            if ((int) (version*100) >= 1620)
+            try
             {
-                // G6.2 or higher
-                var keyFilePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), KeyFileName);
-                if (DENTRIXAPI_RegisterUser(keyFilePath) == ApiResult.Success)
+                var version = DENTRIXAPI_GetDentrixVersion();
+                Logger.Info("Dentrix version is " + version);
+                if ((int) (version*100) >= 1620)
                 {
-                    Logger.Info("Registered user for version >= 6.2");
-                    _initialized = true;
+                    // G6.2 or higher
+                    var keyFilePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), KeyFileName);
+                    if (DENTRIXAPI_RegisterUser(keyFilePath) == ApiResult.Success)
+                    {
+                        Logger.Info("Registered user for version >= 6.2");
+                        _initialized = true;
+                    }
+                    else
+                    {
+                        Logger.Error("Could not register user for version >= 6.2");
+                    }
                 }
                 else
                 {
-                    Logger.Error("Could not register user for version >= 6.2");
+                    // G6.1 or less
+                    if (DENTRIXAPI_Initialize(UserId, Password) == 1)
+                    {
+                        Logger.Info("Initialized for version < 6.2");
+                        _initialized = true;
+                    }
+                    else
+                    {
+                        Logger.Error("Could not register user for version < 6.2");
+                    }
                 }
             }
-            else
+            catch (DllNotFoundException)
             {
-                // G6.1 or less
-                if (DENTRIXAPI_Initialize(UserId, Password) == 1)
-                {
-                    Logger.Info("Initialized for version < 6.2");
-                    _initialized = true;
-                }
-                else
-                {
-                    Logger.Error("Could not register user for version < 6.2");
-                }
+                _dialogService.Show("Unable to find Dentrix API library. Make sure Dentrix G is installed.", "Error");
             }
         }
 

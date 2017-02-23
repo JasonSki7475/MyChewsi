@@ -13,6 +13,7 @@ namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
+        private readonly IDialogService _dialogService;
         private readonly string _openDentalInstallationDirectory;
         private const string OpenDentalExeName = @"OpenDental.exe";
         private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
@@ -23,8 +24,9 @@ namespace ChewsiPlugin.OpenDentalApi
         private bool _initialized;
         private AppDomain _domain;
 
-        public OpenDentalApi(IRepository repository)
+        public OpenDentalApi(IRepository repository, IDialogService dialogService)
         {
+            _dialogService = dialogService;
             _openDentalInstallationDirectory = repository.GetSettingValue<string>(Settings.PMS.PathKey);
             // Create new app domain and load OpenDental assemblies, then we will load data from them
             AppDomainSetup setup = new AppDomainSetup
@@ -118,7 +120,7 @@ namespace ChewsiPlugin.OpenDentalApi
                     var appointment = new Appointment
                     {
                         Date = m.AptDateTime,
-                        InsuranceId = plan.PlanNum.ToString(),
+                        PrimaryInsuredId = plan.PlanNum.ToString(),
                         IsCompleted = m.AptStatus == "Complete",
                         PatientId = m.PatNum.ToString(),
                         PatientName = $"{patient.FName} {patient.LName}",

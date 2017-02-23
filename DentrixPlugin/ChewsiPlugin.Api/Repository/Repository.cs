@@ -72,12 +72,10 @@ namespace ChewsiPlugin.Api.Repository
             }
         }
 
-        public bool Initialized()
-        {
-            return File.Exists(_databaseFilePath)
-                && GetSettingValue<string>(Settings.PMS.TypeKey) != null
-                && GetSettingValue<string>(Settings.PMS.PathKey) != null;
-        }
+        public bool Initialized => File.Exists(_databaseFilePath)
+                                   && GetSettingValue<string>(Settings.PMS.TypeKey) != null
+                                   && GetSettingValue<string>(Settings.PMS.PathKey) != null
+                                   && GetSettingValue<string>(Settings.MachineIdKey) != null;
 
         public void Initialize()
         {

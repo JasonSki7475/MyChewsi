@@ -13,20 +13,20 @@ namespace ChewsiPlugin.UI.Services
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IChewsiApi _chewsiApi;
         private readonly IRepository _repository;
+        private readonly IDialogService _dialogService;
         private IDentalApi _dentalApi;
         private Settings.PMS.Types _pmsType;
+        private object _dentalApiInitializationLock = new object();
 
-        public AppService(IChewsiApi chewsiApi, IRepository repository)
+        public AppService(IChewsiApi chewsiApi, IRepository repository, IDialogService dialogService)
         {
             _chewsiApi = chewsiApi;
             _repository = repository;
+            _dialogService = dialogService;
             _repository.Initialize();
         }
 
-        public bool Initialized()
-        {
-            return _repository.Initialized();
-        }
+        public bool Initialized => _repository.Initialized && DentalApi != null;
 
         public void SaveSettings(SettingsDto settingsDto)
         {
@@ -38,7 +38,7 @@ namespace ChewsiPlugin.UI.Services
             string pluginVersionOld = null;
             string tinOld = null;
 
-            var firstAppRun = !_repository.Initialized();
+            var firstAppRun = !_repository.Initialized;
             if (!firstAppRun)
             {
                 // DB already has all the settings, load current values to detect changes below
@@ -161,29 +161,32 @@ namespace ChewsiPlugin.UI.Services
                 if (pmsTypeString != null)
                 {
                     var pmsType = (Settings.PMS.Types)Enum.Parse(typeof(Settings.PMS.Types), pmsTypeString);
-                    if (_dentalApi == null || pmsType != _pmsType)
+                    lock (_dentalApiInitializationLock)
                     {
-                        // free resources when user changes PMS type
-                        if (_dentalApi != null && pmsType != _pmsType)
+                        if (_dentalApi == null || pmsType != _pmsType)
                         {
-                            _dentalApi.Unload();
+                            // free resources when user changes PMS type
+                            if (_dentalApi != null && pmsType != _pmsType)
+                            {
+                                _dentalApi.Unload();
+                            }
+                            // create new instance of API on app start and settings changes
+                            Logger.Debug("Initializing {0} API", pmsTypeString);
+                            switch (pmsType)
+                            {
+                                case Settings.PMS.Types.Dentrix:
+                                    _dentalApi = new DentrixApi(_dialogService);
+                                    break;
+                                case Settings.PMS.Types.OpenDental:
+                                    _dentalApi = new OpenDentalApi.OpenDentalApi(_repository, _dialogService);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                            _pmsType = pmsType;
                         }
-                        // create new instance of API on app start and settings changes
-                        Logger.Debug("Initializing {0} API", pmsTypeString);
-                        switch (pmsType)
-                        {
-                            case Settings.PMS.Types.Dentrix:
-                                _dentalApi = new DentrixApi();
-                                break;
-                            case Settings.PMS.Types.OpenDental:
-                                _dentalApi = new OpenDentalApi.OpenDentalApi(_repository);
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                        _pmsType = pmsType;
+                        return _dentalApi;                        
                     }
-                    return _dentalApi;
                 }
                 Logger.Error("PMS system type is not set");
                 return null;

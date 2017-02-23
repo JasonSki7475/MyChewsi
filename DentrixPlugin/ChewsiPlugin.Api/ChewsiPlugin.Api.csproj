@@ -112,6 +112,8 @@
     <Compile Include="Common\Provider.cs" />
     <Compile Include="Common\PatientInfo.cs" />
     <Compile Include="Interfaces\IDentalApi.cs" />
+    <Compile Include="Interfaces\IDialogService.cs" />
+    <Compile Include="Interfaces\IMessage.cs" />
     <Compile Include="PluginType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Chewsi\ClaimProcessingStatusResponse.cs" />

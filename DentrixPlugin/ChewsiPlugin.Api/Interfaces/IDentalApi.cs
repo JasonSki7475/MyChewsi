@@ -15,5 +15,6 @@ namespace ChewsiPlugin.Api.Interfaces
         string Name { get; }
         Settings.PMS.Types Type { get; }
         void Unload();
+        bool Initialized { get; }
     }
 }

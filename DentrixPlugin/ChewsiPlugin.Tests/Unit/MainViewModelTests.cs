@@ -6,7 +6,6 @@ using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.UI.Services;
 using ChewsiPlugin.UI.ViewModels;
-using ChewsiPlugin.UI.ViewModels.DialogService;
 using Moq;
 using NUnit.Framework;
 
@@ -20,6 +19,7 @@ namespace ChewsiPlugin.Tests.Unit
         public string PatientId { get; set; }
         public string PatientName { get; set; }
         public string ProviderId { get; set; }
+        public string PrimaryInsuredId { get; set; }
     }
     
     [TestFixture]
@@ -75,7 +75,7 @@ namespace ChewsiPlugin.Tests.Unit
                         m =>
                             m.PatientId == claimItem.PatientId && 
                             m.Date == claimItem.Date &&
-                            m.InsuranceId == claimItem.InsuranceId));
+                            m.PrimaryInsuredId == claimItem.ChewsiId));
             }
         }
 

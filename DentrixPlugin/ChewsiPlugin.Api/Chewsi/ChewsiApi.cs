@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using ChewsiPlugin.Api.Interfaces;
 using Newtonsoft.Json;
 using NLog;
 
@@ -10,6 +11,7 @@ namespace ChewsiPlugin.Api.Chewsi
 {
     public class ChewsiApi : IChewsiApi
     {
+        private readonly IDialogService _dialogService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _token;
         private bool _useProxy;
@@ -17,7 +19,7 @@ namespace ChewsiPlugin.Api.Chewsi
         private int _proxyPort;
         private string _proxyUserName;
         private string _proxyPassword;
-        private const string Url = "http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
+        private const string Url = "http://chewsi-dev-txapi.azurewebsites.net";//"http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";
@@ -26,6 +28,11 @@ namespace ChewsiPlugin.Api.Chewsi
         private const string ReceiveMemberAuthorizationUri = "ReceiveMemberAuthorization";
         private const string DownoadFileRequestUri = "DownoadFileRequest";
         private const string UpdatePluginRegistrationUri = "UpdatePluginRegistration";
+
+        public ChewsiApi(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+        }
 
         /// <summary>
         /// Validates the subscriber and provider.
@@ -39,18 +46,18 @@ namespace ChewsiPlugin.Api.Chewsi
         {
             return Post<ValidateSubscriberAndProviderResponse>(new ValidateSubscriberAndProviderRequest
             {
-                TIN = provider.TIN,
-                RenderingState = providerAddress.RenderingState,
-                RenderingZip = providerAddress.RenderingZip,
-                RenderingCity = providerAddress.RenderingCity,
-                RenderingAddress = providerAddress.RenderingAddress,
-                NPI = provider.NPI,
+                TIN = provider.TIN.Trim(),
+                RenderingState = providerAddress.RenderingState.Trim(),
+                RenderingZip = providerAddress.RenderingZip.Trim(),
+                RenderingCity = providerAddress.RenderingCity.Trim(),
+                RenderingAddress = providerAddress.RenderingAddress.Trim(),
+                NPI = provider.NPI.Trim(),
                 SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
-                SubscriberFirstName = subscriber.SubscriberFirstName,
-                SubscriberLastName = subscriber.SubscriberLastName,
-                ChewsiID = subscriber.Id
+                SubscriberFirstName = subscriber.SubscriberFirstName.Trim(),
+                SubscriberLastName = subscriber.SubscriberLastName.Trim(),
+                ChewsiID = subscriber.Id?.Trim() ?? ""
             },
-            ValidateSubscriberAndProviderUri);
+                ValidateSubscriberAndProviderUri);
         }
 
         public void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ProcedureInformation> procedures)
@@ -135,7 +142,7 @@ namespace ChewsiPlugin.Api.Chewsi
             }
 
             // TODO
-            // webRequest.Proxy = new WebProxy("http://localhost:8888");
+            //webRequest.Proxy = new WebProxy("http://localhost:8888");
 
             byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
             webRequest.ContentLength = data.Length;
@@ -175,13 +182,15 @@ namespace ChewsiPlugin.Api.Chewsi
                         throw new InvalidOperationException("Resource not found");
                     }
                     Logger.Error("Unsupported status code {0}. Uri={1}", response.StatusCode, uri);
-                    throw new InvalidOperationException(string.Format("Unsupported status code {0}", response.StatusCode));
+                    throw new InvalidOperationException($"Unsupported status code {response.StatusCode}");
                 }
             }
             catch (WebException e)
             {
-                Logger.Error("Cannot send error report", e);
-                throw;
+                var msg = "Unable to connect to Chewsi server. ";
+                _dialogService.Show(msg + e.Message, "Error");
+                Logger.Error(msg, e);
+                return null;
             }
         }
     }
