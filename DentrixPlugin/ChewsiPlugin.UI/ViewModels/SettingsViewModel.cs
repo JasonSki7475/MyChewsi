@@ -28,6 +28,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _proxyPassword;
         private ICommand _saveCommand;
         private readonly bool _firstAppRun;
+        private string _state;
 
         public SettingsViewModel(IAppService appService, Action onClose, IDialogService dialogService)
         {
@@ -54,7 +55,8 @@ namespace ChewsiPlugin.UI.ViewModels
                 _proxyLogin = s.ProxyLogin;
                 _proxyPassword = s.ProxyPassword;
                 _selectedType = s.PmsType;
-                _path = s.PmsPath; 
+                _path = s.PmsPath;
+                _state = s.State;
             }
         }
         
@@ -98,6 +100,16 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _address2 = value;
                 RaisePropertyChanged(() => Address2);
+            }
+        }
+
+        public string State
+        {
+            get { return _state; }
+            set
+            {
+                _state = value;
+                RaisePropertyChanged(() => State);
             }
         }
 
@@ -194,7 +206,7 @@ namespace ChewsiPlugin.UI.ViewModels
             try
             {
                 _dialogService.ShowLoadingIndicator();
-                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword));
+                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, State));
             }
             finally
             {

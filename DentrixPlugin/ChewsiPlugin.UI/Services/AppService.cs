@@ -16,7 +16,7 @@ namespace ChewsiPlugin.UI.Services
         private readonly IDialogService _dialogService;
         private IDentalApi _dentalApi;
         private Settings.PMS.Types _pmsType;
-        private object _dentalApiInitializationLock = new object();
+        private readonly object _dentalApiInitializationLock = new object();
 
         public AppService(IChewsiApi chewsiApi, IRepository repository, IDialogService dialogService)
         {
@@ -34,6 +34,7 @@ namespace ChewsiPlugin.UI.Services
             Settings.PMS.Types pmsTypeOld = Settings.PMS.Types.Dentrix;
             string address1Old = null;
             string address2Old = null;
+            string stateOld = null;
             string osOld = null;
             string pluginVersionOld = null;
             string tinOld = null;
@@ -46,6 +47,7 @@ namespace ChewsiPlugin.UI.Services
                 pmsTypeOld = _repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
                 address1Old = _repository.GetSettingValue<string>(Settings.Address1Key);
                 address2Old = _repository.GetSettingValue<string>(Settings.Address2Key);
+                stateOld = _repository.GetSettingValue<string>(Settings.StateKey);
                 osOld = _repository.GetSettingValue<string>(Settings.OsKey);
                 pluginVersionOld = _repository.GetSettingValue<string>(Settings.AppVersionKey);
                 tinOld = _repository.GetSettingValue<string>(Settings.TIN);
@@ -56,6 +58,7 @@ namespace ChewsiPlugin.UI.Services
             _repository.SaveSetting(Settings.PMS.PathKey, settingsDto.PmsPath);
             _repository.SaveSetting(Settings.Address1Key, settingsDto.Address1);
             _repository.SaveSetting(Settings.Address2Key, settingsDto.Address2);
+            _repository.SaveSetting(Settings.StateKey, settingsDto.State);
             _repository.SaveSetting(Settings.OsKey, Utils.GetOperatingSystemInfo());
             _repository.SaveSetting(Settings.AppVersionKey, Utils.GetPluginVersion());
 
@@ -80,6 +83,7 @@ namespace ChewsiPlugin.UI.Services
                         || pmsTypeOld != settingsDto.PmsType
                         || address1Old != settingsDto.Address1
                         || address2Old != settingsDto.Address2
+                        || stateOld != settingsDto.State
                         || osOld != Utils.GetOperatingSystemInfo()
                         || tinOld != settingsDto.Tin
                         || pluginVersionOld != Utils.GetPluginVersion())
@@ -126,7 +130,8 @@ namespace ChewsiPlugin.UI.Services
             var proxyPassword = _repository.GetSettingValue<string>(Settings.ProxyPassword);
             var proxyPort = _repository.GetSettingValue<int>(Settings.ProxyPort);
             var proxyLogin = _repository.GetSettingValue<string>(Settings.ProxyLogin);
-            return new SettingsDto(pmsType, pmsPath, address1Old, address2Old, tin, useProxy, proxyAddress, proxyPort, proxyLogin, proxyPassword);
+            var state = _repository.GetSettingValue<string>(Settings.StateKey);
+            return new SettingsDto(pmsType, pmsPath, address1Old, address2Old, tin, useProxy, proxyAddress, proxyPort, proxyLogin, proxyPassword, state);
         }
 
         public void UpdatePluginRegistration()

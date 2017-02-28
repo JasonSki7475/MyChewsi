@@ -67,7 +67,8 @@ namespace ChewsiPlugin.Tests.Integration
         {
             return new ProviderAddressInformation
             {
-                RenderingAddress = "1368 BEACON ST NO 105",
+                RenderingAddress1 = "1368 BEACON ST NO 105",
+                RenderingAddress2 = "",
                 RenderingCity = "BROOKLINE",
                 RenderingState = "MA",
                 RenderingZip = "02446"
@@ -89,16 +90,14 @@ namespace ChewsiPlugin.Tests.Integration
             
             // Assert
             // Validate provider
-            Assert.IsNull(response.ProviderID);
+            Assert.IsNotNull(response.ProviderID);
             Assert.IsNull(response.ProviderValidationMessage);
             Assert.AreEqual("Valid", response.ProviderValidationStatus);
             // Validate subscriber
             Assert.AreEqual("4", response.SubscriberID);
             Assert.IsNull(response.SubscriberValidationMessage);
             Assert.AreEqual("Valid", response.SubscriberValidationStatus);
-
-            //TODO
-            Assert.AreEqual("", response.OfficeNumber);
+            Assert.AreEqual("1", response.OfficeNumber);
 
             Assert.AreEqual(true, response.ValidationPassed);
         }
@@ -112,6 +111,7 @@ namespace ChewsiPlugin.Tests.Integration
             ProviderInformation provider = GetValidProvider();
             SubscriberInformation subscriber = GetValidSubscriber();
             ProviderAddressInformation providerAddress = GetValidProviderAddress();
+            providerAddress.RenderingAddress1 += " test";
 
             // Act
             ValidateSubscriberAndProviderResponse response = api.ValidateSubscriberAndProvider(provider, providerAddress, subscriber);
@@ -149,7 +149,7 @@ namespace ChewsiPlugin.Tests.Integration
 
             // Assert
             // Validate provider
-            Assert.IsNull(response.ProviderID);
+            Assert.AreEqual("4074437", response.ProviderID);
             Assert.IsNull(response.ProviderValidationMessage);
             Assert.AreEqual("Valid", response.ProviderValidationStatus);
             // Validate subscriber
@@ -157,9 +157,7 @@ namespace ChewsiPlugin.Tests.Integration
             Assert.AreEqual("Please validate that the subscriber's Chewsi ID and First Name match the information shown before proceeding. If the information does not match, the Chewsi ID may have been keyed into the practice management system incorrectly. Please ask the subscriber for their Chewsi ID to validate.", 
                 response.SubscriberValidationMessage);
             Assert.AreEqual("Subscriber Not Found", response.SubscriberValidationStatus);
-
-            //TODO
-            Assert.AreEqual("", response.OfficeNumber);
+            Assert.AreEqual("1", response.OfficeNumber);
 
             Assert.AreEqual(false, response.ValidationPassed);
         }

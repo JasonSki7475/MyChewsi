@@ -76,9 +76,9 @@ namespace ChewsiPlugin.Api.Dentrix
                     new List<string> {"first_name", "last_name", "id_num", "birth_date" }, false);
             return result.Select(m => new PatientInfo
             {
-                PrimaryInsuredId = m["id_num"],
-                LastName = m["last_name"],
-                FirstName = m["first_name"],
+                PrimaryInsuredId = m["id_num"].Trim(),
+                LastName = m["last_name"].Trim(),
+                FirstName = m["first_name"].Trim(),
                 BirthDate = DateTime.Parse(m["birth_date"])
             }).FirstOrDefault();
         }
@@ -113,6 +113,12 @@ namespace ChewsiPlugin.Api.Dentrix
         public List<IAppointment> GetAppointmentsForToday()
         {
             Dictionary<string, string> patientIds = GetAllPatientsInsurance();
+            if (patientIds.Count == 0)
+            {
+                Logger.Warn("No Chewsi patients found");
+                return new List<IAppointment>();
+            }
+
             var dateRange = GetTimeRangeForToday();
 
             var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
@@ -139,17 +145,18 @@ namespace ChewsiPlugin.Api.Dentrix
 
         public Provider GetProvider(string providerId)
         {
-            var result = ExecuteCommand($"select tin, npi, address_line1, state, city, zip_code from admin.v_provider where provider_id=\'{providerId}\'",
-                new List<string> { "tin", "npi", "address_line1", "state", "city", "zip_code" }, false);
+            var result = ExecuteCommand($"select tin, npi, address_line1, address_line2, state, city, zip_code from admin.v_provider where provider_id=\'{providerId}\'",
+                new List<string> { "tin", "npi", "address_line1", "address_line2", "state", "city", "zip_code" }, false);
 
             return result.Select(m => new Provider
             {
-                AddressLine = m["address_line1"],
-                City = m["city"],
-                Npi = m["npi"],
-                State = m["state"],
-                Tin = m["tin"],
-                ZipCode = m["zip_code"]
+                AddressLine1 = m["address_line1"].Trim(),
+                AddressLine2 = m["address_line2"].Trim(),
+                City = m["city"].Trim(),
+                Npi = m["npi"].Trim(),
+                State = m["state"].Trim(),
+                Tin = m["tin"].Trim(),
+                ZipCode = m["zip_code"].Trim()
             }).FirstOrDefault();
         }
 

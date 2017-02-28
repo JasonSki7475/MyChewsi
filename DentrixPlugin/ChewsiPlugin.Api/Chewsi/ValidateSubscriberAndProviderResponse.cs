@@ -20,7 +20,7 @@
 
         public bool ValidationPassed
         {
-            get { return SubscriberValidationMessage == "Valid" && ProviderValidationMessage == "Valid"; }
+            get { return SubscriberValidationStatus == "Valid" && ProviderValidationStatus == "Valid"; }
         }
     }
 }

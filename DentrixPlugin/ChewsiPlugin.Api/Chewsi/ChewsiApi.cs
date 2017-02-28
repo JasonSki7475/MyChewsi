@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using ChewsiPlugin.Api.Interfaces;
 using Newtonsoft.Json;
@@ -46,16 +47,17 @@ namespace ChewsiPlugin.Api.Chewsi
         {
             return Post<ValidateSubscriberAndProviderResponse>(new ValidateSubscriberAndProviderRequest
             {
-                TIN = provider.TIN.Trim(),
-                RenderingState = providerAddress.RenderingState.Trim(),
-                RenderingZip = providerAddress.RenderingZip.Trim(),
-                RenderingCity = providerAddress.RenderingCity.Trim(),
-                RenderingAddress = providerAddress.RenderingAddress.Trim(),
-                NPI = provider.NPI.Trim(),
+                TIN = provider.TIN,
+                RenderingState = providerAddress.RenderingState,
+                RenderingZip = providerAddress.RenderingZip,
+                RenderingCity = providerAddress.RenderingCity,
+                RenderingAddress1 = providerAddress.RenderingAddress1,
+                RenderingAddress2 = providerAddress.RenderingAddress2,
+                NPI = provider.NPI,
                 SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
-                SubscriberFirstName = subscriber.SubscriberFirstName.Trim(),
-                SubscriberLastName = subscriber.SubscriberLastName.Trim(),
-                ChewsiID = subscriber.Id?.Trim() ?? ""
+                SubscriberFirstName = subscriber.SubscriberFirstName,
+                SubscriberLastName = subscriber.SubscriberLastName,
+                ChewsiID = subscriber.Id ?? ""
             },
                 ValidateSubscriberAndProviderUri);
         }
@@ -107,9 +109,9 @@ namespace ChewsiPlugin.Api.Chewsi
             return Post<ClaimProcessingStatusResponse>(request, RequestClaimProcessingStatusUri);
         }
 
-        public string DownoadFile(DownoadFileRequest request)
+        public Stream DownloadFile(DownoadFileRequest request)
         {
-            return Post<string>(request, DownoadFileRequestUri);
+            return GetStream(null, request.url, HttpMethod.Get);
         }
 
         public void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword)
@@ -121,8 +123,19 @@ namespace ChewsiPlugin.Api.Chewsi
             _proxyUserName = proxyUserName;
             _proxyPassword = proxyPassword;
         }
+        
+        private T Post<T>(object request, string uri) where T: class
+        {
+            var stream = GetStream(request, uri, HttpMethod.Post);
+            if (stream != null)
+            {
+                var reader = new StreamReader(stream);
+                return JsonConvert.DeserializeObject<T>(reader.ReadToEnd());
+            }
+            return null;
+        }
 
-        private T Post<T>(object request, string uri) where T: class 
+        private Stream GetStream(object request, string uri, HttpMethod method)
         {
             var url = new Uri(new Uri(Url, UriKind.Absolute), uri);
             var webRequest = WebRequest.Create(url) as HttpWebRequest;
@@ -130,8 +143,8 @@ namespace ChewsiPlugin.Api.Chewsi
             webRequest.Headers.Add("x-chewsi-token", _token);
             webRequest.Accept = "application/json";
             webRequest.ContentType = "application/json";
-            webRequest.Method = "POST";
-
+            webRequest.Method = method.ToString().ToUpper();
+            
             if (_useProxy)
             {
                 var proxy = new WebProxy(_proxyAddress, _proxyPort)
@@ -143,26 +156,24 @@ namespace ChewsiPlugin.Api.Chewsi
 
             // TODO
             //webRequest.Proxy = new WebProxy("http://localhost:8888");
-
-            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-            webRequest.ContentLength = data.Length;
+            
             try
             {
-                using (Stream post = webRequest.GetRequestStream())
+                if (method == HttpMethod.Post)
                 {
-                    post.Write(data, 0, data.Length);
+                    byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
+                    webRequest.ContentLength = data.Length;
+                    using (Stream post = webRequest.GetRequestStream())
+                    {
+                        post.Write(data, 0, data.Length);
+                    }                    
                 }
 
                 using (var response = webRequest.GetResponse() as HttpWebResponse)
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        var stream = response.GetResponseStream();
-                        if (stream != null)
-                        {
-                            var reader = new StreamReader(stream);
-                            return JsonConvert.DeserializeObject<T>(reader.ReadToEnd());
-                        }
+                        return response.GetResponseStream();
                     }
                     if (response.StatusCode == HttpStatusCode.NoContent)
                     {
@@ -180,6 +191,12 @@ namespace ChewsiPlugin.Api.Chewsi
                         // 404
                         Logger.Error("Error 404. Uri={0}", uri);
                         throw new InvalidOperationException("Resource not found");
+                    }
+                    if (response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        // 500
+                        Logger.Error("Error 500. Uri={0}", uri);
+                        throw new InvalidOperationException("Error occured on the Chewsi server. Try again later");
                     }
                     Logger.Error("Unsupported status code {0}. Uri={1}", response.StatusCode, uri);
                     throw new InvalidOperationException($"Unsupported status code {response.StatusCode}");

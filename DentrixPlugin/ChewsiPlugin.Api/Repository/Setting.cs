@@ -26,6 +26,7 @@
         public const string TIN = "TIN";
         public const string Address1Key = "Address1";
         public const string Address2Key = "Address2";
+        public const string StateKey = "State";
         public const string OsKey = "Os";
         public const string AppVersionKey = "AppVersion";
         public const string UseProxy = "UseProxy";

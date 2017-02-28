@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ChewsiPlugin.Api.Chewsi;
@@ -12,6 +12,7 @@ using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.Win32;
 using NLog;
 
 namespace ChewsiPlugin.UI.ViewModels
@@ -38,6 +39,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private readonly IAppService _appService;
         private readonly IDialogService _dialogService;
         private SettingsViewModel _settingsViewModel;
+        private DownloadItemViewModel _selectedDownloadItem;
 
         public MainViewModel(IDialogService dialogService, IChewsiApi chewsiApi, IAppService appService)
         {
@@ -137,7 +139,6 @@ namespace ChewsiPlugin.UI.ViewModels
                             Provider = m.ProviderId,
                             Date = m.Date,
                             Patient = m.PatientName,
-                            //InsuranceId = m.InsuranceId,
                             PatientId = m.PatientId,
                             ChewsiId = m.PrimaryInsuredId
                         });
@@ -161,7 +162,7 @@ namespace ChewsiPlugin.UI.ViewModels
         }
 
         readonly Random _random = new Random();
-        
+
         ClaimItemViewModel GetTestClaim()
         {
             return new ClaimItemViewModel
@@ -187,6 +188,16 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _selectedClaim = value;
                 RaisePropertyChanged(() => SelectedClaim);
+            }
+        }
+
+        public DownloadItemViewModel SelectedDownloadItem
+        {
+            get { return _selectedDownloadItem; }
+            set
+            {
+                _selectedDownloadItem = value;
+                RaisePropertyChanged(() => SelectedDownloadItem);
             }
         }
 
@@ -277,14 +288,14 @@ namespace ChewsiPlugin.UI.ViewModels
                         };
                         var providerAddress = new ProviderAddressInformation
                         {
-                            RenderingAddress = provider.AddressLine,
+                            RenderingAddress1 = provider.AddressLine1,
+                            RenderingAddress2 = provider.AddressLine2,
                             RenderingCity = provider.City,
                             RenderingState = provider.State,
                             RenderingZip = provider.ZipCode,
                         };
                         try
                         {
-
                             var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerParam,
                                 providerAddress, subscriberParam);
                             Logger.Debug(
@@ -377,20 +388,18 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshDownloadsCommandExecute()
         {
+            var settings = _appService.GetSettings();
+
             var worker = new BackgroundWorker();
             worker.DoWork += (i, j) =>
             {
                 _dialogService.ShowLoadingIndicator();
                 var list = _chewsiApi.Get835Downloads(new Request835Downloads
-                {//TODO
-                    TIN = "454591743",
-                    State = "MA",
-                    Address = ""
-                }).Select(m => new DownloadItemViewModel
                 {
-                    Status = m.File_835_EDI_url,
-                    Date = DateTime.Parse(m.PostedOnDate)
-                });
+                    TIN = settings.Tin,
+                    State = settings.State,
+                    Address = $"{settings.Address1} {settings.Address2}"
+                }).Select(m => new DownloadItemViewModel(m.File_835_EDI_url, m.File_835_Report_url, m.Payee_ID, DateTime.Parse(m.PostedOnDate)));
 
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
@@ -459,6 +468,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDownloadReportCommandExecute()
         {
+            DownloadFile(SelectedDownloadItem.ReportUrl, "Save report file");
         }
         #endregion
 
@@ -470,7 +480,43 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDownloadCommandExecute()
         {
+            DownloadFile(SelectedDownloadItem.Url, "Save 835 file");
         }
+
+        private void DownloadFile(string uri, string dialogTitle)
+        {
+            _dialogService.ShowLoadingIndicator();
+            try
+            {
+                var stream = (MemoryStream) _chewsiApi.DownloadFile(new DownoadFileRequest
+                {
+                    FileType = DownoadFileType.Pdf,
+                    url = uri,
+                    payee_ID = SelectedDownloadItem.PayeeId,
+                    postedOnDate = SelectedDownloadItem.PostedOnDate.ToString("d")
+                });
+                var dialog = new SaveFileDialog
+                {
+                    FileName = Path.GetFileName(uri),
+                    Title = dialogTitle,
+                    Filter = "PDF file (*.pdf)"
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                    using (FileStream file = new FileStream(dialog.FileName, FileMode.Create, FileAccess.Write))
+                    {
+                        stream.WriteTo(file);
+                        stream.Close();
+                    }
+                }
+            }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
+        }
+
         #endregion
         #endregion
     }

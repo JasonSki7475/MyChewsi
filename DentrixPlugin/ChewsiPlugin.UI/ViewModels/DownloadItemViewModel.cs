@@ -5,27 +5,37 @@ namespace ChewsiPlugin.UI.ViewModels
 {
     public class DownloadItemViewModel : ViewModelBase
     {
-        private DateTime _date;
-        private string _status;
+        private readonly string _url;
+        private readonly string _reportUrl;
+        private readonly string _payeeId;
+        private readonly DateTime _postedOnDate;
 
-        public DateTime Date
+        public DownloadItemViewModel(string url, string reportUrl, string payeeId, DateTime postedOnDate)
         {
-            get { return _date; }
-            set
-            {
-                _date = value;
-                RaisePropertyChanged(() => Date);
-            }
+            _url = url;
+            _reportUrl = reportUrl;
+            _payeeId = payeeId;
+            _postedOnDate = postedOnDate;
         }
 
-        public string Status
+        public string Url
         {
-            get { return _status; }
-            set
-            {
-                _status = value;
-                RaisePropertyChanged(() => Status);
-            }
+            get { return _url; }
+        }
+
+        public string ReportUrl
+        {
+            get { return _reportUrl; }
+        }
+
+        public string PayeeId
+        {
+            get { return _payeeId; }
+        }
+
+        public DateTime PostedOnDate
+        {
+            get { return _postedOnDate; }
         }
     }
 }

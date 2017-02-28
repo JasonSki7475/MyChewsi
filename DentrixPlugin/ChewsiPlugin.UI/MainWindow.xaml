@@ -96,7 +96,7 @@
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                     </Grid>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}">
+                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}" SelectedItem="{Binding SelectedDownloadItem}">
                         <DataGrid.Resources>
                             <controls1:BindingProxy x:Key="proxy" Data="{Binding}" />
                         </DataGrid.Resources>

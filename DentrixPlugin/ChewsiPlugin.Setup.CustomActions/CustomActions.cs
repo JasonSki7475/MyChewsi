@@ -10,8 +10,8 @@ namespace ChewsiPlugin.Setup.CustomActions
     {
         private static readonly List<IDentalApi> DentalApis = new List<IDentalApi>
             {
-                new DentrixApi(),
-                new OpenDentalApi.OpenDentalApi(new Repository())
+                //new DentrixApi(),
+                //new OpenDentalApi.OpenDentalApi(new Repository())
             }; 
 
         public static List<string> GetInstalledPMS()

@@ -14,8 +14,10 @@ namespace ChewsiPlugin.UI.Services
         private int _proxyPort;
         private string _proxyLogin;
         private string _proxyPassword;
+        private string _state;
 
-        public SettingsDto(Settings.PMS.Types pmsType, string pmsPath, string address1, string address2, string tin, bool useProxy, string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword)
+        public SettingsDto(Settings.PMS.Types pmsType, string pmsPath, string address1, string address2, string tin, 
+            bool useProxy, string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword, string state)
         {
             _pmsType = pmsType;
             _pmsPath = pmsPath;
@@ -27,6 +29,7 @@ namespace ChewsiPlugin.UI.Services
             _proxyPort = proxyPort;
             _proxyLogin = proxyLogin;
             _proxyPassword = proxyPassword;
+            _state = state;
         }
 
         public Settings.PMS.Types PmsType
@@ -77,6 +80,11 @@ namespace ChewsiPlugin.UI.Services
         public string ProxyPassword
         {
             get { return _proxyPassword; }
+        }
+
+        public string State
+        {
+            get { return _state; }
         }
     }
 }

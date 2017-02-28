@@ -7,4 +7,10 @@
         public string payee_ID { get; set; }
         public string FileType { get; set; }
     }
+
+    public static class DownoadFileType
+    {
+        public static string Txt = "835txt";
+        public static string Pdf = "835pdf";
+    }
 }

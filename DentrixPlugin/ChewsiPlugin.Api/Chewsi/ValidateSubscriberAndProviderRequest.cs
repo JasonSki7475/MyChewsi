@@ -5,7 +5,8 @@
         public string ChewsiID { get; set; }
         public string TIN { get; set; }
         public string NPI { get; set; }
-        public string RenderingAddress { get; set; }
+        public string RenderingAddress1 { get; set; }
+        public string RenderingAddress2 { get; set; }
         public string RenderingState { get; set; }
         public string RenderingCity { get; set; }
         public string RenderingZip { get; set; }
