@@ -7,7 +7,7 @@ namespace ChewsiPlugin.Api.Dentrix
     {
         public DateTime Date { get; set; }
         public string ProviderId { get; set; }
-        public string PrimaryInsuredId { get; set; }
+        public string ChewsiId { get; set; }
         public string PatientName { get; set; }
         public string PatientId { get; set; }
         public string StatusId { get; set; }

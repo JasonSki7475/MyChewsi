@@ -5,6 +5,7 @@
     
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
 
     <Viewbox x:Key="Logo" Stretch="Uniform" x:Shared="False">
         <Canvas x:Name="svg4136" Width="540" Height="270">

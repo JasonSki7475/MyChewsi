@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Dentrix;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
@@ -14,15 +17,17 @@ namespace ChewsiPlugin.UI.Services
         private readonly IChewsiApi _chewsiApi;
         private readonly IRepository _repository;
         private readonly IDialogService _dialogService;
+        private readonly IClaimStoreService _claimStoreService;
         private IDentalApi _dentalApi;
         private Settings.PMS.Types _pmsType;
         private readonly object _dentalApiInitializationLock = new object();
 
-        public AppService(IChewsiApi chewsiApi, IRepository repository, IDialogService dialogService)
+        public AppService(IChewsiApi chewsiApi, IRepository repository, IDialogService dialogService, IClaimStoreService claimStoreService)
         {
             _chewsiApi = chewsiApi;
             _repository = repository;
             _dialogService = dialogService;
+            _claimStoreService = claimStoreService;
             _repository.Initialize();
         }
 
@@ -158,7 +163,112 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        public IDentalApi DentalApi
+        public ValidateSubscriberAndProviderResponse ValidateClaim(string providerId, string patientId, 
+            out ProviderInformation providerInformation, out SubscriberInformation subscriberInformation, out Provider provider)
+        {
+            try
+            {
+                _dialogService.ShowLoadingIndicator();
+                provider = DentalApi.GetProvider(providerId);
+                if (provider != null)
+                {
+                    var subscriberInfo = DentalApi.GetPatientInfo(patientId);
+                    if (subscriberInfo != null)
+                    {
+                        providerInformation = new ProviderInformation
+                        {
+                            NPI = provider.Npi,
+                            TIN = provider.Tin
+                        };
+                        subscriberInformation = new SubscriberInformation
+                        {
+                            Id = subscriberInfo.PrimaryInsuredId,
+                            SubscriberDateOfBirth = subscriberInfo.BirthDate,
+                            SubscriberFirstName = subscriberInfo.FirstName,
+                            SubscriberLastName = subscriberInfo.LastName
+                        };
+                        var providerAddress = new ProviderAddressInformation
+                        {
+                            RenderingAddress1 = provider.AddressLine1,
+                            RenderingAddress2 = provider.AddressLine2,
+                            RenderingCity = provider.City,
+                            RenderingState = provider.State,
+                            RenderingZip = provider.ZipCode,
+                        };
+                        try
+                        {
+                            var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerInformation, providerAddress, subscriberInformation);
+                            Logger.Debug($"Validated subscriber '{patientId}' and provider '{providerId}': '{validationResponse.ValidationPassed}'");
+
+                            return validationResponse;
+                        }
+                        catch (NullReferenceException)
+                        {
+                            _dialogService.Show("Invalid server response. Try again later", "Error");
+                        }
+                    }
+                    else
+                    {
+                        var msg = "Cannot find patient " + patientId;
+                        _dialogService.Show(msg, "Error");
+                        Logger.Error(msg);
+                    }
+                }
+                else
+                {
+                    var msg = "Cannot find provider " + providerId;
+                    _dialogService.Show(msg, "Error");
+                    Logger.Error(msg);
+                }
+                providerInformation = null;
+                subscriberInformation = null;
+                return null;
+            }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
+        }
+
+        public void SubmitClaim(string patientId, ProviderInformation providerInformation, SubscriberInformation subscriberInformation, Provider provider)
+        {
+            try
+            {
+                _dialogService.ShowLoadingIndicator();
+                var procedures = DentalApi.GetProcedures(patientId);
+                if (procedures.Any())
+                {
+                    _chewsiApi.ProcessClaim(providerInformation, subscriberInformation, procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList());
+                    _claimStoreService.RequestStatusLookup(provider);
+
+                    Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
+                }
+                else
+                {
+                    var msg = "Cannot find any procedures for the patient";
+                    _dialogService.Show(msg, "Error");
+                    Logger.Error(msg + " " + patientId);
+                }
+            }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
+        }
+
+        public void UpdateCachedClaim(string chewsiId, DateTime date, AppointmentState state, string statusText)
+        {
+            var a = _repository.GetAppointmentByChewsiIdAndDate(chewsiId, date);
+            if (a != null)
+            {
+                a.StatusText = statusText;
+                a.State = state;
+
+                _repository.UpdateAppointment(a);
+            }
+        }
+
+        private IDentalApi DentalApi
         {
             get
             {
@@ -197,5 +307,7 @@ namespace ChewsiPlugin.UI.Services
                 return null;
             }
         }
+
+
     }
 }

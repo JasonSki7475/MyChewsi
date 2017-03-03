@@ -108,7 +108,7 @@
     <Compile Include="Chewsi\ClaimStatusType.cs" />
     <Compile Include="Dentrix\Appointment.cs" />
     <Compile Include="Dentrix\DentrixApi.cs" />
-    <Compile Include="Chewsi\ProcedureInformation.cs" />
+    <Compile Include="Chewsi\ClaimLine.cs" />
     <Compile Include="Common\Provider.cs" />
     <Compile Include="Common\PatientInfo.cs" />
     <Compile Include="Interfaces\IDentalApi.cs" />
@@ -121,6 +121,7 @@
     <Compile Include="Chewsi\ValidateSubscriberAndProviderResponse.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
     <Compile Include="Repository\Appointment.cs" />
+    <Compile Include="Repository\AppointmentState.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\Setting.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using Dapper;
 
 namespace ChewsiPlugin.Api.Repository
@@ -30,7 +31,7 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"INSERT INTO Appointments (Id, ChewsiId, DateTime, Deleted) VALUES (@Id, @ChewsiId, @DateTime, @Deleted)", item);
+                connection.Execute(@"INSERT INTO Appointments (ChewsiId, DateTime, State, StatusText) VALUES (@ChewsiId, @DateTime, @State, @StatusText)", item);
             }
         }
 
@@ -48,19 +49,19 @@ namespace ChewsiPlugin.Api.Repository
             }
         }
 
-        public Appointment GetAppointmentById(string id)
+        public Appointment GetAppointmentByChewsiIdAndDate(string chewsiId, DateTime date)
         {
             using (var connection = GetConnection())
             {
-                return connection.QueryFirstOrDefault<Appointment>(@"SELECT * FROM Appointments WHERE Id = @Id", new { Id = id });
+                return connection.QueryFirstOrDefault<Appointment>(@"SELECT * FROM Appointments WHERE ChewsiId = @Id AND DateTime = @DateTime", new { Id = chewsiId, DateTime = date });
             }
         }
 
-        public IEnumerable<Appointment> GetAppointments()
+        public List<Appointment> GetAppointments()
         {
             using (var connection = GetConnection())
             {
-                return connection.Query<Appointment>(@"SELECT * FROM Appointments");
+                return connection.Query<Appointment>(@"SELECT * FROM Appointments").ToList();
             }
         }
 
@@ -68,7 +69,15 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, Deleted = @Deleted WHERE Id = @Id", item);
+                connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, State = @State, StatusText = @StatusText WHERE Id = @Id", item);
+            }
+        }
+
+        public void BulkDeleteAppointments(List<int> ids)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Execute(@"DELETE FROM Appointments WHERE Id IN (@Id)", ids.Select(i => new { Id = i }).ToList());
             }
         }
 
@@ -94,10 +103,11 @@ namespace ChewsiPlugin.Api.Repository
                     connection.Execute(
                         @"create table Appointments
                               (
-                                 Id         TEXT primary key,
+                                 Id         INTEGER PRIMARY KEY AUTOINCREMENT,
                                  ChewsiId   TEXT not null,
+                                 StatusText TEXT null,
                                  DateTime   DATETIME not null,
-                                 Deleted    boolean not null
+                                 State      INTEGER not null
                               )");
                 }
             }

@@ -6,22 +6,18 @@ using System.Linq;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
-using NLog;
 using Provider = ChewsiPlugin.Api.Common.Provider;
 
 namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
-        private readonly IDialogService _dialogService;
         private readonly string _openDentalInstallationDirectory;
         private const string OpenDentalExeName = @"OpenDental.exe";
         private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        
         private Dictionary<long, string> _procedureCodes;
         private readonly Proxy _proxy;
-        private bool _initialized;
         private AppDomain _domain;
 
         public OpenDentalApi(IRepository repository, IDialogService dialogService)
@@ -120,7 +116,8 @@ namespace ChewsiPlugin.OpenDentalApi
                     var appointment = new Appointment
                     {
                         Date = m.AptDateTime,
-                        PrimaryInsuredId = plan.PlanNum.ToString(),
+                        //TODO it's not unique
+                        ChewsiId = plan.PlanNum.ToString(),
                         IsCompleted = m.AptStatus == "Complete",
                         PatientId = m.PatNum.ToString(),
                         PatientName = $"{patient.FName} {patient.LName}",

@@ -4,6 +4,11 @@ namespace ChewsiPlugin.Api.Chewsi
 {
     public class ProcessClaimRequest
     {
+        /// <summary>
+        /// Practice Management System unique claim identifier
+        /// </summary>
+        public string PMS_ID { get; set; }
+
         public string ProviderID { get; set; }
         public string TIN { get; set; }
         public string NPI { get; set; }
@@ -13,6 +18,6 @@ namespace ChewsiPlugin.Api.Chewsi
         public string SubscriberLastName { get; set; }
         public string SubscriberDOB { get; set; }
         public string PIN { get; set; }
-        public List<ProcedureInformation> ClaimLines { get; set; }
+        public List<ClaimLine> ClaimLines { get; set; }
     }
 }

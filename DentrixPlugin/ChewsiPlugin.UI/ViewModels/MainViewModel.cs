@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -20,34 +19,31 @@ namespace ChewsiPlugin.UI.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private ICommand _submitCommand;
         private ICommand _downloadReportCommand;
         private ICommand _downloadCommand;
-        private ICommand _deleteCommand;
         private ICommand _refreshDownloadsCommand;
         private ICommand _openSettingsCommandCommand;
         private ICommand _refreshAppointmentsCommand;
-        private ICommand _closeValidationPopupCommand;
-        private ICommand _closeProcessingPaymentPopupCommand;
         private ClaimItemViewModel _selectedClaim;
-        private bool _showValidationError;
-        private bool _showPaymentProcessing;
         private string _paymentProcessingMessage;
-        private bool _loadingAppointments;
-        private string _validationError;
         private readonly IChewsiApi _chewsiApi;
         private readonly IAppService _appService;
+
         private readonly IDialogService _dialogService;
         private SettingsViewModel _settingsViewModel;
         private DownloadItemViewModel _selectedDownloadItem;
 
-        public MainViewModel(IDialogService dialogService, IChewsiApi chewsiApi, IAppService appService)
+        public MainViewModel(IDialogService dialogService, IChewsiApi chewsiApi, IAppService appService,
+            IClaimStoreService claimStoreService)
         {
             _dialogService = dialogService;
-            ClaimItems = new ObservableCollection<ClaimItemViewModel>(TestClaims);
-            DownloadItems = new ObservableCollection<DownloadItemViewModel>();
-            _chewsiApi = chewsiApi;
             _appService = appService;
+            _chewsiApi = chewsiApi;
+            ClaimStoreService = claimStoreService;
+            DownloadItems = new ObservableCollection<DownloadItemViewModel>();
+
+            _dialogService.ShowLoadingIndicator();
+            ClaimStoreService.DeleteOldAppointments();
 
             //Thread.Sleep(10000);
 
@@ -55,17 +51,18 @@ namespace ChewsiPlugin.UI.ViewModels
             var loadAppointmentsWorker = new BackgroundWorker();
             loadAppointmentsWorker.DoWork += (i, j) =>
             {
-                RefreshAppointments();
+                ClaimStoreService.RefreshAppointments();
 
                 // Refresh appointments every 3 minutes
-                new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background, (m, n) => RefreshAppointments(), Dispatcher.CurrentDispatcher);
+                new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background,
+                    (m, n) => ClaimStoreService.RefreshAppointments(), Dispatcher.CurrentDispatcher);
             };
 
             // Initialize application
             var initWorker = new BackgroundWorker();
             initWorker.DoWork += (i, j) =>
             {
-                _dialogService.ShowLoadingIndicator();
+
                 // if internal DB file is missing or it's empty
                 if (!_appService.Initialized)
                 {
@@ -87,99 +84,11 @@ namespace ChewsiPlugin.UI.ViewModels
             };
             initWorker.RunWorkerAsync();
         }
-        
-        private void RefreshAppointments()
-        {
-            _dialogService.ShowLoadingIndicator();
-            var list = LoadAppointments().ToList();
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                var existingList = ClaimItems.ToList();
-
-                // add new rows
-                foreach (var item in list)
-                {
-                    if (existingList.All(m => !item.Equals(m)))
-                    {
-                        existingList.Add(item);
-                    }
-                }
-                ClaimItems.Clear();
-
-                // remove old
-                foreach (var item in existingList)
-                {
-                    if (list.Any(m => item.Equals(m)))
-                    {
-                        ClaimItems.Add(item);
-                    }
-                }
-                _dialogService.HideLoadingIndicator();
-            });
-        }
-        
-        private void DisplayValidationError(string error)
-        {
-            ValidationError = error;
-            ShowValidationError = true;
-        }
-
-        private IEnumerable<ClaimItemViewModel> LoadAppointments()
-        {
-            if (!_loadingAppointments)
-            {
-                _loadingAppointments = true;
-                
-                try
-                {
-                    var list = _appService.DentalApi.GetAppointmentsForToday();
-                    return list.OrderBy(m => m.IsCompleted)
-                        .Select(m => new ClaimItemViewModel
-                        {
-                            Provider = m.ProviderId,
-                            Date = m.Date,
-                            Patient = m.PatientName,
-                            PatientId = m.PatientId,
-                            ChewsiId = m.PrimaryInsuredId
-                        });
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Failed to load appointments");
-                }
-                finally
-                {
-                    _loadingAppointments = false;
-                }
-            }
-            return new List<ClaimItemViewModel>();
-        }
-
-        #region Test data
-        public ClaimItemViewModel[] TestClaims
-        {
-            get { return Enumerable.Range(0, 30).Select(m => GetTestClaim()).ToArray(); }
-        }
-
-        readonly Random _random = new Random();
-
-        ClaimItemViewModel GetTestClaim()
-        {
-            return new ClaimItemViewModel
-            {
-                ChewsiId = _random.Next(100, 1000).ToString(),
-                Date = DateTime.Now,
-                Provider = "Dr. Jason Hamel",
-                Patient = "John Smith #" + _random.Next(100, 1000),
-                Status = _random.Next(2) == 0 ? "Payment payment processing...." : "A payment authorization request sent to the subscriber. Please aks them to open the Cheswi app on their mobile device to authorized payment."
-            };
-        }
-        #endregion
 
         #region Properties
-        public ObservableCollection<ClaimItemViewModel> ClaimItems { get; private set; }
         public ObservableCollection<DownloadItemViewModel> DownloadItems { get; private set; }
         public IDialogService DialogService { get { return _dialogService; } }
+        public IClaimStoreService ClaimStoreService { get; private set; }
 
         public ClaimItemViewModel SelectedClaim
         {
@@ -201,26 +110,6 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public bool ShowValidationError
-        {
-            get { return _showValidationError; }
-            set
-            {
-                _showValidationError = value;
-                RaisePropertyChanged(() => ShowValidationError);
-            }
-        }
-
-        public bool ShowPaymentProcessing
-        {
-            get { return _showPaymentProcessing; }
-            set
-            {
-                _showPaymentProcessing = value;
-                RaisePropertyChanged(() => ShowPaymentProcessing);
-            }
-        }
-
         public string PaymentProcessingMessage
         {
             get { return _paymentProcessingMessage; }
@@ -230,17 +119,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => PaymentProcessingMessage);
             }
         }
-
-        public string ValidationError
-        {
-            get { return _validationError; }
-            set
-            {
-                _validationError = value;
-                RaisePropertyChanged(() => ValidationError);
-            }
-        }
-
+        
         public SettingsViewModel SettingsViewModel
         {
             get { return _settingsViewModel; }
@@ -252,117 +131,7 @@ namespace ChewsiPlugin.UI.ViewModels
         }
         #endregion
 
-        #region Commands
-        #region SubmitCommand
-        public ICommand SubmitCommand
-        {
-            get { return _submitCommand ?? (_submitCommand = new RelayCommand(OnSubmitCommandExecute, CanSubmitCommandExecute)); }
-        }
-
-        private bool CanSubmitCommandExecute()
-        {
-            return _appService.Initialized;
-        }
-
-        private void OnSubmitCommandExecute()
-        {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                var provider = _appService.DentalApi.GetProvider(SelectedClaim.Provider);
-                if (provider != null)
-                {
-                    var subscriberInfo = _appService.DentalApi.GetPatientInfo(SelectedClaim.PatientId);
-                    if (subscriberInfo != null)
-                    {
-                        var providerParam = new ProviderInformation
-                        {
-                            NPI = provider.Npi,
-                            TIN = provider.Tin
-                        };
-                        var subscriberParam = new SubscriberInformation
-                        {
-                            Id = subscriberInfo.PrimaryInsuredId,
-                            SubscriberDateOfBirth = subscriberInfo.BirthDate,
-                            SubscriberFirstName = subscriberInfo.FirstName,
-                            SubscriberLastName = subscriberInfo.LastName
-                        };
-                        var providerAddress = new ProviderAddressInformation
-                        {
-                            RenderingAddress1 = provider.AddressLine1,
-                            RenderingAddress2 = provider.AddressLine2,
-                            RenderingCity = provider.City,
-                            RenderingState = provider.State,
-                            RenderingZip = provider.ZipCode,
-                        };
-                        try
-                        {
-                            var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerParam,
-                                providerAddress, subscriberParam);
-                            Logger.Debug(
-                                $"Validated subscriber '{SelectedClaim.PatientId}' and provider '{SelectedClaim.Provider}': '{validationResponse.ValidationPassed}'");
-                            if (validationResponse.ValidationPassed)
-                            {
-                                var procedures = _appService.DentalApi.GetProcedures(SelectedClaim.PatientId);
-                                if (procedures.Any())
-                                {
-                                    _chewsiApi.ProcessClaim(providerParam, subscriberParam, procedures.Select(m =>
-                                        new ProcedureInformation
-                                        {
-                                            ProcedureCode = m.Code,
-                                            ProcedureCharge = m.Amount.ToString("F"),
-                                            DateOfService = m.Date.ToString("G")
-                                        }).ToList());
-                                    Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
-                                }
-                                else
-                                {
-                                    Logger.Error("Cannot find procedure for patient " + SelectedClaim.PatientId);
-                                }
-                            }
-                            else
-                            {
-                                DisplayValidationError(
-                                    $"{validationResponse.ProviderValidationMessage} {validationResponse.SubscriberValidationMessage}");
-                            }
-                            SelectedClaim.Status =
-                                $"{validationResponse.ProviderValidationMessage}{Environment.NewLine}{validationResponse.SubscriberValidationMessage}";
-
-                        }
-                        catch (NullReferenceException)
-                        {
-                            _dialogService.Show("Invalid server response. Try again later", "Error");
-                        }
-                    }
-                    else
-                    {
-                        var msg = "Cannot find patient " + SelectedClaim.PatientId;
-                        _dialogService.Show(msg, "Error");
-                        Logger.Error(msg);
-                    }
-                }
-                else
-                {
-                    var msg = "Cannot find provider " + SelectedClaim.Provider;
-                    _dialogService.Show(msg, "Error");
-                    Logger.Error(msg);
-                }
-            });
-        }
-
-        #endregion
-
-        #region DeleteCommand
-        public ICommand DeleteCommand
-        {
-            get { return _deleteCommand ?? (_deleteCommand = new RelayCommand(OnDeleteCommandExecute)); }
-        }
-
-        private void OnDeleteCommandExecute()
-        {
-
-        }
-        #endregion
-
+        #region Commands       
         #region RefreshAppointmentsCommand
         public ICommand RefreshAppointmentsCommand
         {
@@ -376,7 +145,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshAppointmentsCommandExecute()
         {
-            RefreshAppointments();
+            ClaimStoreService.RefreshAppointments();
         }
         #endregion     
            
@@ -431,32 +200,8 @@ namespace ChewsiPlugin.UI.ViewModels
             SettingsViewModel = new SettingsViewModel(_appService, () =>
             {
                 SettingsViewModel = null;
-                RefreshAppointments();
+                ClaimStoreService.RefreshAppointments();
             }, _dialogService);
-        }
-        #endregion
-
-        #region CloseValidationPopupCommand
-        public ICommand CloseValidationPopupCommand
-        {
-            get { return _closeValidationPopupCommand ?? (_closeValidationPopupCommand = new RelayCommand(OnCloseValidationPopupCommandExecute)); }
-        }
-
-        private void OnCloseValidationPopupCommandExecute()
-        {
-            ShowValidationError = false;
-        }
-        #endregion
-
-        #region CloseProcessingPaymentPopupCommand
-        public ICommand CloseProcessingPaymentPopupCommand
-        {
-            get { return _closeProcessingPaymentPopupCommand ?? (_closeProcessingPaymentPopupCommand = new RelayCommand(OnCloseProcessingPaymentPopupCommandExecute)); }
-        }
-
-        private void OnCloseProcessingPaymentPopupCommandExecute()
-        {
-            ShowPaymentProcessing = false;
         }
         #endregion
 

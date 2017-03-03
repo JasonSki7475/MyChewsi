@@ -6,6 +6,7 @@
         xmlns:controls1="clr-namespace:ChewsiPlugin.UI.Controls"
         xmlns:viewModels="clr-namespace:ChewsiPlugin.UI.ViewModels"
         xmlns:views="clr-namespace:ChewsiPlugin.UI.Views"
+        xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         mc:Ignorable="d"
@@ -36,19 +37,49 @@
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshAppointmentsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                     </Grid>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClaimItems}" SelectedItem="{Binding SelectedClaim}">
-                        <DataGrid.Resources>
-                            <controls1:BindingProxy x:Key="proxy" Data="{Binding}" />
-                        </DataGrid.Resources>
+                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClaimStoreService.ClaimItems}" SelectedItem="{Binding SelectedClaim}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding Date, StringFormat='d'}" Width="110" />
                             <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*" />
                             <DataGridTextColumn Header="Patient" IsReadOnly="True" Binding="{Binding Patient}" Width="*" />
-                            <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" Width="*" />
+                            <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding ProviderId}" Width="*" />
                             <DataGridTemplateColumn Header="Status" Width="3*" IsReadOnly="True">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Status}" TextWrapping="Wrap" ToolTip="{Binding Status}" />
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" Text="{Binding StatusText}" TextWrapping="Wrap" ToolTip="{Binding StatusText}" />
+                                            <Grid Grid.Row="2" Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                ConverterParameter={x:Static repository:AppointmentState.ValidationError}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="10"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="10"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Text="Chewsi Subscriber ID"/>
+                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding ChewsiId}"/>
+                                                </Grid>
+                                                <Grid Grid.Column="2">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="10"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Text="Subscriber First Name"/>
+                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding Patient}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -57,13 +88,17 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                Command="{Binding Path=Data.SubmitCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                                Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
+                                                Command="{Binding Path=SubmitCommand}"/>
                                             <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                    Visibility="Collapsed"
-                                                Command="{Binding Path=Data.SubmitCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                                Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                ConverterParameter={x:Static repository:AppointmentState.ValidationError}}"
+                                                Command="{Binding Path=SubmitCommand}"/>
                                             <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
-                                                    Visibility="Collapsed"
-                                                Margin="5,0,0,0" Command="{Binding Path=Data.DeleteCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
+                                                Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                ConverterParameter={x:Static repository:AppointmentState.ValidationErrorUnrecoverable}}"
+                                                Margin="5,0,0,0" Command="{Binding Path=DeleteCommand}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -120,68 +155,14 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Header="Validation Failed" ButtonText="Close"
-                            CloseCommand="{Binding CloseValidationPopupCommand}"
-                            ButtonCommand="{Binding CloseValidationPopupCommand}"
-                           Visibility="{Binding ShowValidationError, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid MaxWidth="600">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="57"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="65"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="2" Margin="10,20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="65"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="10"/>
-                    </Grid.ColumnDefinitions>
-                    <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Height="2" Fill="LightGray"/>
-                    <ContentControl Content="{StaticResource WarningIcon}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Height="20" Width="20"/>
-                    <TextBlock Grid.Column="3" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ValidationError}"/>
-                    <Rectangle Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Height="1" Fill="LightGray"/>
-                    <Grid Grid.Column="1" Grid.Row="6">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="Chewsi Subscriber ID"/>
-                        <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding SelectedClaim.ChewsiId}"/>
-                    </Grid>
-                    <Grid Grid.Column="3" Grid.Row="6">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="Subscriber First Name"/>
-                        <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding SelectedClaim.Patient}"/>
-                    </Grid>
-                </Grid>
-            </Grid>
-        </controls1:LightBox>
+        <Button Template="{StaticResource TransparentButton}" Background="Transparent" 
+                            BorderBrush="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Height="35" Width="50"
+                            Command="{Binding OpenSettingsCommand}">
+            <ContentControl Content="{StaticResource SettingsIcon}" />
+        </Button>
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Header="Processing Payment" ButtonText="Close"
-                            CloseCommand="{Binding CloseProcessingPaymentPopupCommand}"
-                            ButtonCommand="{Binding CloseProcessingPaymentPopupCommand}"
-                           Visibility="{Binding ShowPaymentProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                           Visibility="{Binding ClaimStoreService.IsProcessingPayment, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid Margin="10,20" MaxWidth="600">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -204,14 +185,9 @@
                             ButtonText="Ok" 
                             Visibility="{Binding DialogService.Message, Converter={StaticResource NullToVisibilityConverter}}"
                             CloseCommand="{Binding DialogService.Message.CloseCommand}"
-                            ButtonCommand="{Binding DialogService.Message.CloseCommand}">
+                            ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="True">
             <TextBlock Text="{Binding DialogService.Message.Text}" Width="500" TextWrapping="Wrap" MinHeight="65"/>
         </controls1:LightBox>
         <controls1:LoadingControl d:IsHidden="true" Visibility="{Binding DialogService.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <Button Template="{StaticResource TransparentButton}" Background="Transparent" 
-                            BorderBrush="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Height="35" Width="50"
-                            Command="{Binding OpenSettingsCommand}">
-            <ContentControl Content="{StaticResource SettingsIcon}" />
-        </Button>
     </Grid>
 </Window>

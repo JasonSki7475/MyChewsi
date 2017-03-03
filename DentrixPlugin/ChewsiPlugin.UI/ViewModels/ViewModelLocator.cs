@@ -24,6 +24,7 @@ namespace ChewsiPlugin.UI.ViewModels
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<IRepository, Repository>();
             SimpleIoc.Default.Register<IAppService, AppService>();
+            SimpleIoc.Default.Register<IClaimStoreService, ClaimStoreService>();
         }
 
         public MainViewModel MainViewModel

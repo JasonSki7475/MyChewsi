@@ -137,7 +137,7 @@ namespace ChewsiPlugin.Api.Dentrix
                     PatientId = m["patient_id"],
                     Date = DateTime.Parse(m["appointment_date"]),
                     ProviderId = m["provider_id"],
-                    PrimaryInsuredId = insuranceId,
+                    ChewsiId = insuranceId,
                     StatusId = m["status_id"]
                 };
             }).ToList());

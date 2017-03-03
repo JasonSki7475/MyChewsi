@@ -27,7 +27,6 @@ namespace ChewsiPlugin.Api.Chewsi
         private const string Request835DownloadsUri = "Request835Downloads";
         private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus";
         private const string ReceiveMemberAuthorizationUri = "ReceiveMemberAuthorization";
-        private const string DownoadFileRequestUri = "DownoadFileRequest";
         private const string UpdatePluginRegistrationUri = "UpdatePluginRegistration";
 
         public ChewsiApi(IDialogService dialogService)
@@ -62,10 +61,12 @@ namespace ChewsiPlugin.Api.Chewsi
                 ValidateSubscriberAndProviderUri);
         }
 
-        public void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ProcedureInformation> procedures)
+        public void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures)
         {
             Post<string>(new ProcessClaimRequest
             {
+                // TODO PMS_ID = ,
+                //PMS_ID = ...
                 TIN = provider.TIN,
                 OfficeNbr = provider.OfficeNbr,
                 ClaimLines = procedures,
@@ -156,7 +157,7 @@ namespace ChewsiPlugin.Api.Chewsi
 
             // TODO
             //webRequest.Proxy = new WebProxy("http://localhost:8888");
-            
+
             try
             {
                 if (method == HttpMethod.Post)
@@ -166,10 +167,10 @@ namespace ChewsiPlugin.Api.Chewsi
                     using (Stream post = webRequest.GetRequestStream())
                     {
                         post.Write(data, 0, data.Length);
-                    }                    
+                    }
                 }
-
-                using (var response = webRequest.GetResponse() as HttpWebResponse)
+                var response = webRequest.GetResponse() as HttpWebResponse;
+                if (response != null)
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -201,6 +202,8 @@ namespace ChewsiPlugin.Api.Chewsi
                     Logger.Error("Unsupported status code {0}. Uri={1}", response.StatusCode, uri);
                     throw new InvalidOperationException($"Unsupported status code {response.StatusCode}");
                 }
+                Logger.Error("Empty response. Uri={0}", uri);
+                throw new InvalidOperationException($"Empty response");
             }
             catch (WebException e)
             {

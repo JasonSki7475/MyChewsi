@@ -116,6 +116,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\EnumToVisibilityConverter.cs" />
     <Compile Include="Services\AppService.cs" />
     <Compile Include="Controls\BindingProxy.cs" />
     <Compile Include="Controls\LightBox.cs" />
@@ -125,7 +126,9 @@
     </Compile>
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Services\IAppService.cs" />
+    <Compile Include="Services\IClaimStoreService.cs" />
     <Compile Include="Services\SettingsDto.cs" />
+    <Compile Include="Services\ClaimStoreService.cs" />
     <Compile Include="ViewModels\DialogService\DialogService.cs" />
     <Compile Include="ViewModels\DialogService\Message.cs" />
     <Compile Include="ViewModels\ClaimItemViewModel.cs" />

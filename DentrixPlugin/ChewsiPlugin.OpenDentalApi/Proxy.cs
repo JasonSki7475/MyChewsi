@@ -76,7 +76,7 @@ namespace ChewsiPlugin.OpenDentalApi
             // LoadFrom loads dependent DLLs from the app domain's base directory
             var assembly = Assembly.LoadFrom(assemblyPath);
             var type = assembly.GetType(typeName);
-            var methodinfo = type.GetMethod(methodName);
+            var methodinfo = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public, null, args?.Select(m => m.GetType()).ToArray() ?? new Type[0], null);
             return methodinfo.Invoke(null, args);
         }
 
