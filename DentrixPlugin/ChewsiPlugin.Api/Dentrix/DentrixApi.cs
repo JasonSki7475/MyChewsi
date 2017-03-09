@@ -65,20 +65,22 @@ namespace ChewsiPlugin.Api.Dentrix
         {
             var result = ExecuteCommand($"select pi.patient_id, ins.id_num from admin.v_patient_insurance pi join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where primary_insurance_carrier_name='{InsuranceCarrierName}'",
                 new List<string> { "patient_id", "id_num" }, false);
-            return result.ToDictionary(m => m["patient_id"], m => m["id_num"]);
+            return result.ToDictionary(m => m["patient_id"].Trim(), m => m["id_num"].Trim());
         }
 
         public PatientInfo GetPatientInfo(string patientId)
         {
             var result =
                 ExecuteCommand(
-                    $"select pi.first_name, pi.last_name, ins.id_num, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where pi.patient_id='{patientId}'",
-                    new List<string> {"first_name", "last_name", "id_num", "birth_date" }, false);
+                    $"select pi.primary_insured_first_name, pi.primary_insured_last_name, pi.first_name, pi.last_name, ins.id_num, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where pi.patient_id='{patientId}'",
+                    new List<string> {"first_name", "last_name", "id_num", "birth_date", "primary_insured_first_name", "primary_insured_last_name" }, false);
             return result.Select(m => new PatientInfo
             {
-                PrimaryInsuredId = m["id_num"].Trim(),
-                LastName = m["last_name"].Trim(),
-                FirstName = m["first_name"].Trim(),
+                ChewsiId = m["id_num"].Trim(),
+                PatientLastName = m["last_name"].Trim(),
+                PatientFirstName = m["first_name"].Trim(),
+                SubscriberFirstName = m["primary_insured_first_name"].Trim(),
+                SubscriberLastName = m["primary_insured_last_name"].Trim(),
                 BirthDate = DateTime.Parse(m["birth_date"])
             }).FirstOrDefault();
         }
@@ -102,7 +104,7 @@ namespace ChewsiPlugin.Api.Dentrix
                 new ProcedureInfo
                 {
                     Amount = double.Parse(proc["amt"]),
-                    Code = proc["proc_code"],
+                    Code = proc["proc_code"].TrimStart('D'),
                     Date = DateTime.Parse(proc["proc_date"])
                 })
                 .ToList();
@@ -133,10 +135,10 @@ namespace ChewsiPlugin.Api.Dentrix
                 patientIds.TryGetValue(m["patient_id"], out insuranceId);
                 return new Appointment
                 {
-                    PatientName = m["patient_name"],
-                    PatientId = m["patient_id"],
+                    PatientName = m["patient_name"].Trim(),
+                    PatientId = m["patient_id"].Trim(),
                     Date = DateTime.Parse(m["appointment_date"]),
-                    ProviderId = m["provider_id"],
+                    ProviderId = m["provider_id"].Trim(),
                     ChewsiId = insuranceId,
                     StatusId = m["status_id"]
                 };
@@ -300,14 +302,22 @@ namespace ChewsiPlugin.Api.Dentrix
                 else
                 {
                     // G6.1 or less
-                    if (DENTRIXAPI_Initialize(UserId, Password) == 1)
+                    try
                     {
-                        Logger.Info("Initialized for version < 6.2");
-                        _initialized = true;
+                        if (DENTRIXAPI_Initialize(UserId, Password) == 1)
+                        {
+                            Logger.Info("Initialized for version < 6.2");
+                            _initialized = true;
+                        }
+                        else
+                        {
+                            Logger.Error("Could not register user for version < 6.2");
+                        }
                     }
-                    else
+                    catch (UnauthorizedAccessException e)
                     {
-                        Logger.Error("Could not register user for version < 6.2");
+                        Logger.Error(e, "Failed to initialize Dentrix API");
+                        _dialogService.Show($"Failed to initialize Dentrix API: {e.Message}. Try to run the plugin as administrator.");
                     }
                 }
             }

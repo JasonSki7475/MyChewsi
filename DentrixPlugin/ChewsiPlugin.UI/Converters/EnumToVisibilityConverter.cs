@@ -9,7 +9,7 @@ namespace ChewsiPlugin.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value.ToString() == (string) parameter ? Visibility.Visible : Visibility.Collapsed;
+            return value.ToString() == parameter.ToString() ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

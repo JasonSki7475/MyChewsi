@@ -37,11 +37,11 @@
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshAppointmentsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                     </Grid>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClaimStoreService.ClaimItems}" SelectedItem="{Binding SelectedClaim}">
+                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" SelectedItem="{Binding SelectedClaim}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding Date, StringFormat='d'}" Width="110" />
                             <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*" />
-                            <DataGridTextColumn Header="Patient" IsReadOnly="True" Binding="{Binding Patient}" Width="*" />
+                            <DataGridTextColumn Header="Patient" IsReadOnly="True" Binding="{Binding PatientName}" Width="*" />
                             <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding ProviderId}" Width="*" />
                             <DataGridTemplateColumn Header="Status" Width="3*" IsReadOnly="True">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -86,20 +86,20 @@
                             <DataGridTemplateColumn Header="Action" Width="120">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Grid HorizontalAlignment="Center"><!---->
                                             <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
-                                                Command="{Binding Path=SubmitCommand}"/>
+                                                    Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                    ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
+                                                    Command="{Binding Path=SubmitCommand}"/>
                                             <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                ConverterParameter={x:Static repository:AppointmentState.ValidationError}}"
-                                                Command="{Binding Path=SubmitCommand}"/>
+                                                    Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                    ConverterParameter={x:Static repository:AppointmentState.ValidationError}}"
+                                                    Command="{Binding Path=SubmitCommand}"/>
                                             <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
-                                                Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                ConverterParameter={x:Static repository:AppointmentState.ValidationErrorUnrecoverable}}"
-                                                Margin="5,0,0,0" Command="{Binding Path=DeleteCommand}"/>
-                                        </StackPanel>
+                                                    Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                    ConverterParameter={x:Static repository:AppointmentState.ValidationErrorUnrecoverable}}"
+                                                    Margin="5,0,0,0" Command="{Binding Path=DeleteCommand}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -162,7 +162,9 @@
         </Button>
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Header="Processing Payment" ButtonText="Close"
-                           Visibility="{Binding ClaimStoreService.IsProcessingPayment, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            CloseCommand="{Binding PaymentProcessingCloseCommand}"
+                            ButtonCommand="{Binding PaymentProcessingCloseCommand}"
+                           Visibility="{Binding ShowPaymentProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid Margin="10,20" MaxWidth="600">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -170,13 +172,13 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" TextWrapping="Wrap" Text="Validation was completed. Waiting for subscriber to approve payment. Please ask them to open the Chewsi app."/>
-                <ProgressBar Grid.Row="2" Height="20" Value="50"/>
+                <ProgressBar Grid.Row="2" Height="20" Value="50" IsIndeterminate="True"/>
                 <TextBlock Grid.Row="2" Text="{Binding PaymentProcessingMessage}" Margin="20,0" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
             </Grid>
         </controls1:LightBox>
         <controls1:LightBox d:IsHidden="true" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                            Visibility="{Binding SettingsViewModel, Converter={StaticResource NullToVisibilityConverter}}"
-                           Header="Settings" ButtonText="Save"
+                           Header="Settings" ButtonText="Save" ShowCloseButton="False"
                            CloseCommand="{Binding SettingsViewModel.CloseCommand}"
                            ButtonCommand="{Binding SettingsViewModel.SaveCommand}">
             <views:SettingsView DataContext="{Binding SettingsViewModel}"/>

@@ -1,10 +1,13 @@
 ﻿using System;
 using ChewsiPlugin.Api.Interfaces;
+using NLog;
 
 namespace ChewsiPlugin.Api.Dentrix
 {
     internal class Appointment : IAppointment
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public DateTime Date { get; set; }
         public string ProviderId { get; set; }
         public string ChewsiId { get; set; }
@@ -12,6 +15,13 @@ namespace ChewsiPlugin.Api.Dentrix
         public string PatientId { get; set; }
         public string StatusId { get; set; }
 
-        public bool IsCompleted { get { return StatusId == "150"; } }
+        public bool IsCompleted
+        {
+            get
+            {
+                Logger.Debug($"Appointment {ChewsiId} has status {StatusId}");
+                return StatusId == "-106" || StatusId == "150";
+            }
+        }
     }
 }

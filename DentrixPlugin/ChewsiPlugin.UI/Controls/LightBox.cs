@@ -33,5 +33,14 @@ namespace ChewsiPlugin.UI.Controls
             get { return (ICommand) GetValue(ButtonCommandProperty); }
             set { SetValue(ButtonCommandProperty, value); }
         }
+
+        public static readonly DependencyProperty ShowCloseButtonProperty = DependencyProperty.Register(
+            "ShowCloseButton", typeof (bool), typeof (LightBox), new PropertyMetadata(true));
+
+        public bool ShowCloseButton
+        {
+            get { return (bool) GetValue(ShowCloseButtonProperty); }
+            set { SetValue(ShowCloseButtonProperty, value); }
+        }
     }
 }

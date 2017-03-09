@@ -126,9 +126,7 @@
     </Compile>
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Services\IAppService.cs" />
-    <Compile Include="Services\IClaimStoreService.cs" />
     <Compile Include="Services\SettingsDto.cs" />
-    <Compile Include="Services\ClaimStoreService.cs" />
     <Compile Include="ViewModels\DialogService\DialogService.cs" />
     <Compile Include="ViewModels\DialogService\Message.cs" />
     <Compile Include="ViewModels\ClaimItemViewModel.cs" />

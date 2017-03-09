@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:Controls="clr-namespace:ChewsiPlugin.UI.Controls"
+                    xmlns:controls="clr-namespace:ChewsiPlugin.UI.Controls"
                     xmlns:converters="clr-namespace:ChewsiPlugin.UI.Converters">
     
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -400,7 +400,6 @@
         <Setter Property="ColumnHeaderHeight" Value="37"/>
         <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
-        <Setter Property="RowHeight" Value="52"/>
         <Setter Property="CanUserAddRows" Value="False"/>
         <Setter Property="CanUserDeleteRows" Value="False"/>
         <Setter Property="SelectionMode" Value="Single"/>
@@ -497,10 +496,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type Controls:LightBox}">
+    <Style TargetType="{x:Type controls:LightBox}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Controls:LightBox}">
+                <ControlTemplate TargetType="{x:Type controls:LightBox}">
                     <Grid>
                         <Border x:Name="Border1" Background="Black" Opacity="0.5" />
                         <Border Margin="5,5,0,0" Background="Black" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
@@ -525,6 +524,7 @@
                                     <TextBlock Text="{TemplateBinding Header}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center"/>
                                     <Button Template="{StaticResource TransparentButton}" Background="White" 
                                         BorderBrush="White" HorizontalAlignment="Right" Margin="0,0,0,15"
+                                        Visibility="{TemplateBinding ShowCloseButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         Command="{TemplateBinding CloseCommand}">
                                         <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
                                     </Button>

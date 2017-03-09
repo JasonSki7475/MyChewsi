@@ -13,10 +13,9 @@ namespace ChewsiPlugin.UI.ViewModels
     public class ClaimItemViewModel : ViewModelBase
     {
         private readonly IAppService _appService;
-        private readonly IClaimStoreService _claimStoreService;
         private DateTime _date;
         private string _chewsiId;
-        private string _patient;
+        private string _patientName;
         private string _providerId;
         private string _patientId;
         private string _statusText;
@@ -27,13 +26,14 @@ namespace ChewsiPlugin.UI.ViewModels
         public static class StatusMessage
         {
             public const string PaymentProcessing = "Payment processing...";
+            public const string PaymentProcessingError = "Payment processing failed";
             public const string ReadyToSubmit = "Please submit this claim..";
+            public const string TreatmentInProgress = "Treatment is in progress...";
         }
 
-        public ClaimItemViewModel(IAppService appService, IClaimStoreService claimStoreService)
+        public ClaimItemViewModel(IAppService appService)
         {
             _appService = appService;
-            _claimStoreService = claimStoreService;
         }
 
         public DateTime Date
@@ -56,13 +56,13 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public string Patient
+        public string PatientName
         {
-            get { return _patient; }
+            get { return _patientName; }
             set
             {
-                _patient = value;
-                RaisePropertyChanged(() => Patient);
+                _patientName = value;
+                RaisePropertyChanged(() => PatientName);
             }
         }
 
@@ -140,11 +140,30 @@ namespace ChewsiPlugin.UI.ViewModels
                 {
                     if (validationResponse.ValidationPassed)
                     {
+                        providerInformation.Id = validationResponse.ProviderID;
+                        providerInformation.OfficeNbr = validationResponse.OfficeNumber;
+
                         _appService.SubmitClaim(PatientId, providerInformation, subscriberInformation, provider);
                     }
                     else
                     {
-                        StatusText = $"{validationResponse.ProviderValidationMessage}{Environment.NewLine}{validationResponse.SubscriberValidationMessage}";
+                        #region Format status
+                        var text = "";
+                        if (!string.IsNullOrEmpty(validationResponse.ProviderValidationMessage))
+                        {
+                            text += validationResponse.ProviderValidationMessage;
+                        }
+                        if (!string.IsNullOrEmpty(validationResponse.SubscriberValidationMessage))
+                        {
+                            if (!string.IsNullOrEmpty(text))
+                            {
+                                text += Environment.NewLine;
+                            }
+                            text += validationResponse.SubscriberValidationMessage;
+                        }
+                        StatusText = text;
+                        #endregion
+
                         if (validationResponse.SubscriberNoLongerActive || validationResponse.ProviderNotFound)
                         {
                             State = AppointmentState.ValidationErrorUnrecoverable;
@@ -155,6 +174,10 @@ namespace ChewsiPlugin.UI.ViewModels
                         }
                         _appService.UpdateCachedClaim(ChewsiId, Date, State, StatusText);
                     }                    
+                }
+                else
+                {
+                    StatusText = StatusMessage.PaymentProcessingError;
                 }
             });
         }
@@ -168,7 +191,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDeleteCommandExecute()
         {
-            _claimStoreService.DeleteAppointment(ChewsiId, Date);
+            _appService.DeleteAppointment(ChewsiId, Date);
         }
         #endregion
         #endregion

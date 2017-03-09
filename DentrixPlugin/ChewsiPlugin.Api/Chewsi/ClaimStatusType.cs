@@ -2,6 +2,6 @@
 {
     public enum ClaimStatusType
     {
-        P, D, C, Error
+        P, D, C, Error, SubmitClaim
     }
 }

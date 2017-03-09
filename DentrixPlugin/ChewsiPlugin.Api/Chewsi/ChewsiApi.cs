@@ -65,8 +65,7 @@ namespace ChewsiPlugin.Api.Chewsi
         {
             Post<string>(new ProcessClaimRequest
             {
-                // TODO PMS_ID = ,
-                //PMS_ID = ...
+                PMS_ID = Guid.NewGuid().ToString(),
                 TIN = provider.TIN,
                 OfficeNbr = provider.OfficeNbr,
                 ClaimLines = procedures,
@@ -75,8 +74,10 @@ namespace ChewsiPlugin.Api.Chewsi
                 ProviderID = provider.Id,
                 SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
+                PatientFirstName = subscriber.PatientFirstName,
                 SubscriberID = subscriber.Id,
-                SubscriberLastName = subscriber.SubscriberLastName
+                SubscriberLastName = subscriber.SubscriberLastName,
+                PatientLastName = subscriber.PatientLastName
             },
             ProcessClaimUri);
         }
@@ -86,8 +87,8 @@ namespace ChewsiPlugin.Api.Chewsi
         /// </summary>
         public string RegisterPlugin(RegisterPluginRequest request)
         {
-            var response = Post<RegisterPluginResponse>(request, RegisterPluginUri);
-            return response?.Token;
+            var response = Post<string>(request, RegisterPluginUri);
+            return response;
         }
 
         public void UpdatePluginRegistration(UpdatePluginRegistrationRequest request)

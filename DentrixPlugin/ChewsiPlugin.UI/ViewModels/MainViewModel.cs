@@ -24,26 +24,34 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _refreshDownloadsCommand;
         private ICommand _openSettingsCommandCommand;
         private ICommand _refreshAppointmentsCommand;
+        private ICommand _paymentProcessingCloseCommand;
         private ClaimItemViewModel _selectedClaim;
         private string _paymentProcessingMessage;
         private readonly IChewsiApi _chewsiApi;
-        private readonly IAppService _appService;
-
         private readonly IDialogService _dialogService;
         private SettingsViewModel _settingsViewModel;
         private DownloadItemViewModel _selectedDownloadItem;
+        private bool _hidePaymentProcessing;
 
-        public MainViewModel(IDialogService dialogService, IChewsiApi chewsiApi, IAppService appService,
-            IClaimStoreService claimStoreService)
+        public MainViewModel(IDialogService dialogService, IChewsiApi chewsiApi, IAppService appService)
         {
             _dialogService = dialogService;
-            _appService = appService;
+            AppService = appService;
+
+            AppService.OnStartPaymentStatusLookup += () =>
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    _hidePaymentProcessing = false;
+                    RaisePropertyChanged(() => ShowPaymentProcessing);
+                });
+            };
+
             _chewsiApi = chewsiApi;
-            ClaimStoreService = claimStoreService;
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
 
             _dialogService.ShowLoadingIndicator();
-            ClaimStoreService.DeleteOldAppointments();
+            AppService.DeleteOldAppointments();
 
             //Thread.Sleep(10000);
 
@@ -51,11 +59,11 @@ namespace ChewsiPlugin.UI.ViewModels
             var loadAppointmentsWorker = new BackgroundWorker();
             loadAppointmentsWorker.DoWork += (i, j) =>
             {
-                ClaimStoreService.RefreshAppointments();
+                AppService.RefreshAppointments();
 
                 // Refresh appointments every 3 minutes
                 new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background,
-                    (m, n) => ClaimStoreService.RefreshAppointments(), Dispatcher.CurrentDispatcher);
+                    (m, n) => AppService.RefreshAppointments(), Dispatcher.CurrentDispatcher);
             };
 
             // Initialize application
@@ -64,12 +72,12 @@ namespace ChewsiPlugin.UI.ViewModels
             {
 
                 // if internal DB file is missing or it's empty
-                if (!_appService.Initialized)
+                if (!AppService.Initialized)
                 {
                     _dialogService.HideLoadingIndicator();
                     Logger.Debug("Settings are empty. Opening settings view");
                     // ask user to choose PMS type and location
-                    SettingsViewModel = new SettingsViewModel(_appService, () =>
+                    SettingsViewModel = new SettingsViewModel(AppService, () =>
                     {
                         SettingsViewModel = null;
                         loadAppointmentsWorker.RunWorkerAsync();
@@ -77,10 +85,10 @@ namespace ChewsiPlugin.UI.ViewModels
                 }
                 else
                 {
-                    _appService.UpdatePluginRegistration();
+                    AppService.UpdatePluginRegistration();
                     loadAppointmentsWorker.RunWorkerAsync();
                 }
-                _appService.InitializeChewsiApi();
+                AppService.InitializeChewsiApi();
             };
             initWorker.RunWorkerAsync();
         }
@@ -88,7 +96,12 @@ namespace ChewsiPlugin.UI.ViewModels
         #region Properties
         public ObservableCollection<DownloadItemViewModel> DownloadItems { get; private set; }
         public IDialogService DialogService { get { return _dialogService; } }
-        public IClaimStoreService ClaimStoreService { get; private set; }
+        public IAppService AppService { private set; get; }
+
+        public bool ShowPaymentProcessing
+        {
+            get { return !_hidePaymentProcessing && AppService.IsProcessingPayment; }
+        }
 
         public ClaimItemViewModel SelectedClaim
         {
@@ -140,12 +153,25 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private bool CanExecuteRefreshAppointmentsCommand()
         {
-            return !_loadingAppointments && _appService.Initialized;
+            return !AppService.IsLoadingAppointments && AppService.Initialized;
         }
 
         private void OnRefreshAppointmentsCommandExecute()
         {
-            ClaimStoreService.RefreshAppointments();
+            AppService.RefreshAppointments();
+        }
+        #endregion
+
+        #region PaymentProcessingCloseCommand
+        public ICommand PaymentProcessingCloseCommand
+        {
+            get { return _paymentProcessingCloseCommand ?? (_paymentProcessingCloseCommand = new RelayCommand(OnPaymentProcessingCloseCommandExecute)); }
+        }
+        
+        private void OnPaymentProcessingCloseCommandExecute()
+        {
+            _hidePaymentProcessing = true;
+            RaisePropertyChanged(() => ShowPaymentProcessing);
         }
         #endregion     
            
@@ -157,7 +183,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshDownloadsCommandExecute()
         {
-            var settings = _appService.GetSettings();
+            var settings = AppService.GetSettings();
 
             var worker = new BackgroundWorker();
             worker.DoWork += (i, j) =>
@@ -185,7 +211,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private bool CanExecuteRefreshDownloadsCommand()
         {
-            return _appService.Initialized;
+            return AppService.Initialized;
         }
         #endregion
 
@@ -197,10 +223,10 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnOpenSettingsCommandCommandExecute()
         {
-            SettingsViewModel = new SettingsViewModel(_appService, () =>
+            SettingsViewModel = new SettingsViewModel(AppService, () =>
             {
                 SettingsViewModel = null;
-                ClaimStoreService.RefreshAppointments();
+                AppService.RefreshAppointments();
             }, _dialogService);
         }
         #endregion

@@ -6,8 +6,8 @@ namespace ChewsiPlugin.Api.Common
 {
     public abstract class DentalApi
     {
-        protected IDialogService _dialogService;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected IDialogService _dialogService;
         protected bool _initialized;
 
         //TODO
@@ -28,7 +28,7 @@ namespace ChewsiPlugin.Api.Common
             var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
 */
             var dateStart = new DateTime(2017, 1, 1, 23, 59, 59);
-            var dateEnd = new DateTime(2017, 3, 1, 23, 59, 59);
+            var dateEnd = new DateTime(2017, 4, 1, 23, 59, 59);
 /*
             
             var dateStart = now.Date;

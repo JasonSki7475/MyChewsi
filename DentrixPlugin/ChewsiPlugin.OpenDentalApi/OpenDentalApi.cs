@@ -53,8 +53,11 @@ namespace ChewsiPlugin.OpenDentalApi
                 return new PatientInfo
                 {
                     BirthDate = patient.Birthdate,
-                    FirstName = patient.FName,
-                    LastName = patient.LName
+                    PatientFirstName = patient.FName,
+                    PatientLastName = patient.LName,
+                    //TODO verify that there is no info about subscriber
+                    SubscriberFirstName = patient.FName,
+                    SubscriberLastName = patient.LName
                 };
             }
             return null;

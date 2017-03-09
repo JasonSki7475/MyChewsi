@@ -16,6 +16,8 @@ namespace ChewsiPlugin.Api.Chewsi
         public string SubscriberID { get; set; }
         public string SubscriberFirstName { get; set; }
         public string SubscriberLastName { get; set; }
+        public string PatientFirstName { get; set; }
+        public string PatientLastName { get; set; }
         public string SubscriberDOB { get; set; }
         public string PIN { get; set; }
         public List<ClaimLine> ClaimLines { get; set; }

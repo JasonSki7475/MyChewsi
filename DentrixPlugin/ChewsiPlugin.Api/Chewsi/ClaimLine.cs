@@ -6,7 +6,7 @@ namespace ChewsiPlugin.Api.Chewsi
     {
         public ClaimLine(DateTime dateOfService, string procedureCode, double procedureCharge)
         {
-            DateOfService = dateOfService.ToString("G");
+            DateOfService = dateOfService.ToString("d");
             ProcedureCode = procedureCode;
             ProcedureCharge = procedureCharge.ToString("F");
         }

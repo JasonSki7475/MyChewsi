@@ -5,9 +5,11 @@ namespace ChewsiPlugin.Api.Common
     [Serializable]
     public class PatientInfo: MarshalByRefObject
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string PatientFirstName { get; set; }
+        public string PatientLastName { get; set; }
+        public string SubscriberFirstName { get; set; }
+        public string SubscriberLastName { get; set; }
         public DateTime BirthDate { get; set; }
-        public string PrimaryInsuredId { get; set; }
+        public string ChewsiId { get; set; }
     }
 }
