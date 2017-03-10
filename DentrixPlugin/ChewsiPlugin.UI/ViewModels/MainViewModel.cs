@@ -59,11 +59,11 @@ namespace ChewsiPlugin.UI.ViewModels
             var loadAppointmentsWorker = new BackgroundWorker();
             loadAppointmentsWorker.DoWork += (i, j) =>
             {
-                AppService.RefreshAppointments();
+                AppService.RefreshAppointments(true);
 
                 // Refresh appointments every 3 minutes
                 new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background,
-                    (m, n) => AppService.RefreshAppointments(), Dispatcher.CurrentDispatcher);
+                    (m, n) => AppService.RefreshAppointments(true), Dispatcher.CurrentDispatcher);
             };
 
             // Initialize application
@@ -158,7 +158,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshAppointmentsCommandExecute()
         {
-            AppService.RefreshAppointments();
+            AppService.RefreshAppointments(true);
         }
         #endregion
 
@@ -226,7 +226,7 @@ namespace ChewsiPlugin.UI.ViewModels
             SettingsViewModel = new SettingsViewModel(AppService, () =>
             {
                 SettingsViewModel = null;
-                AppService.RefreshAppointments();
+                AppService.RefreshAppointments(true);
             }, _dialogService);
         }
         #endregion

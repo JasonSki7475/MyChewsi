@@ -4,11 +4,15 @@
     {
         TreatmentInProgress = 0,
         TreatmentCompleted = 1,
-        ValidationCompleted = 2,
+
+        /// <summary>
+        /// Pending status lookup
+        /// </summary>
+        ValidationCompletedAndClaimSubmitted = 2,
+
         ValidationErrorUnrecoverable = 3,
         ValidationError = 4,
-        PendingStatusLookup = 5,
-        Deleted = 6,
-        PaymentCompleted = 7
+        Deleted = 5,
+        PaymentCompleted = 6
     }
 }

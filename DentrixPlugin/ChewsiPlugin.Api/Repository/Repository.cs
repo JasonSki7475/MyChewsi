@@ -31,7 +31,7 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"INSERT INTO Appointments (ChewsiId, DateTime, State, StatusText) VALUES (@ChewsiId, @DateTime, @State, @StatusText)", item);
+                connection.Execute(@"INSERT INTO Appointments (ChewsiId, DateTime, State, StatusText, SubmissionDate, PatientName, ProviderId, PatientId) VALUES (@ChewsiId, @DateTime, @State, @StatusText, @SubmissionDate, @PatientName, @ProviderId, @PatientId)", item);
             }
         }
 
@@ -69,7 +69,7 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, State = @State, StatusText = @StatusText WHERE Id = @Id", item);
+                connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, State = @State, StatusText = @StatusText, SubmissionDate=@SubmissionDate, PatientName=@PatientName, ProviderId=@ProviderId, PatientId=@PatientId WHERE Id = @Id", item);
             }
         }
 
@@ -103,11 +103,15 @@ namespace ChewsiPlugin.Api.Repository
                     connection.Execute(
                         @"create table Appointments
                               (
-                                 Id         INTEGER PRIMARY KEY AUTOINCREMENT,
-                                 ChewsiId   TEXT not null,
-                                 StatusText TEXT null,
-                                 DateTime   DATETIME not null,
-                                 State      INTEGER not null
+                                 Id             INTEGER PRIMARY KEY AUTOINCREMENT,
+                                 ChewsiId       TEXT not null,
+                                 PatientId      TEXT not null,
+                                 PatientName    TEXT not null,
+                                 ProviderId     TEXT not null,
+                                 StatusText     TEXT null,
+                                 DateTime       DATETIME not null,
+                                 SubmissionDate DATETIME null,
+                                 State          INTEGER not null
                               )");
                 }
             }

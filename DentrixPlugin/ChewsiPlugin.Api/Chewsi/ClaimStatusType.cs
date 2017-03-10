@@ -2,6 +2,9 @@
 {
     public enum ClaimStatusType
     {
-        P, D, C, Error, SubmitClaim
+        Error,
+        SubmitClaim,
+        SendApprovalNotification,
+        SubmitCharge
     }
 }

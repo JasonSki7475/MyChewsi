@@ -156,9 +156,6 @@ namespace ChewsiPlugin.Api.Chewsi
                 webRequest.Proxy = proxy;
             }
 
-            // TODO
-            //webRequest.Proxy = new WebProxy("http://localhost:8888");
-
             try
             {
                 if (method == HttpMethod.Post)

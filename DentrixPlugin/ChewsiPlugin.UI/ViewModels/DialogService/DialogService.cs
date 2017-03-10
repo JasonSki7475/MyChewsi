@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ChewsiPlugin.Api.Interfaces;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels.DialogService
 {
@@ -37,12 +38,18 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
 
         public void ShowLoadingIndicator()
         {
-            IsLoading = true;
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                IsLoading = true;
+            });
         }
 
         public void HideLoadingIndicator()
         {
-            IsLoading = false;
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                IsLoading = false;
+            });
         }
 
         public void Close()

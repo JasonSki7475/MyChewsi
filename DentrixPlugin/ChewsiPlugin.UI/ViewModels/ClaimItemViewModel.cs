@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Windows.Input;
-using ChewsiPlugin.Api.Chewsi;
-using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
@@ -14,6 +11,7 @@ namespace ChewsiPlugin.UI.ViewModels
     {
         private readonly IAppService _appService;
         private DateTime _date;
+        private DateTime? _submissionDate;
         private string _chewsiId;
         private string _patientName;
         private string _providerId;
@@ -22,14 +20,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private AppointmentState _state;
         private ICommand _submitCommand;
         private ICommand _deleteCommand;
-
-        public static class StatusMessage
-        {
-            public const string PaymentProcessing = "Payment processing...";
-            public const string PaymentProcessingError = "Payment processing failed";
-            public const string ReadyToSubmit = "Please submit this claim..";
-            public const string TreatmentInProgress = "Treatment is in progress...";
-        }
 
         public ClaimItemViewModel(IAppService appService)
         {
@@ -43,6 +33,16 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _date = value;
                 RaisePropertyChanged(() => Date);
+            }
+        }
+
+        public DateTime? SubmissionDate
+        {
+            get { return _submissionDate; }
+            set
+            {
+                _submissionDate = value;
+                RaisePropertyChanged(() => SubmissionDate);
             }
         }
 
@@ -128,58 +128,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnSubmitCommandExecute()
         {
-            StatusText = StatusMessage.PaymentProcessing;
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                ProviderInformation providerInformation;
-                SubscriberInformation subscriberInformation;
-                Provider provider;
-                var validationResponse = _appService.ValidateClaim(ProviderId, PatientId, out providerInformation, out subscriberInformation, out provider);
-                if (validationResponse != null)
-                {
-                    if (validationResponse.ValidationPassed)
-                    {
-                        providerInformation.Id = validationResponse.ProviderID;
-                        providerInformation.OfficeNbr = validationResponse.OfficeNumber;
-
-                        _appService.SubmitClaim(PatientId, providerInformation, subscriberInformation, provider);
-                    }
-                    else
-                    {
-                        #region Format status
-                        var text = "";
-                        if (!string.IsNullOrEmpty(validationResponse.ProviderValidationMessage))
-                        {
-                            text += validationResponse.ProviderValidationMessage;
-                        }
-                        if (!string.IsNullOrEmpty(validationResponse.SubscriberValidationMessage))
-                        {
-                            if (!string.IsNullOrEmpty(text))
-                            {
-                                text += Environment.NewLine;
-                            }
-                            text += validationResponse.SubscriberValidationMessage;
-                        }
-                        StatusText = text;
-                        #endregion
-
-                        if (validationResponse.SubscriberNoLongerActive || validationResponse.ProviderNotFound)
-                        {
-                            State = AppointmentState.ValidationErrorUnrecoverable;
-                        }
-                        else
-                        {
-                            State = AppointmentState.ValidationError;
-                        }
-                        _appService.UpdateCachedClaim(ChewsiId, Date, State, StatusText);
-                    }                    
-                }
-                else
-                {
-                    StatusText = StatusMessage.PaymentProcessingError;
-                }
-            });
+            _appService.ValidateAndSubmitClaim(ChewsiId, Date, ProviderId, PatientId);
         }
         #endregion
 

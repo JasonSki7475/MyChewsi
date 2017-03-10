@@ -24,6 +24,14 @@ namespace ChewsiPlugin.UI.Services
     {
         private const int RefreshIntervalMs = 10000;
         private const int AppointmentTtlDays = 1;
+        
+        public static class StatusMessage
+        {
+            public const string PaymentProcessing = "Payment processing...";
+            public const string PaymentProcessingError = "Payment processing failed";
+            public const string ReadyToSubmit = "Please submit this claim..";
+            public const string TreatmentInProgress = "Treatment is in progress...";
+        }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IChewsiApi _chewsiApi;
@@ -34,7 +42,7 @@ namespace ChewsiPlugin.UI.Services
         private readonly object _dentalApiInitializationLock = new object();
         private readonly ConcurrentDictionary<string, Provider> _providers;
         private readonly CancellationTokenSource _tokenSource;
-        private bool _loadingClaims;
+        private bool _loadingAppointments;
         private readonly object _appointmentsLockObject = new object();
         private readonly object _providerLockObject = new object();
 
@@ -183,117 +191,93 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        public ValidateSubscriberAndProviderResponse ValidateClaim(string providerId, string patientId, 
-            out ProviderInformation providerInformation, out SubscriberInformation subscriberInformation, out Provider provider)
+        private ValidateSubscriberAndProviderResponse ValidateClaim(string providerId, string patientId,
+            out ProviderInformation providerInformation, out SubscriberInformation subscriberInformation,
+            out Provider provider)
         {
-            try
+            provider = DentalApi.GetProvider(providerId);
+            if (provider != null)
             {
-                _dialogService.ShowLoadingIndicator();
-                provider = DentalApi.GetProvider(providerId);
-                if (provider != null)
+                var patientInfo = DentalApi.GetPatientInfo(patientId);
+                if (patientInfo != null)
                 {
-                    var patientInfo = DentalApi.GetPatientInfo(patientId);
-                    if (patientInfo != null)
+                    providerInformation = new ProviderInformation
                     {
-                        providerInformation = new ProviderInformation
+                        NPI = provider.Npi,
+                        TIN = provider.Tin
+                    };
+                    subscriberInformation = new SubscriberInformation
+                    {
+                        Id = patientInfo.ChewsiId,
+                        SubscriberDateOfBirth = patientInfo.BirthDate,
+                        SubscriberFirstName = patientInfo.SubscriberFirstName,
+                        SubscriberLastName = patientInfo.SubscriberLastName,
+                        PatientLastName = patientInfo.PatientLastName,
+                        PatientFirstName = patientInfo.PatientFirstName
+                    };
+                    var providerAddress = new ProviderAddressInformation
+                    {
+                        RenderingAddress1 = provider.AddressLine1,
+                        RenderingAddress2 = provider.AddressLine2,
+                        RenderingCity = provider.City,
+                        RenderingState = provider.State,
+                        RenderingZip = provider.ZipCode,
+                    };
+                    try
+                    {
+                        var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerInformation,
+                            providerAddress, subscriberInformation);
+                        if (validationResponse != null)
                         {
-                            NPI = provider.Npi,
-                            TIN = provider.Tin
-                        };
-                        subscriberInformation = new SubscriberInformation
-                        {
-                            Id = patientInfo.ChewsiId,
-                            SubscriberDateOfBirth = patientInfo.BirthDate,
-                            SubscriberFirstName = patientInfo.SubscriberFirstName,
-                            SubscriberLastName = patientInfo.SubscriberLastName,
-                            PatientLastName = patientInfo.PatientLastName,
-                            PatientFirstName = patientInfo.PatientFirstName
-                        };
-                        var providerAddress = new ProviderAddressInformation
-                        {
-                            RenderingAddress1 = provider.AddressLine1,
-                            RenderingAddress2 = provider.AddressLine2,
-                            RenderingCity = provider.City,
-                            RenderingState = provider.State,
-                            RenderingZip = provider.ZipCode,
-                        };
-                        try
-                        {
-                            var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerInformation, providerAddress, subscriberInformation);
-                            if (validationResponse != null)
-                            {
-                                Logger.Debug($"Validated subscriber '{patientId}' and provider '{providerId}': '{validationResponse.ValidationPassed}'");
-                            }
-                            else
-                            {
-                                Logger.Debug($"Failed to validate subscriber '{patientId}' and provider '{providerId}': invalid server response");
-                            }
-
-                            return validationResponse;
+                            Logger.Debug(
+                                $"Validated subscriber '{patientId}' and provider '{providerId}': '{validationResponse.ValidationPassed}'");
                         }
-                        catch (NullReferenceException)
+                        else
                         {
-                            _dialogService.Show("Invalid server response. Try again later", "Error");
+                            Logger.Debug(
+                                $"Failed to validate subscriber '{patientId}' and provider '{providerId}': invalid server response");
                         }
+                        return validationResponse;
                     }
-                    else
+                    catch (NullReferenceException)
                     {
-                        var msg = "Cannot find patient " + patientId;
-                        _dialogService.Show(msg, "Error");
-                        Logger.Error(msg);
+                        _dialogService.Show("Invalid server response. Try again later", "Error");
                     }
                 }
                 else
                 {
-                    var msg = "Cannot find provider " + providerId;
+                    var msg = "Cannot find patient " + patientId;
                     _dialogService.Show(msg, "Error");
                     Logger.Error(msg);
                 }
-                providerInformation = null;
-                subscriberInformation = null;
-                return null;
             }
-            finally
+            else
             {
-                _dialogService.HideLoadingIndicator();
+                var msg = "Cannot find provider " + providerId;
+                _dialogService.Show(msg, "Error");
+                Logger.Error(msg);
             }
+            providerInformation = null;
+            subscriberInformation = null;
+            return null;
         }
 
-        public void SubmitClaim(string patientId, ProviderInformation providerInformation, SubscriberInformation subscriberInformation, Provider provider)
+        private void SubmitClaim(string chewsiId, DateTime appointmentDate, string patientId,
+            ProviderInformation providerInformation, SubscriberInformation subscriberInformation, Provider provider)
         {
-            try
+            var procedures = DentalApi.GetProcedures(patientId);
+            if (procedures.Any())
             {
-                _dialogService.ShowLoadingIndicator();
-                var procedures = DentalApi.GetProcedures(patientId);
-                if (procedures.Any())
-                {
-                    _chewsiApi.ProcessClaim(providerInformation, subscriberInformation, procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList());
-                    RequestStatusLookup(provider);
-
-                    Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
-                }
-                else
-                {
-                    var msg = "Cannot find any procedures for the patient";
-                    _dialogService.Show(msg, "Error");
-                    Logger.Error(msg + " " + patientId);
-                }
+                _chewsiApi.ProcessClaim(providerInformation, subscriberInformation, procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList());
+                SetAppointmentState(chewsiId, appointmentDate, AppointmentState.ValidationCompletedAndClaimSubmitted, submissionDate:DateTime.Now);
+                RequestStatusLookup(provider);
+                Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
             }
-            finally
+            else
             {
-                _dialogService.HideLoadingIndicator();
-            }
-        }
-
-        public void UpdateCachedClaim(string chewsiId, DateTime date, AppointmentState state, string statusText)
-        {
-            var a = _repository.GetAppointmentByChewsiIdAndDate(chewsiId, date);
-            if (a != null)
-            {
-                a.StatusText = statusText;
-                a.State = state;
-
-                _repository.UpdateAppointment(a);
+                var msg = "Cannot find any procedures for the patient";
+                _dialogService.Show(msg, "Error");
+                Logger.Error(msg + " " + patientId);
             }
         }
 
@@ -370,49 +354,40 @@ namespace ChewsiPlugin.UI.Services
                                 lock (_appointmentsLockObject)
                                 {
                                     // find in the list, update
-                                    // TODO we expect to receive chewsi id in the response, find only by first name for now ( && claimStatus.PostedOnDate == m.Date)
-                                    var viewModel = ClaimItems.FirstOrDefault(m => m.PatientName.EndsWith(claimStatus.SubscriberFirstName));
+                                    // TODO we expect to receive chewsi id in the response, find only by first name for now
+                                    var viewModel = ClaimItems.FirstOrDefault(m => m.SubmissionDate.HasValue 
+                                                        && m.PatientName.EndsWith(claimStatus.SubscriberFirstName) 
+                                                        && claimStatus.PostedOnDate.Date == m.SubmissionDate.Value.Date);
                                     if (viewModel != null)
                                     {
                                         Logger.Debug($"Updating claim status for {claimStatus.PatientFirstName}");
 
-                                        // update cached appointment
-                                        var cached = _repository.GetAppointmentByChewsiIdAndDate(viewModel.ChewsiId, viewModel.Date);
-                                        if (cached != null)
-                                        {
-                                            cached.StatusText = claimStatus.MessageToDisplay;
+                                        AppointmentState state = viewModel.State;
+                                        string statusText = claimStatus.MessageToDisplay;
 
-                                            if (claimStatus.Status == ClaimStatusType.SubmitClaim)
-                                            {
-                                                // will display re-submit button
-                                                cached.State = AppointmentState.ValidationError;
-                                            }
-
-                                            if (claimStatus.Status == ClaimStatusType.P)
-                                            {
-                                                cached.State = AppointmentState.PaymentCompleted;
-                                            }
-                                            _repository.UpdateAppointment(cached);
-                                        }
-
-                                        // update view model
-                                        viewModel.StatusText = claimStatus.MessageToDisplay;
-                                        if (claimStatus.Status == ClaimStatusType.P)
-                                        {
-                                            viewModel.State = AppointmentState.PaymentCompleted;
-                                        }
-                                        if (claimStatus.Status == ClaimStatusType.SubmitClaim)
+                                        if (claimStatus.Status == ClaimStatusType.SubmitClaim ||
+                                            claimStatus.Status == ClaimStatusType.SendApprovalNotification)
                                         {
                                             // will display re-submit button
-                                            viewModel.State = AppointmentState.ValidationError;
+                                            state = AppointmentState.ValidationError;
                                         }
+                                        if (claimStatus.Status == ClaimStatusType.SubmitCharge)
+                                        {
+                                            state = AppointmentState.PaymentCompleted;
+                                        }
+                                        
+                                        // update cached appointment
+                                        SetAppointmentState(viewModel.ChewsiId, viewModel.Date, state, statusText);
 
                                         updatedProviderIds.Add(p.Key);
                                     }
                                     else
                                     {
-                                        Logger.Debug($"Cannot find view-model to update claim status: {claimStatus.SubscriberFirstName}, {claimStatus.PostedOnDate}; all claims are below");
-                                        Logger.Debug(JsonConvert.SerializeObject(ClaimItems.Select(m => new {m.PatientName, m.Date})));
+                                        Logger.Debug(
+                                            $"Cannot find view-model to update claim status: {claimStatus.SubscriberFirstName}, {claimStatus.PostedOnDate}; all claims are below");
+                                        Logger.Debug(
+                                            JsonConvert.SerializeObject(
+                                                ClaimItems.Select(m => new {m.PatientName, m.SubmissionDate})));
                                     }
                                 }
                             }
@@ -431,7 +406,8 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        public void RequestStatusLookup(Provider provider)
+        // TODO remove, analyze states
+        private void RequestStatusLookup(Provider provider)
         {
             if (!_providers.ContainsKey(provider.Tin))
             {
@@ -447,45 +423,65 @@ namespace ChewsiPlugin.UI.Services
             _tokenSource.Cancel();
         }
 
-        public void RefreshAppointments()
+        public void RefreshAppointments(bool loadFromPms)
         {
-            _dialogService.ShowLoadingIndicator();
-            var list = LoadAppointments();
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                var existingList = ClaimItems.ToList();
-
-                // add new rows
-                foreach (var item in list)
+                if (!_loadingAppointments)
                 {
-                    bool exists = false;
-                    foreach (var viewModel in existingList)
+                    lock (_appointmentsLockObject)
                     {
-                        if (item.Equals(viewModel))
+                        if (!_loadingAppointments)
                         {
-                            exists = true;
-                            // update existing view model
-                            viewModel.State = item.State;
-                            viewModel.StatusText = item.StatusText;
-                            break;
+                            _loadingAppointments = true;
+                            _dialogService.ShowLoadingIndicator();
+                            try
+                            {
+                                var list = LoadAppointments(loadFromPms);
+
+                                var existingList = ClaimItems.ToList();
+
+                                // add new rows
+                                foreach (var item in list)
+                                {
+                                    bool exists = false;
+                                    foreach (var viewModel in existingList)
+                                    {
+                                        if (item.Equals(viewModel))
+                                        {
+                                            exists = true;
+                                            // update existing view model
+                                            viewModel.State = item.State;
+                                            viewModel.StatusText = item.StatusText;
+                                            viewModel.SubmissionDate = item.SubmissionDate;
+                                            break;
+                                        }
+                                    }
+                                    if (!exists)
+                                    {
+                                        existingList.Add(item);
+                                    }
+                                }
+                                ClaimItems.Clear();
+
+                                // remove old
+                                foreach (var item in existingList)
+                                {
+                                    if (list.Any(m => item.Equals(m)))
+                                    {
+                                        ClaimItems.Add(item);
+                                    }
+                                }
+                                _dialogService.HideLoadingIndicator();
+
+                            }
+                            finally
+                            {
+                                _loadingAppointments = false;
+                            }
                         }
                     }
-                    if (!exists)
-                    {
-                        existingList.Add(item);
-                    }
                 }
-                ClaimItems.Clear();
-
-                // remove old
-                foreach (var item in existingList)
-                {
-                    if (list.Any(m => item.Equals(m)))
-                    {
-                        ClaimItems.Add(item);
-                    }
-                }
-                _dialogService.HideLoadingIndicator();
             });
         }
 
@@ -496,7 +492,7 @@ namespace ChewsiPlugin.UI.Services
             get { return _providers.Any(); }
         }
 
-        public bool IsLoadingAppointments { get { return _loadingClaims; } }
+        public bool IsLoadingAppointments { get { return _loadingAppointments; } }
 
         private void RaiseIsProcessingPaymentGetter()
         {
@@ -504,85 +500,86 @@ namespace ChewsiPlugin.UI.Services
         }
 
         /// <summary>
-        /// Loads appointments from PMS, caches them in local DB
+        /// Loads appointments from PMS (optionally), caches them in local DB
         /// </summary>
-        private List<ClaimItemViewModel> LoadAppointments()
+        private List<ClaimItemViewModel> LoadAppointments(bool loadFromPms)
         {
-            if (!_loadingClaims)
+            try
             {
-                lock (_appointmentsLockObject)
+                // load cached in repository items
+                var cached = _repository.GetAppointments();
+
+                if (loadFromPms)
                 {
-                    if (!_loadingClaims)
+                    // load from PMS
+                    List<IAppointment> pms = _dentalApi.GetAppointmentsForToday();
+
+                    bool repositoryUpdated = false;
+
+                    // merge PMS items with cached in repository
+
+                    // add new appointments into repository, exist in PMS, not in the DB
+                    foreach (var item in pms)
                     {
-                        _loadingClaims = true;
-                        try
+                        if (cached.All(m => item.ChewsiId != m.ChewsiId && item.Date != m.DateTime))
                         {
-                            // load from PMS
-                            var pms = _dentalApi.GetAppointmentsForToday();
-
-                            // merge with cached in repository items
-                            var cached = _repository.GetAppointments();
-
-                            // add new appointments into repository, exist in PMS, not in the DB
-                            foreach (var item in pms)
+                            Logger.Debug($"Adding new appointment in the cache ChewsiId={item.ChewsiId}, IsCompleted={item.IsCompleted}");
+                            _repository.AddAppointment(new Appointment
                             {
-                                if (cached.All(m => item.ChewsiId != m.ChewsiId))
-                                {
-                                    Logger.Debug($"Cached appointment ChewsiId={item.ChewsiId}, IsCompleted={item.IsCompleted}");
-                                    _repository.AddAppointment(new Appointment
-                                    {
-                                        DateTime = item.Date,
-                                        State =
-                                            item.IsCompleted
-                                                ? AppointmentState.TreatmentCompleted
-                                                : AppointmentState.TreatmentInProgress,
-                                        ChewsiId = item.ChewsiId,
-                                        StatusText = item.IsCompleted ? ClaimItemViewModel.StatusMessage.ReadyToSubmit : ClaimItemViewModel.StatusMessage.TreatmentInProgress
-                                    });
-                                }
-                            }
-
-                            // remove old, exist in the DB, not in PMS
-                            var old = (from item in cached
-                                       where pms.All(m => item.ChewsiId != m.ChewsiId)
-                                       select item.Id).ToList();
-                            if (old.Any())
-                            {
-                                _repository.BulkDeleteAppointments(old);
-                            }
-
-                            // re-read list from repository
-                            cached = _repository.GetAppointments();
-
-                            // get result by joining PMS and cached lists
-                            var result =
-                                (from c in cached
-                                join p in pms on c.ChewsiId equals p.ChewsiId
-                                where c.State != AppointmentState.Deleted
-                                orderby p.IsCompleted descending
-                                select new ClaimItemViewModel(this)
-                                {
-                                    ProviderId = p.ProviderId,
-                                    Date = p.Date,
-                                    PatientName = p.PatientName,
-                                    PatientId = p.PatientId,
-                                    ChewsiId = p.ChewsiId,
-                                    State = c.State,
-                                    StatusText = c.StatusText
-                                }).ToList();
-                            result.ForEach(m => Logger.Debug($"Loaded appointment VM ChewsiId={m.ChewsiId}, State={m.State}"));
-                            return result;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex, "Failed to load appointments");
-                        }
-                        finally
-                        {
-                            _loadingClaims = false;
+                                DateTime = item.Date,
+                                State =
+                                    item.IsCompleted
+                                        ? AppointmentState.TreatmentCompleted
+                                        : AppointmentState.TreatmentInProgress,
+                                ChewsiId = item.ChewsiId,
+                                StatusText =
+                                    item.IsCompleted ? StatusMessage.ReadyToSubmit : StatusMessage.TreatmentInProgress,
+                                PatientId = item.PatientId,
+                                PatientName = item.PatientName,
+                                ProviderId = item.ProviderId
+                            });
+                            repositoryUpdated = true;
                         }
                     }
+
+                    // remove old, exist in the DB, not in PMS
+                    var old = (from item in cached
+                        where pms.All(m => item.ChewsiId != m.ChewsiId)
+                        select item.Id).ToList();
+                    if (old.Any())
+                    {
+                        _repository.BulkDeleteAppointments(old);
+                        repositoryUpdated = true;
+                    }
+
+                    if (repositoryUpdated)
+                    {
+                        // re-read list from repository
+                        cached = _repository.GetAppointments();
+                    }
                 }
+
+                var result =
+                    (from c in cached
+                        where c.State != AppointmentState.Deleted
+                        orderby c.State == AppointmentState.TreatmentCompleted descending
+                        select new ClaimItemViewModel(this)
+                        {
+                            ProviderId = c.ProviderId,
+                            Date = c.DateTime,
+                            SubmissionDate = c.SubmissionDate,
+                            PatientName = c.PatientName,
+                            ChewsiId = c.ChewsiId,
+                            State = c.State,
+                            StatusText = c.StatusText,
+                            PatientId = c.PatientId
+                        }).ToList();
+                result.ForEach(m => Logger.Debug($"Loaded appointment VM ChewsiId={m.ChewsiId}, State={m.State}"));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to load appointments");
             }
             return new List<ClaimItemViewModel>();
         }
@@ -592,20 +589,44 @@ namespace ChewsiPlugin.UI.Services
             lock (_appointmentsLockObject)
             {
                 var existing = _repository.GetAppointmentByChewsiIdAndDate(chewsiId, date);
-                if (existing == null)
-                {
-                    _repository.AddAppointment(new Appointment
-                    {
-                        DateTime = DateTime.UtcNow,
-                        ChewsiId = chewsiId,
-                        State = AppointmentState.Deleted
-                    });
-                }
-                else
+                if (existing != null)
                 {
                     existing.State = AppointmentState.Deleted;
                     _repository.UpdateAppointment(existing);
+                    RefreshAppointments(false);
                 }
+            }
+        }
+        
+        private void SetAppointmentState(string chewsiId, DateTime appointmentDate, AppointmentState? state = null, string statusText = null, DateTime? submissionDate = null)
+        {
+            bool updated = false;
+            lock (_appointmentsLockObject)
+            {
+                var existing = _repository.GetAppointmentByChewsiIdAndDate(chewsiId, appointmentDate);
+                if (existing != null)
+                {
+                    if (state.HasValue && existing.State != state.Value)
+                    {
+                        existing.State = state.Value;
+                        updated = true;
+                    }
+                    if (statusText != null && existing.StatusText != statusText)
+                    {
+                        existing.StatusText = statusText;
+                        updated = true;
+                    }
+                    if (submissionDate.HasValue && existing.SubmissionDate != submissionDate.Value)
+                    {
+                        existing.SubmissionDate = submissionDate.Value;
+                        updated = true;
+                    }
+                    _repository.UpdateAppointment(existing);
+                }
+            }
+            if (updated)
+            {
+                RefreshAppointments(false);
             }
         }
 
@@ -625,5 +646,62 @@ namespace ChewsiPlugin.UI.Services
         }
 
         public event Action OnStartPaymentStatusLookup;
+
+        public void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId)
+        {
+            ProviderInformation providerInformation = null;
+            SubscriberInformation subscriberInformation = null;
+            Provider provider = null;
+            ValidateSubscriberAndProviderResponse validationResponse = null;
+            Task.Factory.StartNew(() =>
+            {
+                SetAppointmentState(chewsiId, date, statusText: StatusMessage.PaymentProcessing);
+                validationResponse = ValidateClaim(providerId, patientId, out providerInformation, out subscriberInformation, out provider);
+            }).ContinueWith(t =>
+            {
+                if (!t.IsFaulted)
+                {
+                    if (validationResponse != null)
+                    {
+                        if (validationResponse.ValidationPassed)
+                        {
+                            providerInformation.Id = validationResponse.ProviderID;
+                            providerInformation.OfficeNbr = validationResponse.OfficeNumber;
+                            
+                            SubmitClaim(chewsiId, date, patientId, providerInformation, subscriberInformation, provider);
+                        }
+                        else
+                        {
+                            #region Format status
+                            var statusText = "";
+                            if (!string.IsNullOrEmpty(validationResponse.ProviderValidationMessage))
+                            {
+                                statusText += validationResponse.ProviderValidationMessage;
+                            }
+                            if (!string.IsNullOrEmpty(validationResponse.SubscriberValidationMessage))
+                            {
+                                if (!string.IsNullOrEmpty(statusText))
+                                {
+                                    statusText += Environment.NewLine;
+                                }
+                                statusText += validationResponse.SubscriberValidationMessage;
+                            }
+                            #endregion
+
+                            AppointmentState state = AppointmentState.ValidationError;
+                            if (validationResponse.SubscriberNoLongerActive || validationResponse.ProviderNotFound)
+                            {
+                                state = AppointmentState.ValidationErrorUnrecoverable;
+                            }
+                            SetAppointmentState(chewsiId, date, state, statusText);
+                        }
+                    }
+                    else
+                    {
+                        SetAppointmentState(chewsiId, date, AppointmentState.ValidationError, StatusMessage.PaymentProcessingError);
+                    }
+                }
+            });
+        }
     }
 }
