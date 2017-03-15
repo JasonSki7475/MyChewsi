@@ -63,7 +63,7 @@ namespace ChewsiPlugin.Api.Dentrix
         /// </summary>
         private Dictionary<string, string> GetAllPatientsInsurance()
         {
-            var result = ExecuteCommand($"select pi.patient_id, ins.id_num from admin.v_patient_insurance pi join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where primary_insurance_carrier_name='{InsuranceCarrierName}'",
+            var result = ExecuteCommand($"select pi.patient_id, ins.id_num from admin.v_patient_insurance pi join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where primary_insurance_carrier_name='{InsuranceCarrierName}' or secondary_insurance_carrier_name='{InsuranceCarrierName}'",
                 new List<string> { "patient_id", "id_num" }, false);
             return result.ToDictionary(m => m["patient_id"].Trim(), m => m["id_num"].Trim());
         }
@@ -88,26 +88,35 @@ namespace ChewsiPlugin.Api.Dentrix
         public List<ProcedureInfo> GetProcedures(string patientId)
         {
             var dateRange = GetTimeRangeForToday();
-            var procedures = Execute("admin.sp_getpatientprocedures",
-                new List<string> {"amt", "proc_code", "proc_date"},
-                true,
-                new Dictionary<string, string>
-                {
-                    {"patient_guid", patientId},
-                    {"BeginDate", dateRange.Item1.ToString("G")},
-                    {"EndDate", dateRange.Item2.ToString("G")},
-                    {"byCreateDate", "0"}
-                });
-            if (procedures != null && procedures.Count != 0)
+
+            // get patient_guid
+            var res =
+                ExecuteCommand($"select pi.patient_guid from admin.v_patient_insurance pi where pi.patient_id='{patientId}'",
+                    new List<string> { "patient_guid" }, false).FirstOrDefault();
+            if (res != null)
             {
-                return procedures.Select(proc => 
-                new ProcedureInfo
+                var patientGuid = res["patient_guid"];
+                var procedures = Execute("admin.sp_getpatientprocedures",
+                    new List<string> {"amt", "proc_code", "proc_date"},
+                    true,
+                    new Dictionary<string, string>
+                    {
+                        {"patient_guid", patientGuid},
+                        {"BeginDate", dateRange.Item1.ToString("G")},
+                        {"EndDate", dateRange.Item2.ToString("G")},
+                        {"byCreateDate", "0"}
+                    });
+                if (procedures != null && procedures.Count != 0)
                 {
-                    Amount = double.Parse(proc["amt"]),
-                    Code = proc["proc_code"].TrimStart('D'),
-                    Date = DateTime.Parse(proc["proc_date"])
-                })
-                .ToList();
+                    return procedures.Select(proc => 
+                    new ProcedureInfo
+                    {
+                        Amount = double.Parse(proc["amt"]),
+                        Code = proc["proc_code"].TrimStart('D'),
+                        Date = DateTime.Parse(proc["proc_date"])
+                    })
+                    .ToList();
+                }
             }
             return new List<ProcedureInfo>();
         }
@@ -126,8 +135,7 @@ namespace ChewsiPlugin.Api.Dentrix
             var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
                 new List<string> { "patient_id", "patient_name", "appointment_date", "status_id", "provider_id" },
-                false,
-                new Dictionary<string, string> { { "primary_insurance_carrier_name", InsuranceCarrierName } });
+                false);
             
             return new List<IAppointment>(result.Select(m =>
             {
@@ -212,7 +220,7 @@ namespace ChewsiPlugin.Api.Dentrix
             return ExecuteCommand(commandText, outputFields, isStoredProcedure, parameters);
         }
 
-        private List<Dictionary<string, string>> ExecuteCommand(string commandText, List<string> outputFields, bool isStoredProcedure, Dictionary<string, string> parameters = null)
+        private List<Dictionary<string, string>> ExecuteCommand(string commandText, List<string> outputFields, bool isStoredProcedure, Dictionary<string, string> storedProcedureParameters = null)
         {
             var result = new List<Dictionary<string, string>>();
             if (!_initialized)
@@ -232,15 +240,18 @@ namespace ChewsiPlugin.Api.Dentrix
                     {
                         if (isStoredProcedure)
                         {
-                            if (parameters != null)
+                            string param = "";
+                            if (storedProcedureParameters != null)
                             {
-                                foreach (var parameter in parameters)
+                                foreach (var parameter in storedProcedureParameters)
                                 {
                                     command.Parameters.AddWithValue("@" + parameter.Key, parameter.Value);
+                                    param += $"{parameter.Key}={parameter.Value},";
                                 }
                             }
                             command.CommandType = CommandType.StoredProcedure;
-                            Logger.Debug("Executing stored procedure: " + commandText);
+                            
+                            Logger.Debug($"Executing stored procedure: {commandText}; parameters: {param.TrimEnd(',')}");
                         }
                         else
                         {

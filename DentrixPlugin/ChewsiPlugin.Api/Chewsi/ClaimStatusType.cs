@@ -5,6 +5,7 @@
         Error,
         SubmitClaim,
         SendApprovalNotification,
-        SubmitCharge
+        SubmitCharge,
+        D
     }
 }

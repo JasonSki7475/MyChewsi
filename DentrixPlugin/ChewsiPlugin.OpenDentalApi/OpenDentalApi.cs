@@ -6,6 +6,9 @@ using System.Linq;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using ChewsiPlugin.OpenDentalApi.DTO;
+using PatientInfo = ChewsiPlugin.Api.Common.PatientInfo;
+using ProcedureInfo = ChewsiPlugin.Api.Common.ProcedureInfo;
 using Provider = ChewsiPlugin.Api.Common.Provider;
 
 namespace ChewsiPlugin.OpenDentalApi
@@ -46,21 +49,29 @@ namespace ChewsiPlugin.OpenDentalApi
         public PatientInfo GetPatientInfo(string patientId)
         {
             Initialize();
-            
-            var patient = _proxy.GetPatient(long.Parse(patientId));
+            var id = long.Parse(patientId);
+            return GetPatientInfo(id);
+        }
+
+        private PatientInfo GetPatientInfo(long patientId)
+        {
+            var patient = _proxy.GetPatient(patientId);
             if (patient != null)
             {
+                // load subscriber if necessary
+                var subscriber = GetSubscriberInfo(patientId);
                 return new PatientInfo
                 {
                     BirthDate = patient.Birthdate,
                     PatientFirstName = patient.FName,
                     PatientLastName = patient.LName,
-                    //TODO verify that there is no info about subscriber
-                    SubscriberFirstName = patient.FName,
-                    SubscriberLastName = patient.LName
+
+                    SubscriberFirstName = subscriber?.PatientInfo.FName ?? "",
+                    SubscriberLastName = subscriber?.PatientInfo.LName ?? "",
+                    ChewsiId = subscriber?.ChewsiId ?? ""
                 };
             }
-            return null;
+            return null;            
         }
 
         private void Initialize()
@@ -99,43 +110,58 @@ namespace ChewsiPlugin.OpenDentalApi
             return null;
         }
 
+        private SubscriberInfo GetSubscriberInfo(long patientId)
+        {
+            var a = _proxy.GetSubscribers(patientId);
+            Debugger.Launch();
+            return a.FirstOrDefault();
+        }
+
         public List<IAppointment> GetAppointmentsForToday()
         {
             Initialize();
 
-            // Find insurance plan by carrier
-            //var plan = InsPlans.GetByCarrierName(InsuranceCarrierName);
-            var plan = _proxy.GetInsPlanByCarrier(InsuranceCarrierName);
+            // Find carrier by name 
+            var carrierInfo = _proxy.CarriersGetSimilarNames(InsuranceCarrierName).FirstOrDefault(m => m.CarrierName == InsuranceCarrierName);
+            if (carrierInfo != null)
+            {
+                var planNums = _proxy.InsPlansGetPlanNumsByCarrierNum(carrierInfo.CarrierNum);
+                
+                // Find appointments by insurance plan, dates, status
+                var dateRange = GetTimeRangeForToday();
+                var appointments = _proxy.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
 
-            // Find appointments by insurance plan, dates, status
-            var dateRange = GetTimeRangeForToday();
-            //var appointments = Appointments.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
-            var appointments = _proxy.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
-            return new List<IAppointment>(appointments.Where(m => m.AptStatus != "UnschedList" && m.AptStatus != "Broken"
-            && (m.InsPlan1 == plan.PlanNum || m.InsPlan2 == plan.PlanNum))
-                .Select(m =>
-                {
-                    var patient = _proxy.GetPatient(m.PatNum);
-                    var appointment = new Appointment
+                var filtered = appointments.Where(m => m.AptStatus != "UnschedList" && m.AptStatus != "Broken"
+                                                       &&
+                                                       (planNums.Contains(m.InsPlan1) || planNums.Contains(m.InsPlan2)))
+                                            .ToList();
+                var patientIds = filtered.Select(m => m.PatNum).Distinct();
+                var patientInfos = patientIds.ToDictionary(m => m, GetPatientInfo);
+
+                return new List<IAppointment>(filtered
+                    .Select(m =>
                     {
-                        Date = m.AptDateTime,
-                        //TODO it's not unique
-                        ChewsiId = plan.PlanNum.ToString(),
-                        IsCompleted = m.AptStatus == "Complete",
-                        PatientId = m.PatNum.ToString(),
-                        PatientName = $"{patient.FName} {patient.LName}",
-                        ProviderId = m.ProvNum.ToString()
-                    };
-                    return appointment;
-                })
-                .ToList());
+                        var patient = patientInfos[m.PatNum];
+                        var appointment = new Appointment
+                        {
+                            Date = m.AptDateTime,
+                            ChewsiId = patient.ChewsiId,
+                            IsCompleted = m.AptStatus == "Complete",
+                            PatientId = m.PatNum.ToString(),
+                            PatientName = $"{patient.PatientLastName}, {patient.PatientFirstName}",
+                            ProviderId = m.ProvNum.ToString()
+                        };
+                        return appointment;
+                    })
+                    .ToList());                
+            }
+            return new List<IAppointment>();
         }
 
         public Provider GetProvider(string providerId)
         {
             Initialize();
-
-            //var provider = Providers.GetProv(long.Parse(providerId));
+            
             var provider = _proxy.GetProvider(long.Parse(providerId));
             if (provider != null)
             {
@@ -143,8 +169,8 @@ namespace ChewsiPlugin.OpenDentalApi
                 {
                     // AddressLine = ,
                     // City = ,
-                    // Npi = provider.SSN,
-                    // State = ,
+                    Npi = provider.NationalProvID,
+                    State = provider.StateWhereLicensed,
                     Tin = provider.SSN,
                     // ZipCode = 
                 };
@@ -179,6 +205,7 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public string Name { get { return "Open Dental"; } }
         public Settings.PMS.Types Type { get { return Settings.PMS.Types.OpenDental; } }
+
         public void Unload()
         {
             if (_domain != null)

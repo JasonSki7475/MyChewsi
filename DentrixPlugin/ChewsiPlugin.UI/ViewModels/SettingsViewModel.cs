@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
@@ -27,6 +28,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _proxyLogin;
         private string _proxyPassword;
         private ICommand _saveCommand;
+        private ICommand _selectPath;
         private readonly bool _firstAppRun;
         private string _state;
 
@@ -214,6 +216,30 @@ namespace ChewsiPlugin.UI.ViewModels
             }
             Logger.Debug("Settings were saved");
             _onClose?.Invoke();
+        }
+        #endregion   
+
+        #region SelectPath
+        public ICommand SelectPath
+        {
+            get { return _selectPath ?? (_selectPath = new RelayCommand(OnSelectPath, CanSelectPath)); }
+        }
+
+        private bool CanSelectPath()
+        {
+            return NeedsPath;
+        }
+
+        private void OnSelectPath()
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    Path = dialog.SelectedPath;
+                }
+            }
         }
         #endregion   
     }

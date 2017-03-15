@@ -76,29 +76,32 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
                                                     <TextBlock Grid.Row="0" Text="Subscriber First Name"/>
-                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding Patient}"/>
+                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding PatientName}"/>
                                                 </Grid>
                                             </Grid>
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Action" Width="120">
+                            <DataGridTemplateColumn Header="Action" MinWidth="180">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Grid HorizontalAlignment="Center"><!---->
-                                            <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                        <Grid HorizontalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="5"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Grid.Column="0" Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
                                                     Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
                                                     ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
                                                     Command="{Binding Path=SubmitCommand}"/>
-                                            <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                            <Button Grid.Column="0" Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
                                                     Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
                                                     ConverterParameter={x:Static repository:AppointmentState.ValidationError}}"
                                                     Command="{Binding Path=SubmitCommand}"/>
-                                            <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
-                                                    Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                    ConverterParameter={x:Static repository:AppointmentState.ValidationErrorUnrecoverable}}"
-                                                    Margin="5,0,0,0" Command="{Binding Path=DeleteCommand}"/>
+                                            <Button Grid.Column="2" Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
+                                                    Command="{Binding Path=DeleteCommand}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

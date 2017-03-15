@@ -24,15 +24,5 @@
         {
             get { return SubscriberValidationStatus == "Valid" && ProviderValidationStatus == "Valid"; }
         }
-
-        public bool SubscriberNoLongerActive
-        {
-            get { return SubscriberValidationStatus == "Subscriber No Longer Active"; }
-        }
-
-        public bool ProviderNotFound
-        {
-            get { return ProviderValidationStatus == "Provider Not Found"; }
-        }
     }
 }

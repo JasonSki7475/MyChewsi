@@ -10,9 +10,9 @@
         /// </summary>
         ValidationCompletedAndClaimSubmitted = 2,
 
-        ValidationErrorUnrecoverable = 3,
-        ValidationError = 4,
-        Deleted = 5,
-        PaymentCompleted = 6
+        ValidationError = 3,
+        Deleted = 4,
+        PaymentCompleted = 5,
+        SubscriberDeniesPayment = 6
     }
 }

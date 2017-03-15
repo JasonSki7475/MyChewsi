@@ -3,8 +3,8 @@
 namespace ChewsiPlugin.OpenDentalApi.DTO
 {
     [Serializable]
-    internal class InsPlanInfo
+    internal class PatPlanInfo
     {
-        public long PlanNum { get; set; }
+        public long InsSubNum { get; set; }
     }
 }

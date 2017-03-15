@@ -12,7 +12,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <GroupBox Grid.Column="0" Header="Practice Management System" Padding="10">
-            <Grid Width="250">
+            <Grid Width="300">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
@@ -34,7 +34,15 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Type"/>
                 <ComboBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Folder"/>
-                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Path}" IsEnabled="{Binding NeedsPath}"/>
+                <Grid Grid.Row="2" Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Text="{Binding Path}" IsEnabled="{Binding NeedsPath}" ToolTip="{Binding Path}"/>
+                    <Button Grid.Column="1" Content="Select..." Background="White" Foreground="Black" BorderBrush="LightGray"
+                            Command="{Binding SelectPath}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
+                </Grid>
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Address Line 1"/>
                 <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Address1}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Address Line 2"/>

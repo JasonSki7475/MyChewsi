@@ -6,7 +6,7 @@ namespace ChewsiPlugin.Api.Dentrix
 {
     internal class Appointment : IAppointment
     {
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public DateTime Date { get; set; }
         public string ProviderId { get; set; }

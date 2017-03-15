@@ -375,7 +375,10 @@ namespace ChewsiPlugin.UI.Services
                                         {
                                             state = AppointmentState.PaymentCompleted;
                                         }
-                                        
+                                        if (claimStatus.Status == ClaimStatusType.D)
+                                        {
+                                            state = AppointmentState.SubscriberDeniesPayment;
+                                        }                                        
                                         // update cached appointment
                                         SetAppointmentState(viewModel.ChewsiId, viewModel.Date, state, statusText);
 
@@ -513,6 +516,8 @@ namespace ChewsiPlugin.UI.Services
                 {
                     // load from PMS
                     List<IAppointment> pms = _dentalApi.GetAppointmentsForToday();
+                    // pms.ForEach(m => Logger.Debug($"Loaded appointment from PMS: Date={m.Date}, ChewsiId={m.ChewsiId}"));
+                    // cached.ForEach(m => Logger.Debug($"Cached appointment: Date={m.DateTime}, ChewsiId={m.ChewsiId}"));
 
                     bool repositoryUpdated = false;
 
@@ -521,7 +526,7 @@ namespace ChewsiPlugin.UI.Services
                     // add new appointments into repository, exist in PMS, not in the DB
                     foreach (var item in pms)
                     {
-                        if (cached.All(m => item.ChewsiId != m.ChewsiId && item.Date != m.DateTime))
+                        if (!cached.Any(m => item.ChewsiId == m.ChewsiId && item.Date == m.DateTime))
                         {
                             Logger.Debug($"Adding new appointment in the cache ChewsiId={item.ChewsiId}, IsCompleted={item.IsCompleted}");
                             _repository.AddAppointment(new Appointment
@@ -574,7 +579,10 @@ namespace ChewsiPlugin.UI.Services
                             StatusText = c.StatusText,
                             PatientId = c.PatientId
                         }).ToList();
-                result.ForEach(m => Logger.Debug($"Loaded appointment VM ChewsiId={m.ChewsiId}, State={m.State}"));
+                if (Logger.IsDebugEnabled)
+                {
+                    result.ForEach(m => Logger.Debug($"Loaded appointment VM ChewsiId={m.ChewsiId}, State={m.State}"));
+                }
                 return result;
             }
             catch (Exception ex)
@@ -601,33 +609,37 @@ namespace ChewsiPlugin.UI.Services
         private void SetAppointmentState(string chewsiId, DateTime appointmentDate, AppointmentState? state = null, string statusText = null, DateTime? submissionDate = null)
         {
             bool updated = false;
-            lock (_appointmentsLockObject)
+            // make sure update is done by one thread
+            DispatcherHelper.RunAsync(() =>
             {
-                var existing = _repository.GetAppointmentByChewsiIdAndDate(chewsiId, appointmentDate);
-                if (existing != null)
+                lock (_appointmentsLockObject)
                 {
-                    if (state.HasValue && existing.State != state.Value)
+                    var existing = _repository.GetAppointmentByChewsiIdAndDate(chewsiId, appointmentDate);
+                    if (existing != null)
                     {
-                        existing.State = state.Value;
-                        updated = true;
+                        if (state.HasValue && existing.State != state.Value)
+                        {
+                            existing.State = state.Value;
+                            updated = true;
+                        }
+                        if (statusText != null && existing.StatusText != statusText)
+                        {
+                            existing.StatusText = statusText;
+                            updated = true;
+                        }
+                        if (submissionDate.HasValue && existing.SubmissionDate != submissionDate.Value)
+                        {
+                            existing.SubmissionDate = submissionDate.Value;
+                            updated = true;
+                        }
+                        _repository.UpdateAppointment(existing);
                     }
-                    if (statusText != null && existing.StatusText != statusText)
-                    {
-                        existing.StatusText = statusText;
-                        updated = true;
-                    }
-                    if (submissionDate.HasValue && existing.SubmissionDate != submissionDate.Value)
-                    {
-                        existing.SubmissionDate = submissionDate.Value;
-                        updated = true;
-                    }
-                    _repository.UpdateAppointment(existing);
                 }
-            }
-            if (updated)
-            {
-                RefreshAppointments(false);
-            }
+                if (updated)
+                {
+                    RefreshAppointments(false);
+                }
+            });
         }
 
         public void DeleteOldAppointments()
@@ -655,7 +667,7 @@ namespace ChewsiPlugin.UI.Services
             ValidateSubscriberAndProviderResponse validationResponse = null;
             Task.Factory.StartNew(() =>
             {
-                SetAppointmentState(chewsiId, date, statusText: StatusMessage.PaymentProcessing);
+                SetAppointmentState(chewsiId, date, AppointmentState.TreatmentCompleted, StatusMessage.PaymentProcessing);
                 validationResponse = ValidateClaim(providerId, patientId, out providerInformation, out subscriberInformation, out provider);
             }).ContinueWith(t =>
             {
@@ -687,13 +699,8 @@ namespace ChewsiPlugin.UI.Services
                                 statusText += validationResponse.SubscriberValidationMessage;
                             }
                             #endregion
-
-                            AppointmentState state = AppointmentState.ValidationError;
-                            if (validationResponse.SubscriberNoLongerActive || validationResponse.ProviderNotFound)
-                            {
-                                state = AppointmentState.ValidationErrorUnrecoverable;
-                            }
-                            SetAppointmentState(chewsiId, date, state, statusText);
+                            
+                            SetAppointmentState(chewsiId, date, AppointmentState.ValidationError, statusText);
                         }
                     }
                     else
