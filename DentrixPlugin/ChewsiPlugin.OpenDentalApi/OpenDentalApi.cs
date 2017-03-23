@@ -113,7 +113,6 @@ namespace ChewsiPlugin.OpenDentalApi
         private SubscriberInfo GetSubscriberInfo(long patientId)
         {
             var a = _proxy.GetSubscribers(patientId);
-            Debugger.Launch();
             return a.FirstOrDefault();
         }
 
@@ -183,7 +182,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return FileVersionInfo.GetVersionInfo(Path.Combine(_openDentalInstallationDirectory, OpenDentalBusinessName)).ProductVersion;
         }
 
-        public bool IsInstalled(out string folder)
+        public override bool TryGetFolder(out string folder)
         {
             List<string> paths = new List<string>();
             foreach (var drive in DriveInfo.GetDrives().Where(m => m.IsReady && m.DriveType == DriveType.Fixed))
@@ -204,7 +203,6 @@ namespace ChewsiPlugin.OpenDentalApi
         }
 
         public string Name { get { return "Open Dental"; } }
-        public Settings.PMS.Types Type { get { return Settings.PMS.Types.OpenDental; } }
 
         public void Unload()
         {
@@ -214,5 +212,7 @@ namespace ChewsiPlugin.OpenDentalApi
                 _domain = null;
             }
         }
+
+        protected override string PmsExeRelativePath => "OpenDental.exe";
     }
 }

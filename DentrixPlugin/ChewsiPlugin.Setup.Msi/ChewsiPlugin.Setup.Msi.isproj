@@ -2,7 +2,7 @@
 <Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<!-- Select a Product Configuration -->
-		<InstallShieldProductConfiguration>Media</InstallShieldProductConfiguration>
+		<InstallShieldProductConfiguration>Default Configuration</InstallShieldProductConfiguration>
 		<!-- Select a Visual Studio Configuration / InstallShield Release -->
 		<Configuration>Debug</Configuration>
 		<InstallShieldRelease>$(Configuration)</InstallShieldRelease>
@@ -28,5 +28,4 @@
 		</TaggedOutputs> -->
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2016\InstallShield.targets"/>
-	<ItemGroup/>
 </Project>

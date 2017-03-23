@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using ChewsiPlugin.Api.Common;
-using ChewsiPlugin.Api.Repository;
 
 namespace ChewsiPlugin.Api.Interfaces
 {
@@ -11,10 +10,10 @@ namespace ChewsiPlugin.Api.Interfaces
         List<IAppointment> GetAppointmentsForToday();
         Provider GetProvider(string providerId);
         string GetVersion();
-        bool IsInstalled(out string folder);
         string Name { get; }
-        Settings.PMS.Types Type { get; }
         void Unload();
-        bool Initialized { get; }
+        //bool Initialized { get; }
+        void Start();
+        bool TryGetFolder(out string folder);
     }
 }

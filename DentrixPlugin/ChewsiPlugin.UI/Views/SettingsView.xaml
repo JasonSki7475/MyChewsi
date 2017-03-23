@@ -25,6 +25,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -51,6 +53,7 @@
                 <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding Tin}"/>
                 <TextBlock Grid.Row="10" Grid.Column="0" Text="State"/>
                 <TextBox Grid.Row="10" Grid.Column="2" Text="{Binding State}"/>
+                <CheckBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" />
             </Grid>            
         </GroupBox>
         <GroupBox Grid.Column="2" Header="Network" Padding="10">

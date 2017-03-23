@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Setup.CustomAc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Tests", "ChewsiPlugin.Tests\ChewsiPlugin.Tests.csproj", "{3CF43AAC-19B5-4694-A9F5-EC7FE66D8C39}"
 EndProject
-Project("{E729F059-12D4-455F-A2A4-FDA8DD25E08A}") = "ChewsiPlugin.Setup", "ChewsiPlugin.Setup\ChewsiPlugin.Setup.isproj", "{D75A094A-CB54-4866-BA0A-476213FFE2C0}"
+Project("{E729F059-12D4-455F-A2A4-FDA8DD25E08A}") = "ChewsiPlugin.Setup.Msi", "ChewsiPlugin.Setup.Msi\ChewsiPlugin.Setup.Msi.isproj", "{9AD13FF0-B14C-44D2-ADFB-E277047527AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,14 +70,14 @@ Global
 		{3CF43AAC-19B5-4694-A9F5-EC7FE66D8C39}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CF43AAC-19B5-4694-A9F5-EC7FE66D8C39}.Release|x86.ActiveCfg = Release|Any CPU
 		{3CF43AAC-19B5-4694-A9F5-EC7FE66D8C39}.Release|x86.Build.0 = Release|Any CPU
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Debug|Any CPU.ActiveCfg = Debug
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Debug|Any CPU.Build.0 = Debug
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Debug|x86.ActiveCfg = Debug
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Debug|x86.Build.0 = Debug
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Release|Any CPU.ActiveCfg = Release
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Release|Any CPU.Build.0 = Release
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Release|x86.ActiveCfg = Release
-		{D75A094A-CB54-4866-BA0A-476213FFE2C0}.Release|x86.Build.0 = Release
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Debug|Any CPU.ActiveCfg = Debug
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Debug|Any CPU.Build.0 = Debug
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Debug|x86.ActiveCfg = Debug
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Debug|x86.Build.0 = Debug
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|Any CPU.ActiveCfg = Release
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|Any CPU.Build.0 = Release
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|x86.ActiveCfg = Release
+		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -179,13 +179,15 @@ namespace ChewsiPlugin.Api.Dentrix
             return null;
         }
 
-        public bool IsInstalled(out string folder)
+        public override bool TryGetFolder(out string folder)
         {
-            return GetDentrixExePath(out folder);
+            return GetDentrixFolder(out folder);
         }
 
+        protected override string PmsExeRelativePath => "Office.exe";
+
         public string Name { get { return "Dentrix"; } }
-        public Repository.Settings.PMS.Types Type { get { return Repository.Settings.PMS.Types.Dentrix; } }
+
         public void Unload()
         {
         }
@@ -338,27 +340,27 @@ namespace ChewsiPlugin.Api.Dentrix
             }
         }
 
-        private bool GetDentrixExePath(out string path)
+        private bool GetDentrixFolder(out string path)
         {
             var result = false;
+            path = null;
             try
             {
                 RegistryKey hKey = Registry.CurrentUser.OpenSubKey(@"Software\Dentrix Dental Systems, Inc.\Dentrix\General");
                 if (hKey != null)
                 {
-                    Object value = hKey.GetValue("ExePath");
+                    var value = hKey.GetValue("ExePath");
                     if (value != null)
                     {
-                        path = value + "Dentrix.API.dll";
+                        path = value.ToString();
                         result = true;
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Could not read registry value");
+                Logger.Warn(ex, "Could not load Dentrix folder from registry");
             }
-            path = null;
             return result;
         }
 

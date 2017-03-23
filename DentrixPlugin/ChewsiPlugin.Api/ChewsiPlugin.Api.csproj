@@ -79,6 +79,7 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.104.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -101,6 +102,7 @@
     <Compile Include="Chewsi\UpdatePluginRegistrationRequest.cs" />
     <Compile Include="Chewsi\ValidateSubscriberAndProviderRequest.cs" />
     <Compile Include="Common\DentalApi.cs" />
+    <Compile Include="Common\MessageBoxDialogService.cs" />
     <Compile Include="Interfaces\IAppointment.cs" />
     <Compile Include="Common\ProcedureInfo.cs" />
     <Compile Include="Chewsi\ClaimStatus.cs" />

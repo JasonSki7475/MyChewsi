@@ -14,6 +14,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private DateTime? _submissionDate;
         private string _chewsiId;
         private string _patientName;
+        private string _subscriberFirstName;
         private string _providerId;
         private string _patientId;
         private string _statusText;
@@ -63,6 +64,16 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _patientName = value;
                 RaisePropertyChanged(() => PatientName);
+            }
+        }
+
+        public string SubscriberFirstName
+        {
+            get { return _subscriberFirstName; }
+            set
+            {
+                _subscriberFirstName = value;
+                RaisePropertyChanged(() => SubscriberFirstName);
             }
         }
 

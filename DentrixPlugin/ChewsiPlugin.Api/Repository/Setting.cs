@@ -30,6 +30,7 @@
         public const string OsKey = "Os";
         public const string AppVersionKey = "AppVersion";
         public const string UseProxy = "UseProxy";
+        public const string StartPms = "StartPms";
         public const string ProxyAddress = "ProxyAddress";
         public const string ProxyPort = "ProxyPort";
         public const string ProxyLogin = "ProxyLogin";

@@ -2,15 +2,15 @@
 {
     public class DownoadFileRequest
     {
-        public string postedOnDate { get; set; }
-        public string url { get; set; }
-        public string payee_ID { get; set; }
-        public string FileType { get; set; }
+        public string PostedOnDate { get; set; }
+        public string TIN { get; set; }
+        public string DocumentID { get; set; }
+        public string DocumentType { get; set; }
     }
 
     public static class DownoadFileType
     {
-        public static string Txt = "835txt";
-        public static string Pdf = "835pdf";
+        public static string Txt = "EDI";
+        public static string Pdf = "Report";
     }
 }

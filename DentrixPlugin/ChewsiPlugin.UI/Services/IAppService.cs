@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.UI.ViewModels;
 
 namespace ChewsiPlugin.UI.Services
@@ -15,9 +16,13 @@ namespace ChewsiPlugin.UI.Services
         ObservableCollection<ClaimItemViewModel> ClaimItems { get; }
         bool IsProcessingPayment { get; }
         bool IsLoadingAppointments { get; }
+        bool AppointmentsLoaded { get; }
         void DeleteAppointment(string chewsiId, DateTime date);
         void DeleteOldAppointments();
         event Action OnStartPaymentStatusLookup;
         void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId);
+        void StartPmsIfRequired();
+        void DownloadFile(string documentId, string postedDate, bool downloadReport);
+        Provider GetProvider();
     }
 }

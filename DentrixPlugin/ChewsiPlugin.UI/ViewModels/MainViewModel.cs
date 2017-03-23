@@ -1,17 +1,18 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 using ChewsiPlugin.Api.Chewsi;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
-using Microsoft.Win32;
 using NLog;
 
 namespace ChewsiPlugin.UI.ViewModels
@@ -37,7 +38,7 @@ namespace ChewsiPlugin.UI.ViewModels
         {
             _dialogService = dialogService;
             AppService = appService;
-
+            
             AppService.OnStartPaymentStatusLookup += () =>
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
@@ -70,7 +71,6 @@ namespace ChewsiPlugin.UI.ViewModels
             var initWorker = new BackgroundWorker();
             initWorker.DoWork += (i, j) =>
             {
-
                 // if internal DB file is missing or it's empty
                 if (!AppService.Initialized)
                 {
@@ -89,8 +89,44 @@ namespace ChewsiPlugin.UI.ViewModels
                     loadAppointmentsWorker.RunWorkerAsync();
                 }
                 AppService.InitializeChewsiApi();
+                AppService.StartPmsIfRequired();
             };
             initWorker.RunWorkerAsync();
+        }
+
+        public void OpenSettingsForReview()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    // wait till appointments list is ready
+                    while (!AppService.AppointmentsLoaded || AppService.IsLoadingAppointments)
+                    {
+                        Thread.Sleep(200);
+                    }
+
+                    // try to find Address, State and TIN in PMS
+                    _dialogService.ShowLoadingIndicator();
+
+                    Provider provider = AppService.GetProvider();
+                    if (provider != null)
+                    {
+                        OpenSettingsCommand.Execute(null);
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            SettingsViewModel.Address1 = provider.AddressLine1;
+                            SettingsViewModel.Address2 = provider.AddressLine2;
+                            SettingsViewModel.State = provider.State;
+                            SettingsViewModel.Tin = provider.Tin;
+                        });
+                    }
+                }
+                finally
+                {
+                    _dialogService.HideLoadingIndicator();
+                }
+            });
         }
 
         #region Properties
@@ -194,7 +230,7 @@ namespace ChewsiPlugin.UI.ViewModels
                     TIN = settings.Tin,
                     State = settings.State,
                     Address = $"{settings.Address1} {settings.Address2}"
-                }).Select(m => new DownloadItemViewModel(m.File_835_EDI_url, m.File_835_Report_url, m.Payee_ID, DateTime.Parse(m.PostedOnDate)));
+                }).Select(m => new DownloadItemViewModel(m.EDI_835_EDI, m.EDI_835_Report, m.Status, m.PostedDate));
 
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
@@ -239,7 +275,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDownloadReportCommandExecute()
         {
-            DownloadFile(SelectedDownloadItem.ReportUrl, "Save report file");
+            AppService.DownloadFile(SelectedDownloadItem.PdfReportDocumentId, SelectedDownloadItem.PostedDate, true);
         }
         #endregion
 
@@ -251,43 +287,8 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDownloadCommandExecute()
         {
-            DownloadFile(SelectedDownloadItem.Url, "Save 835 file");
+            AppService.DownloadFile(SelectedDownloadItem.EdiDocumentId, SelectedDownloadItem.PostedDate, false);
         }
-
-        private void DownloadFile(string uri, string dialogTitle)
-        {
-            _dialogService.ShowLoadingIndicator();
-            try
-            {
-                var stream = (MemoryStream) _chewsiApi.DownloadFile(new DownoadFileRequest
-                {
-                    FileType = DownoadFileType.Pdf,
-                    url = uri,
-                    payee_ID = SelectedDownloadItem.PayeeId,
-                    postedOnDate = SelectedDownloadItem.PostedOnDate.ToString("d")
-                });
-                var dialog = new SaveFileDialog
-                {
-                    FileName = Path.GetFileName(uri),
-                    Title = dialogTitle,
-                    Filter = "PDF file (*.pdf)"
-                };
-                if (dialog.ShowDialog() == true)
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    using (FileStream file = new FileStream(dialog.FileName, FileMode.Create, FileAccess.Write))
-                    {
-                        stream.WriteTo(file);
-                        stream.Close();
-                    }
-                }
-            }
-            finally
-            {
-                _dialogService.HideLoadingIndicator();
-            }
-        }
-
         #endregion
         #endregion
     }

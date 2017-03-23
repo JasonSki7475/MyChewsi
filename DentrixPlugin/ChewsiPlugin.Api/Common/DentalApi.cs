@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using ChewsiPlugin.Api.Interfaces;
 using NLog;
 
@@ -36,7 +39,38 @@ namespace ChewsiPlugin.Api.Common
              */
             return new Tuple<DateTime, DateTime>(dateStart, dateEnd);
         }
+
+        public abstract bool TryGetFolder(out string folder);
+        protected abstract string PmsExeRelativePath { get; }
         
-        public bool Initialized { get { return _initialized; } }
+        //public bool Initialized { get { return _initialized; } }
+
+        public void Start()
+        {
+            // Is already running?
+            Process[] runningProcesses = Process.GetProcesses();
+            var currentSessionId = Process.GetCurrentProcess().SessionId;
+            var processesOfCurrentUser = runningProcesses.Where(p => p.SessionId == currentSessionId).ToList();
+            if (processesOfCurrentUser.All(m => m.ProcessName != Path.GetFileNameWithoutExtension(PmsExeRelativePath)))
+            {
+                // Start
+                string folder;
+                if (TryGetFolder(out folder))
+                {
+                    var path = Path.Combine(folder, PmsExeRelativePath);
+                    if (File.Exists(path))
+                    {
+                        try
+                        {
+                            Process.Start(path);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex, "Failed to start PMS");
+                        }
+                    }
+                }                
+            }
+        }
     }
 }

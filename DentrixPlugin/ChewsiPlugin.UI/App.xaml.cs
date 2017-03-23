@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using ChewsiPlugin.Api.Common;
+using ChewsiPlugin.Api.Dentrix;
+using ChewsiPlugin.UI.ViewModels;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.Practices.ServiceLocation;
 using NLog;
 
 namespace ChewsiPlugin.UI
@@ -41,6 +46,34 @@ namespace ChewsiPlugin.UI
                 e.IsTerminating
                     ? "Application domain unhandled exception has been thrown, application will be terminated"
                     : "Application domain unhandled exception has been thrown");
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var arg = e.Args.Any() ? e.Args.First() : null;
+            if (arg == "initDentrix")
+            {
+                Logger.Info("Initializing Dentrix API key");
+
+                // initialize Dentrix API to register user
+                var api = new DentrixApi(new MessageBoxDialogService());
+                api.Unload();
+                Shutdown();
+            }
+            else 
+            {
+                var window = new MainWindow();
+                window.Show();
+
+                // display settings view; try to fill Address, State and TIN
+                if (arg == "init")
+                {
+                    Logger.Info("App first run: setup settings");
+                    var vm = ServiceLocator.Current.GetInstance<MainViewModel>();
+                    vm.OpenSettingsForReview();
+                }
+            }
         }
     }
 }

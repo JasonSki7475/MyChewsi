@@ -26,6 +26,7 @@ namespace ChewsiPlugin.Api.Chewsi
         private const string RegisterPluginUri = "RegisterPlugin";
         private const string Request835DownloadsUri = "Request835Downloads";
         private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus";
+        private const string DownloadFileUri = "DownloadFile";
         private const string ReceiveMemberAuthorizationUri = "ReceiveMemberAuthorization";
         private const string UpdatePluginRegistrationUri = "UpdatePluginRegistration";
 
@@ -113,7 +114,7 @@ namespace ChewsiPlugin.Api.Chewsi
 
         public Stream DownloadFile(DownoadFileRequest request)
         {
-            return GetStream(null, request.url, HttpMethod.Get);
+            return GetStream(request, DownloadFileUri, HttpMethod.Post);
         }
 
         public void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword)

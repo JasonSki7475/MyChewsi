@@ -1,41 +1,40 @@
-﻿using System;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
     public class DownloadItemViewModel : ViewModelBase
     {
-        private readonly string _url;
-        private readonly string _reportUrl;
-        private readonly string _payeeId;
-        private readonly DateTime _postedOnDate;
+        private readonly string _ediDocumentId;
+        private readonly string _pdfReportDocumentId;
+        private readonly string _status;
+        private readonly string _postedDate;
 
-        public DownloadItemViewModel(string url, string reportUrl, string payeeId, DateTime postedOnDate)
+        public DownloadItemViewModel(string ediDocumentId, string pdfReportDocumentId, string status, string postedDate)
         {
-            _url = url;
-            _reportUrl = reportUrl;
-            _payeeId = payeeId;
-            _postedOnDate = postedOnDate;
+            _ediDocumentId = ediDocumentId;
+            _pdfReportDocumentId = pdfReportDocumentId;
+            _status = status;
+            _postedDate = postedDate;
         }
 
-        public string Url
+        public string EdiDocumentId
         {
-            get { return _url; }
+            get { return _ediDocumentId; }
         }
 
-        public string ReportUrl
+        public string PdfReportDocumentId
         {
-            get { return _reportUrl; }
+            get { return _pdfReportDocumentId; }
         }
 
-        public string PayeeId
+        public string Status
         {
-            get { return _payeeId; }
+            get { return _status; }
         }
 
-        public DateTime PostedOnDate
+        public string PostedDate
         {
-            get { return _postedOnDate; }
+            get { return _postedDate; }
         }
     }
 }
