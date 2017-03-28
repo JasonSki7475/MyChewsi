@@ -4,6 +4,7 @@ using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
@@ -18,6 +19,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _providerId;
         private string _patientId;
         private string _statusText;
+        private bool _isBeingSubmitted;
         private AppointmentState _state;
         private ICommand _submitCommand;
         private ICommand _deleteCommand;
@@ -107,6 +109,16 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public bool IsBeingSubmitted
+        {
+            get { return _isBeingSubmitted; }
+            set
+            {
+                _isBeingSubmitted = value;
+                RaisePropertyChanged(() => IsBeingSubmitted);
+            }
+        }
+
         public AppointmentState State
         {
             get { return _state; }
@@ -134,12 +146,19 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private bool CanSubmitCommandExecute()
         {
-            return _appService.Initialized;
+            return _appService.Initialized && !IsBeingSubmitted;
         }
 
         private void OnSubmitCommandExecute()
         {
-            _appService.ValidateAndSubmitClaim(ChewsiId, Date, ProviderId, PatientId);
+            IsBeingSubmitted = true;
+            _appService.ValidateAndSubmitClaim(ChewsiId, Date, ProviderId, PatientId, () =>
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    IsBeingSubmitted = false;
+                });
+            });
         }
         #endregion
 

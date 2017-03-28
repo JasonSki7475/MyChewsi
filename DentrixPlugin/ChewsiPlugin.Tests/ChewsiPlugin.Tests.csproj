@@ -51,8 +51,8 @@
       <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.0\lib\net40\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.6.1\lib\net40\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -79,6 +79,10 @@
     <ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">
       <Project>{5ad8eba3-ce26-4343-8ba4-ee832ea839bd}</Project>
       <Name>ChewsiPlugin.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChewsiPlugin.EaglesoftApi\ChewsiPlugin.EaglesoftApi.csproj">
+      <Project>{54ae715c-e37b-40cb-833f-f3c9ee812c06}</Project>
+      <Name>ChewsiPlugin.EaglesoftApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
       <Project>{d1582bd8-ef79-493a-aad9-4f39ca3995d2}</Project>

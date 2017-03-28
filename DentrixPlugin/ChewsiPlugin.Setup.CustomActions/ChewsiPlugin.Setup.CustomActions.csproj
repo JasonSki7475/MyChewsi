@@ -32,6 +32,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.4\lib\net40\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -51,10 +55,17 @@
       <Project>{5ad8eba3-ce26-4343-8ba4-ee832ea839bd}</Project>
       <Name>ChewsiPlugin.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ChewsiPlugin.EaglesoftApi\ChewsiPlugin.EaglesoftApi.csproj">
+      <Project>{54ae715c-e37b-40cb-833f-f3c9ee812c06}</Project>
+      <Name>ChewsiPlugin.EaglesoftApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
       <Project>{d1582bd8-ef79-493a-aad9-4f39ca3995d2}</Project>
       <Name>ChewsiPlugin.OpenDentalApi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

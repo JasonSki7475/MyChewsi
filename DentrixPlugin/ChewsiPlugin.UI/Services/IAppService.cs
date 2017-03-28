@@ -20,7 +20,7 @@ namespace ChewsiPlugin.UI.Services
         void DeleteAppointment(string chewsiId, DateTime date);
         void DeleteOldAppointments();
         event Action OnStartPaymentStatusLookup;
-        void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId);
+        void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId, Action callEndCallback);
         void StartPmsIfRequired();
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         Provider GetProvider();

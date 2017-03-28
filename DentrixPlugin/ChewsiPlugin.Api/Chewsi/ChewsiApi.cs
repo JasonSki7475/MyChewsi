@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using ChewsiPlugin.Api.Interfaces;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ namespace ChewsiPlugin.Api.Chewsi
 {
     public class ChewsiApi : IChewsiApi
     {
+        private const string PublicKey = "<RSAKeyValue><Modulus>wucbBr9ssgvKqQwuJ+NNhnYs2ZZSePy6gCOcMFIxOPKDrqS3cLnaAhlTUOpz/zXGsFq9riLvOAy6j7U3rvHfdg+bNc8TkKX0QysuDWe17+YENU0rdoTTMOBEFjCfXpWR4SxfxJPAaTZvBi/ZDrk5KzF0JUr4PyfTP+tMHwpJU97AN7cM8eEMWoyP1yigiKgZH3JI2jfE/zigLgJPJ09htAriVIx3eMDPXxtfnvO1o8PSZbqcJvNB8I31dWepsPkGXgRBjJNY7IM7FYfEVN5KUrqmequafOZi2bzXJFchry23+f0GrvfY4Noj2Zq3M9/sjNiAGvKopkoWcCeXh41wsQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
         private readonly IDialogService _dialogService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private string _token;
@@ -20,7 +22,7 @@ namespace ChewsiPlugin.Api.Chewsi
         private int _proxyPort;
         private string _proxyUserName;
         private string _proxyPassword;
-        private const string Url = "http://chewsi-dev-txapi.azurewebsites.net";//"http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
+        private const string Url = "http://chewsi-dev-txapi-predeploy.azurewebsites.net";//"http://chewsi-dev-txapi.azurewebsites.net";//"http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";
@@ -138,12 +140,23 @@ namespace ChewsiPlugin.Api.Chewsi
             return null;
         }
 
+        private string GetSignature()
+        {
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                rsa.PersistKeyInCsp = false;
+                rsa.FromXmlString(PublicKey);
+                byte[] encryptedBytes = rsa.Encrypt(Encoding.UTF8.GetBytes(_token + "_" + DateTime.UtcNow), false);
+                return Convert.ToBase64String(encryptedBytes);
+            }
+        }
+
         private Stream GetStream(object request, string uri, HttpMethod method)
         {
             var url = new Uri(new Uri(Url, UriKind.Absolute), uri);
             var webRequest = WebRequest.Create(url) as HttpWebRequest;
             webRequest.Headers.Clear();
-            webRequest.Headers.Add("x-chewsi-token", _token);
+            webRequest.Headers.Add("x-chewsi-authid", GetSignature());
             webRequest.Accept = "application/json";
             webRequest.ContentType = "application/json";
             webRequest.Method = method.ToString().ToUpper();

@@ -15,40 +15,25 @@ namespace ChewsiPlugin.OpenDentalApi
 {
     public class OpenDentalApi : DentalApi, IDentalApi
     {
-        private readonly string _openDentalInstallationDirectory;
+        private readonly IRepository _repository;
+        private string _openDentalInstallationDirectory;
         private const string OpenDentalExeName = @"OpenDental.exe";
         private const string OpenDentalBusinessName = @"OpenDentBusiness.dll";
         
         private Dictionary<long, string> _procedureCodes;
-        private readonly Proxy _proxy;
+        private Proxy _proxy;
         private AppDomain _domain;
 
         public OpenDentalApi(IRepository repository, IDialogService dialogService)
         {
+            _repository = repository;
             _dialogService = dialogService;
-            _openDentalInstallationDirectory = repository.GetSettingValue<string>(Settings.PMS.PathKey);
-            // Create new app domain and load OpenDental assemblies, then we will load data from them
-            AppDomainSetup setup = new AppDomainSetup
-            {
-                ApplicationBase = _openDentalInstallationDirectory
-            };
-            _domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
-            _proxy = (Proxy) _domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
-            Logger.Debug("Created proxy class");
-            _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
-            // Set these fields to make it load values from config file
-            _proxy.SetField("WebServiceUri", "");
-            _proxy.SetField("DatabaseName", "");
-            _proxy.InvokeMethod("GetConfig", null);
-            //_proxy.InvokeMethod("GetCmdLine", null);
-            Logger.Debug("Loaded " + OpenDentalExeName);
-            
-            Initialize();
         }
 
         public PatientInfo GetPatientInfo(string patientId)
         {
             Initialize();
+
             var id = long.Parse(patientId);
             return GetPatientInfo(id);
         }
@@ -78,6 +63,23 @@ namespace ChewsiPlugin.OpenDentalApi
         {
             if (!_initialized)
             {
+                _openDentalInstallationDirectory = _repository.GetSettingValue<string>(Settings.PMS.PathKey);
+                // Create new app domain and load OpenDental assemblies, then we will load data from them
+                AppDomainSetup setup = new AppDomainSetup
+                {
+                    ApplicationBase = _openDentalInstallationDirectory
+                };
+                _domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
+                _proxy = (Proxy)_domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName);
+                Logger.Debug("Created proxy class");
+                _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
+                // Set these fields to make it load values from config file
+                _proxy.SetField("WebServiceUri", "");
+                _proxy.SetField("DatabaseName", "");
+                _proxy.InvokeMethod("GetConfig", null);
+                //_proxy.InvokeMethod("GetCmdLine", null);
+                Logger.Debug("Loaded " + OpenDentalExeName);
+
                 _proxy.Initialize(Path.Combine(_openDentalInstallationDirectory, OpenDentalBusinessName));
                 if ((bool) _proxy.InvokeMethod("TryToConnect", null))
                 {
@@ -92,10 +94,11 @@ namespace ChewsiPlugin.OpenDentalApi
             }
         }
 
-        public List<ProcedureInfo> GetProcedures(string patientId)
+        public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId)
         {
             Initialize();
-            
+
+            // TODO use appt id
             var procedures = _proxy.GetProcedures(long.Parse(patientId));
             if (procedures != null && procedures.Any())
             {
@@ -202,7 +205,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return false;
         }
 
-        public string Name { get { return "Open Dental"; } }
+        public string Name => "Open Dental";
 
         public void Unload()
         {

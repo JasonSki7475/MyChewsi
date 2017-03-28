@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Tests", "Chews
 EndProject
 Project("{E729F059-12D4-455F-A2A4-FDA8DD25E08A}") = "ChewsiPlugin.Setup.Msi", "ChewsiPlugin.Setup.Msi\ChewsiPlugin.Setup.Msi.isproj", "{9AD13FF0-B14C-44D2-ADFB-E277047527AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.EaglesoftApi", "ChewsiPlugin.EaglesoftApi\ChewsiPlugin.EaglesoftApi.csproj", "{54AE715C-E37B-40CB-833F-F3C9EE812C06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,14 @@ Global
 		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|Any CPU.Build.0 = Release
 		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|x86.ActiveCfg = Release
 		{9AD13FF0-B14C-44D2-ADFB-E277047527AB}.Release|x86.Build.0 = Release
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Debug|x86.Build.0 = Debug|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Release|x86.ActiveCfg = Release|Any CPU
+		{54AE715C-E37B-40CB-833F-F3C9EE812C06}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -29,7 +29,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _proxyPassword;
         private ICommand _saveCommand;
         private ICommand _selectPath;
-        private readonly bool _firstAppRun;
         private string _state;
         private bool _startPms;
 
@@ -38,32 +37,23 @@ namespace ChewsiPlugin.UI.ViewModels
             _appService = appService;
             _onClose = onClose;
             _dialogService = dialogService;
-            Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.OpenDental };
+            Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.Eaglesoft, Settings.PMS.Types.OpenDental };
 
-            _firstAppRun = !_appService.Initialized;
-            if (_firstAppRun)
-            {
-                _path = @"C:\Program Files (x86)\Open Dental";
-            }
-            else
-            {
-                var s = _appService.GetSettings();
-
-                _address1 = s.Address1;
-                _address2 = s.Address2;
-                _tin = s.Tin;
-                _useProxy = s.UseProxy;
-                _proxyAddress = s.ProxyAddress;
-                _proxyPort = s.ProxyPort;
-                _proxyLogin = s.ProxyLogin;
-                _proxyPassword = s.ProxyPassword;
-                _selectedType = s.PmsType;
-                _path = s.PmsPath;
-                _state = s.State;
-                _startPms = s.StartPms;
-            }
+            var s = _appService.GetSettings();
+            _address1 = s.Address1;
+            _address2 = s.Address2;
+            _tin = s.Tin;
+            _useProxy = s.UseProxy;
+            _proxyAddress = s.ProxyAddress;
+            _proxyPort = s.ProxyPort;
+            _proxyLogin = s.ProxyLogin;
+            _proxyPassword = s.ProxyPassword;
+            _selectedType = s.PmsType;
+            _path = s.PmsPath;
+            _state = s.State;
+            _startPms = s.StartPms;
         }
-        
+
         public Settings.PMS.Types[] Types { get; private set; }
 
         public Settings.PMS.Types SelectedType
@@ -200,7 +190,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private bool CanCloseCommandExecute()
         {
-            return !_firstAppRun;
+            return false;
         }
 
         private void OnCloseCommandExecute()

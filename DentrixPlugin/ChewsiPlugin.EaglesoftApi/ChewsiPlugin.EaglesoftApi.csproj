@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D1582BD8-EF79-493A-AAD9-4F39CA3995D2}</ProjectGuid>
+    <ProjectGuid>{54AE715C-E37B-40CB-833F-F3C9EE812C06}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ChewsiPlugin.OpenDentalApi</RootNamespace>
-    <AssemblyName>ChewsiPlugin.OpenDentalApi</AssemblyName>
+    <RootNamespace>ChewsiPlugin.EaglesoftApi</RootNamespace>
+    <AssemblyName>ChewsiPlugin.EaglesoftApi</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,16 +28,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.2\lib\net40\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.4\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,19 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Appointment.cs" />
-    <Compile Include="DTO\AppointmentInfo.cs" />
-    <Compile Include="DTO\CarrierInfo.cs" />
-    <Compile Include="DTO\InsSubInfo.cs" />
-    <Compile Include="DTO\PatientInfo.cs" />
-    <Compile Include="DTO\PatPlanInfo.cs" />
-    <Compile Include="DTO\ProcedureCodeInfo.cs" />
-    <Compile Include="DTO\ProcedureInfo.cs" />
-    <Compile Include="DTO\ProviderInfo.cs" />
-    <Compile Include="DTO\SubscriberInfo.cs" />
-    <Compile Include="OpenDentalApi.cs" />
+    <Compile Include="EaglesoftApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
-    <Compile Include="Proxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">

@@ -63,16 +63,15 @@ namespace ChewsiPlugin.UI
             }
             else 
             {
-                var window = new MainWindow();
-                window.Show();
-
-                // display settings view; try to fill Address, State and TIN
-                if (arg == "init")
+                ViewModelLocator.InitContainer();
+                var vm = ServiceLocator.Current.GetInstance<MainViewModel>();
+                // when 'init' parameter exists - display settings view; try to fill Address, State and TIN
+                vm.Initialize(arg == "init");
+                var window = new MainWindow
                 {
-                    Logger.Info("App first run: setup settings");
-                    var vm = ServiceLocator.Current.GetInstance<MainViewModel>();
-                    vm.OpenSettingsForReview();
-                }
+                    DataContext = ServiceLocator.Current.GetInstance<MainViewModel>()
+                };
+                window.Show();
             }
         }
     }

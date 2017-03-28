@@ -18,7 +18,7 @@
             {
                 Dentrix,
                 OpenDental,
-                Patterson
+                Eaglesoft
             }
         }
 

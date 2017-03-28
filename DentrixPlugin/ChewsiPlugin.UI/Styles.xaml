@@ -4,6 +4,7 @@
                     xmlns:converters="clr-namespace:ChewsiPlugin.UI.Converters">
     
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converters:BooleanToVisibilityInverseConverter x:Key="BooleanToVisibilityInverseConverter"/>
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
     <converters:EnumToVisibilityInverseConverter x:Key="EnumToVisibilityInverseConverter"/>

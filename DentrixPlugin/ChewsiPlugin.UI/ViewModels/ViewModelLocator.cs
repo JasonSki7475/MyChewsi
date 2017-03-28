@@ -11,12 +11,9 @@ namespace ChewsiPlugin.UI.ViewModels
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    public class ViewModelLocator
+    public static class ViewModelLocator
     {
-        /// <summary>
-        /// Initializes a new instance of the ViewModelLocator class.
-        /// </summary>
-        public ViewModelLocator()
+        public static void InitContainer()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<IDialogService, DialogService.DialogService>();
@@ -24,11 +21,6 @@ namespace ChewsiPlugin.UI.ViewModels
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<IRepository, Repository>();
             SimpleIoc.Default.Register<IAppService, AppService>();
-        }
-
-        public MainViewModel MainViewModel
-        {
-            get { return ServiceLocator.Current.GetInstance<MainViewModel>(); }
         }
     }
 }

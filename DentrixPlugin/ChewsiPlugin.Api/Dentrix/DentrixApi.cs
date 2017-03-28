@@ -85,8 +85,9 @@ namespace ChewsiPlugin.Api.Dentrix
             }).FirstOrDefault();
         }
 
-        public List<ProcedureInfo> GetProcedures(string patientId)
+        public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId)
         {
+            // TODO use appt id
             var dateRange = GetTimeRangeForToday();
 
             // get patient_guid

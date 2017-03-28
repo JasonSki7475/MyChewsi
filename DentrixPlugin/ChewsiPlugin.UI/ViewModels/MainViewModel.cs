@@ -38,7 +38,11 @@ namespace ChewsiPlugin.UI.ViewModels
         {
             _dialogService = dialogService;
             AppService = appService;
-            
+            _chewsiApi = chewsiApi;
+        }
+
+        public void Initialize(bool firstRun)
+        {
             AppService.OnStartPaymentStatusLookup += () =>
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
@@ -47,8 +51,7 @@ namespace ChewsiPlugin.UI.ViewModels
                     RaisePropertyChanged(() => ShowPaymentProcessing);
                 });
             };
-
-            _chewsiApi = chewsiApi;
+            
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
 
             _dialogService.ShowLoadingIndicator();
@@ -71,31 +74,43 @@ namespace ChewsiPlugin.UI.ViewModels
             var initWorker = new BackgroundWorker();
             initWorker.DoWork += (i, j) =>
             {
-                // if internal DB file is missing or it's empty
-                if (!AppService.Initialized)
+                if (firstRun)
                 {
-                    _dialogService.HideLoadingIndicator();
-                    Logger.Debug("Settings are empty. Opening settings view");
-                    // ask user to choose PMS type and location
-                    SettingsViewModel = new SettingsViewModel(AppService, () =>
-                    {
-                        SettingsViewModel = null;
-                        loadAppointmentsWorker.RunWorkerAsync();
-                    }, _dialogService);
+                    loadAppointmentsWorker.RunWorkerAsync();
+                    OpenSettingsForReview();
                 }
                 else
                 {
-                    AppService.UpdatePluginRegistration();
-                    loadAppointmentsWorker.RunWorkerAsync();
+                    // if internal DB file is missing or it's empty
+                    if (!AppService.Initialized)
+                    {
+                        _dialogService.HideLoadingIndicator();
+                        Logger.Debug("Settings are empty. Opening settings view");
+                        // ask user to choose PMS type and location
+                        SettingsViewModel = new SettingsViewModel(AppService, () =>
+                        {
+                            SettingsViewModel = null;
+                            loadAppointmentsWorker.RunWorkerAsync();
+                        }, _dialogService);
+                    }    
+                    else
+                    {
+                        AppService.StartPmsIfRequired();
+                        AppService.InitializeChewsiApi();
+                        AppService.UpdatePluginRegistration();
+                        loadAppointmentsWorker.RunWorkerAsync();
+                    }                                     
                 }
-                AppService.InitializeChewsiApi();
-                AppService.StartPmsIfRequired();
             };
             initWorker.RunWorkerAsync();
         }
 
-        public void OpenSettingsForReview()
+        /// <summary>
+        /// Display settings view; try to fill Address, State and TIN
+        /// </summary>
+        private void OpenSettingsForReview()
         {
+            Logger.Info("App first run: setup settings");
             Task.Factory.StartNew(() =>
             {
                 try

@@ -8,7 +8,6 @@
         xmlns:views="clr-namespace:ChewsiPlugin.UI.Views"
         xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
-        DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         mc:Ignorable="d"
         Title="Chewsi" Height="600" Width="1050" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
     <Grid>
@@ -93,14 +92,16 @@
                                                 <ColumnDefinition Width="5"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Button Grid.Column="0" Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                    Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                    ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
-                                                    Command="{Binding Path=SubmitCommand}"/>
-                                            <Button Grid.Column="0" Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                    Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                    ConverterParameter={x:Static repository:AppointmentState.ValidationServerError}}"
-                                                    Command="{Binding Path=SubmitCommand}"/>
+                                            <Grid Grid.Column="0" Visibility="{Binding IsBeingSubmitted, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
+                                                <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                                        Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                        ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
+                                                        Command="{Binding Path=SubmitCommand}"/>
+                                                <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                                        Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                        ConverterParameter={x:Static repository:AppointmentState.ValidationServerError}}"
+                                                        Command="{Binding Path=SubmitCommand}"/>                                                
+                                            </Grid>
                                             <Button Grid.Column="2" Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
                                                     Command="{Binding Path=DeleteCommand}"/>
                                         </Grid>

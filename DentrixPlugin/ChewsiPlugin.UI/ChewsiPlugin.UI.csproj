@@ -79,12 +79,12 @@
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.4\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -117,6 +117,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Converters\EnumToVisibilityConverter.cs" />
     <Compile Include="Services\AppService.cs" />
     <Compile Include="Controls\BindingProxy.cs" />
@@ -217,6 +218,10 @@
     <ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">
       <Project>{5ad8eba3-ce26-4343-8ba4-ee832ea839bd}</Project>
       <Name>ChewsiPlugin.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChewsiPlugin.EaglesoftApi\ChewsiPlugin.EaglesoftApi.csproj">
+      <Project>{54ae715c-e37b-40cb-833f-f3c9ee812c06}</Project>
+      <Name>ChewsiPlugin.EaglesoftApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
       <Project>{d1582bd8-ef79-493a-aad9-4f39ca3995d2}</Project>

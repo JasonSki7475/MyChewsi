@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -174,9 +175,9 @@ namespace ChewsiPlugin.UI.Services
 
         public void UpdatePluginRegistration()
         {
-            if (_dentalApi != null)
+            if (DentalApi != null)
             {
-                string pmsVersion = _dentalApi.GetVersion();
+                string pmsVersion = DentalApi.GetVersion();
                 var pmsVersionOld = _repository.GetSettingValue<string>(Settings.PMS.VersionKey);
                 var pmsTypeOld = _repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
                 var address1Old = _repository.GetSettingValue<string>(Settings.Address1Key);
@@ -270,7 +271,8 @@ namespace ChewsiPlugin.UI.Services
         private void SubmitClaim(string chewsiId, DateTime appointmentDate, string patientId,
             ProviderInformation providerInformation, SubscriberInformation subscriberInformation, Provider provider)
         {
-            var procedures = DentalApi.GetProcedures(patientId);
+            // TODO set appt id
+            var procedures = DentalApi.GetProcedures(patientId, null);
             if (procedures.Any())
             {
                 _chewsiApi.ProcessClaim(providerInformation, subscriberInformation, procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList());
@@ -312,6 +314,9 @@ namespace ChewsiPlugin.UI.Services
                                     break;
                                 case Settings.PMS.Types.OpenDental:
                                     _dentalApi = new OpenDentalApi.OpenDentalApi(_repository, _dialogService);
+                                    break;
+                                case Settings.PMS.Types.Eaglesoft:
+                                    _dentalApi = new EaglesoftApi.EaglesoftApi(_dialogService);
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();
@@ -524,14 +529,14 @@ namespace ChewsiPlugin.UI.Services
                 if (loadFromPms)
                 {
                     // load from PMS
-                    List<IAppointment> pms = _dentalApi.GetAppointmentsForToday();
+                    List<IAppointment> pms = DentalApi.GetAppointmentsForToday();
                     // pms.ForEach(m => Logger.Debug($"Loaded appointment from PMS: Date={m.Date}, ChewsiId={m.ChewsiId}"));
                     // cached.ForEach(m => Logger.Debug($"Cached appointment: Date={m.DateTime}, ChewsiId={m.ChewsiId}"));
 
                     // load subscribers' first names (they are displayed if validation fails)
                     var subscriberNames = pms.Select(m => m.PatientId)
                         .Distinct()
-                        .Select(m => _dentalApi.GetPatientInfo(m))
+                        .Select(m => DentalApi.GetPatientInfo(m))
                         .ToDictionary(m => m.ChewsiId, m => m.SubscriberFirstName);
 
                     bool repositoryUpdated = false;
@@ -676,7 +681,7 @@ namespace ChewsiPlugin.UI.Services
 
         public event Action OnStartPaymentStatusLookup;
 
-        public void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId)
+        public void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId, Action callEndCallback)
         {
             ProviderInformation providerInformation = null;
             SubscriberInformation subscriberInformation = null;
@@ -725,6 +730,7 @@ namespace ChewsiPlugin.UI.Services
                         SetAppointmentState(chewsiId, date, AppointmentState.ValidationServerError, StatusMessage.PaymentProcessingError);
                     }
                 }
+                callEndCallback();
             });
         }
 
@@ -733,7 +739,7 @@ namespace ChewsiPlugin.UI.Services
             var start = _repository.GetSettingValue<bool>(Settings.StartPms);
             if (start)
             {
-                _dentalApi.Start();
+                DentalApi.Start();
             }
         }
         
