@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Dentrix;
+using ChewsiPlugin.EaglesoftApi;
 using ChewsiPlugin.UI.ViewModels;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Practices.ServiceLocation;

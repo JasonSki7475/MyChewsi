@@ -47,8 +47,7 @@ namespace ChewsiPlugin.EaglesoftApi
         {
             using (var connection = GetConnection())
             {
-                // TODO ChewsiId
-                return connection.QueryFirstOrDefault<PatientInfo>($"SELECT p.patient_id as ChewsiId, p.birth_date as BirthDate, p.first_name as PatientFirstName, p.last_name as PatientLastName, s.first_name as SubscriberFirstName, s.last_name as SubscriberLastName FROM patient p JOIN patient s ON p.responsible_party=s.patient_id WHERE p.patient_id={patientId}");
+                return connection.QueryFirstOrDefault<PatientInfo>($"SELECT p.prim_member_id as ChewsiId, p.birth_date as BirthDate, p.first_name as PatientFirstName, p.last_name as PatientLastName, s.first_name as SubscriberFirstName, s.last_name as SubscriberLastName FROM patient p JOIN patient s ON p.responsible_party=s.patient_id WHERE p.patient_id={patientId}");
             }
         }
 
@@ -65,9 +64,8 @@ namespace ChewsiPlugin.EaglesoftApi
             using (var connection = GetConnection())
             {
                 var dateRange = GetTimeRangeForToday();
-                // TODO ChewsiId, Status
                 return new List<IAppointment>(connection.Query<Appointment>(
-                        $@"SELECT a.start_time as 'Date', a.patient_id as PatientId, a.patient_id as ChewsiId, (p.last_name+', '+p.first_name) as PatientName, ap.provider_id as ProviderId 
+                        $@"SELECT a.start_time as 'Date', a.patient_id as PatientId, p.prim_member_id as ChewsiId, (p.last_name+', '+p.first_name) as PatientName, ap.provider_id as ProviderId 
                             FROM appointment a, patient p, insurance_company ic, employer e, appointment_provider ap
                             WHERE a.patient_id = p.patient_id AND ic.insurance_company_id = e.insurance_company_id AND (ic.name = 'Chewsi')
                             AND ap.appointment_id=a.appointment_id AND (e.employer_id = p.prim_employer_id OR e.employer_id = p.sec_employer_id)
@@ -91,7 +89,7 @@ namespace ChewsiPlugin.EaglesoftApi
             }
         }
 
-        public string Name => "Eaglesoft";
+        //public string Name => "Eaglesoft";
 
         public void Unload()
         {

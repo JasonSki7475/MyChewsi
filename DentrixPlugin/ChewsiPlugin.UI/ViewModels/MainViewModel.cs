@@ -57,8 +57,6 @@ namespace ChewsiPlugin.UI.ViewModels
             _dialogService.ShowLoadingIndicator();
             AppService.DeleteOldAppointments();
 
-            //Thread.Sleep(10000);
-
             // Refresh appointments now
             var loadAppointmentsWorker = new BackgroundWorker();
             loadAppointmentsWorker.DoWork += (i, j) =>
@@ -134,6 +132,7 @@ namespace ChewsiPlugin.UI.ViewModels
                             SettingsViewModel.Address2 = provider.AddressLine2;
                             SettingsViewModel.State = provider.State;
                             SettingsViewModel.Tin = provider.Tin;
+                            SettingsViewModel.StartLauncher = true;
                         });
                     }
                 }

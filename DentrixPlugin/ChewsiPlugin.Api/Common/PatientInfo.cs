@@ -9,7 +9,7 @@ namespace ChewsiPlugin.Api.Common
         public string PatientLastName { get; set; }
         public string SubscriberFirstName { get; set; }
         public string SubscriberLastName { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string ChewsiId { get; set; }
     }
 }

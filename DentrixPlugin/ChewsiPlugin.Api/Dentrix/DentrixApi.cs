@@ -74,14 +74,23 @@ namespace ChewsiPlugin.Api.Dentrix
                 ExecuteCommand(
                     $"select pi.primary_insured_first_name, pi.primary_insured_last_name, pi.first_name, pi.last_name, ins.id_num, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where pi.patient_id='{patientId}'",
                     new List<string> {"first_name", "last_name", "id_num", "birth_date", "primary_insured_first_name", "primary_insured_last_name" }, false);
-            return result.Select(m => new PatientInfo
+            return result.Select(m =>
             {
-                ChewsiId = m["id_num"].Trim(),
-                PatientLastName = m["last_name"].Trim(),
-                PatientFirstName = m["first_name"].Trim(),
-                SubscriberFirstName = m["primary_insured_first_name"].Trim(),
-                SubscriberLastName = m["primary_insured_last_name"].Trim(),
-                BirthDate = DateTime.Parse(m["birth_date"])
+                var pi = new PatientInfo
+                {
+                    ChewsiId = m["id_num"].Trim(),
+                    PatientLastName = m["last_name"].Trim(),
+                    PatientFirstName = m["first_name"].Trim(),
+                    SubscriberFirstName = m["primary_insured_first_name"].Trim(),
+                    SubscriberLastName = m["primary_insured_last_name"].Trim(),
+                    BirthDate = null
+                };
+                DateTime birthDate;
+                if (DateTime.TryParse(m["birth_date"], out birthDate))
+                {
+                    pi.BirthDate = birthDate;
+                }
+                return pi;
             }).FirstOrDefault();
         }
 
@@ -133,9 +142,9 @@ namespace ChewsiPlugin.Api.Dentrix
 
             var dateRange = GetTimeRangeForToday();
 
-            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, status_id, provider_id from admin.v_appt where appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
+            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
-                new List<string> { "patient_id", "patient_name", "appointment_date", "status_id", "provider_id" },
+                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id" },
                 false);
             
             return new List<IAppointment>(result.Select(m =>
@@ -148,8 +157,7 @@ namespace ChewsiPlugin.Api.Dentrix
                     PatientId = m["patient_id"].Trim(),
                     Date = DateTime.Parse(m["appointment_date"]),
                     ProviderId = m["provider_id"].Trim(),
-                    ChewsiId = insuranceId,
-                    StatusId = m["status_id"]
+                    ChewsiId = insuranceId
                 };
             }).ToList());
         }
@@ -187,7 +195,7 @@ namespace ChewsiPlugin.Api.Dentrix
 
         protected override string PmsExeRelativePath => "Office.exe";
 
-        public string Name { get { return "Dentrix"; } }
+        //public string Name { get { return "Dentrix"; } }
 
         public void Unload()
         {

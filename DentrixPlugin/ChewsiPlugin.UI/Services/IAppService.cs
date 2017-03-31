@@ -24,5 +24,6 @@ namespace ChewsiPlugin.UI.Services
         void StartPmsIfRequired();
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         Provider GetProvider();
+        void SetLauncherStartup(bool enabled);
     }
 }

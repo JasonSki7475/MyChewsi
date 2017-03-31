@@ -4,10 +4,9 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ChewsiPlugin.Api")]
+[assembly: AssemblyTitle("ChewsiPlugin.Launcher")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ChewsiPlugin.Api")]
+[assembly: AssemblyProduct("ChewsiPlugin.Launcher.Properties")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -15,4 +14,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5ad8eba3-ce26-4343-8ba4-ee832ea839bd")]
+[assembly: Guid("5409fe54-f157-4e6b-9dde-3a4463d8a6ef")]

@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Dentrix;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using Microsoft.Win32;
 using NLog;
 
 namespace ChewsiPlugin.Setup.CustomActions
@@ -15,6 +17,7 @@ namespace ChewsiPlugin.Setup.CustomActions
         private const string DentrixKeyName = "CreateUser_dBNa5Agn.exe";
         private const string MainExeFileName = "ChewsiPlugin.UI.exe";
         private const string OpenDentalConfigFileName = "FreeDentalConfig.xml";
+        private const string ChewsiLauncherRegistryKey = "Chewsi Launcher";
 
         public static bool SetCurrentPMS(string pmsType, string installFolder)
         {
@@ -76,6 +79,12 @@ namespace ChewsiPlugin.Setup.CustomActions
 
             repository.SaveSetting(Settings.PMS.PathKey, folder);
             return true;
+        }
+
+        public static void DeleteAutoRunLauncherKeyFromRegistry()
+        {
+            RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            key?.DeleteValue(ChewsiLauncherRegistryKey, false);
         }
     }
 }

@@ -52,8 +52,7 @@
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock Grid.Row="0" Text="{Binding StatusText}" TextWrapping="Wrap" ToolTip="{Binding StatusText}" />
-                                            <Grid Grid.Row="2" Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                ConverterParameter={x:Static repository:AppointmentState.ValidationError}}">
+                                            <Grid Grid.Row="2" Visibility="{Binding ShowErrorView, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="10"/>
@@ -98,11 +97,11 @@
                                                         ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
                                                         Command="{Binding Path=SubmitCommand}"/>
                                                 <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                        Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                        ConverterParameter={x:Static repository:AppointmentState.ValidationServerError}}"
+                                                        Visibility="{Binding CanResubmit, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                         Command="{Binding Path=SubmitCommand}"/>                                                
                                             </Grid>
                                             <Button Grid.Column="2" Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
+                                                    Visibility="{Binding IsClaimStatus, Converter={StaticResource BooleanToVisibilityInverseConverter}}"
                                                     Command="{Binding Path=DeleteCommand}"/>
                                         </Grid>
                                     </DataTemplate>

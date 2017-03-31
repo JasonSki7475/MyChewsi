@@ -31,6 +31,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _selectPath;
         private string _state;
         private bool _startPms;
+        private bool _startLauncher;
 
         public SettingsViewModel(IAppService appService, Action onClose, IDialogService dialogService)
         {
@@ -52,6 +53,7 @@ namespace ChewsiPlugin.UI.ViewModels
             _path = s.PmsPath;
             _state = s.State;
             _startPms = s.StartPms;
+            _startLauncher = s.StartLauncher;
         }
 
         public Settings.PMS.Types[] Types { get; private set; }
@@ -140,6 +142,16 @@ namespace ChewsiPlugin.UI.ViewModels
                 _startPms = value;
                 RaisePropertyChanged(() => StartPms);
             }
+        } 
+               
+        public bool StartLauncher
+        {
+            get { return _startLauncher; }
+            set
+            {
+                _startLauncher = value;
+                RaisePropertyChanged(() => StartLauncher);
+            }
         }
 
         public string ProxyAddress
@@ -210,7 +222,7 @@ namespace ChewsiPlugin.UI.ViewModels
             try
             {
                 _dialogService.ShowLoadingIndicator();
-                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, State, StartPms));
+                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, State, StartPms, StartLauncher));
             }
             finally
             {

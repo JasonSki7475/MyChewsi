@@ -12,21 +12,35 @@ namespace ChewsiPlugin.UI.ViewModels
     {
         private readonly IAppService _appService;
         private DateTime _date;
-        private DateTime? _submissionDate;
         private string _chewsiId;
         private string _patientName;
         private string _subscriberFirstName;
         private string _providerId;
+        private string _claimNumber;
         private string _patientId;
         private string _statusText;
         private bool _isBeingSubmitted;
         private AppointmentState _state;
         private ICommand _submitCommand;
         private ICommand _deleteCommand;
+        private bool _isClaimStatus;
 
         public ClaimItemViewModel(IAppService appService)
         {
             _appService = appService;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is an appointment from the PMS or a claim status returned back from the Chewsi server
+        /// </summary>
+        public bool IsClaimStatus
+        {
+            get { return _isClaimStatus; }
+            set
+            {
+                _isClaimStatus = value;
+                RaisePropertyChanged(() => IsClaimStatus);
+            }
         }
 
         public DateTime Date
@@ -38,17 +52,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => Date);
             }
         }
-
-        public DateTime? SubmissionDate
-        {
-            get { return _submissionDate; }
-            set
-            {
-                _submissionDate = value;
-                RaisePropertyChanged(() => SubmissionDate);
-            }
-        }
-
+        
         public string ChewsiId
         {
             get { return _chewsiId; }
@@ -89,6 +93,16 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public string ClaimNumber
+        {
+            get { return _claimNumber; }
+            set
+            {
+                _claimNumber = value;
+                RaisePropertyChanged(() => ClaimNumber);
+            }
+        }
+
         public string PatientId
         {
             get { return _patientId; }
@@ -119,6 +133,15 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public bool CanResubmit
+        {
+            get { return !IsClaimStatus && State == AppointmentState.ValidationError; }
+        }
+        public bool ShowErrorView
+        {
+            get { return State == AppointmentState.ValidationError || State == AppointmentState.ValidationErrorNoResubmit; }
+        }
+
         public AppointmentState State
         {
             get { return _state; }
@@ -126,6 +149,8 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _state = value;
                 RaisePropertyChanged(() => State);
+                RaisePropertyChanged(() => CanResubmit);
+                RaisePropertyChanged(() => ShowErrorView);
             }
         }
 

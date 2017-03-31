@@ -10,6 +10,5 @@ namespace ChewsiPlugin.OpenDentalApi
         public string ChewsiId { get; set; }
         public string PatientName { get; set; }
         public string PatientId { get; set; }
-        public bool IsCompleted { get; set; }
     }
 }

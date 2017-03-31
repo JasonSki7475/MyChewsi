@@ -8,7 +8,7 @@ namespace ChewsiPlugin.Api.Chewsi
         public string PatientLastName { get; set; }
         public string SubscriberFirstName { get; set; }
         public string SubscriberLastName { get; set; }
-        public DateTime SubscriberDateOfBirth { get; set; }
+        public DateTime? SubscriberDateOfBirth { get; set; }
 
         /// <summary>
         /// Chewsi Id

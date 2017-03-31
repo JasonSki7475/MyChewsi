@@ -133,10 +133,7 @@ namespace ChewsiPlugin.OpenDentalApi
                 var dateRange = GetTimeRangeForToday();
                 var appointments = _proxy.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
 
-                var filtered = appointments.Where(m => m.AptStatus != "UnschedList" && m.AptStatus != "Broken"
-                                                       &&
-                                                       (planNums.Contains(m.InsPlan1) || planNums.Contains(m.InsPlan2)))
-                                            .ToList();
+                var filtered = appointments.Where(m => m.AptStatus == "Complete" && (planNums.Contains(m.InsPlan1) || planNums.Contains(m.InsPlan2))).ToList();
                 var patientIds = filtered.Select(m => m.PatNum).Distinct();
                 var patientInfos = patientIds.ToDictionary(m => m, GetPatientInfo);
 
@@ -148,7 +145,6 @@ namespace ChewsiPlugin.OpenDentalApi
                         {
                             Date = m.AptDateTime,
                             ChewsiId = patient.ChewsiId,
-                            IsCompleted = m.AptStatus == "Complete",
                             PatientId = m.PatNum.ToString(),
                             PatientName = $"{patient.PatientLastName}, {patient.PatientFirstName}",
                             ProviderId = m.ProvNum.ToString()
@@ -205,7 +201,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return false;
         }
 
-        public string Name => "Open Dental";
+        //public string Name => "Open Dental";
 
         public void Unload()
         {

@@ -11,8 +11,12 @@
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Grid.Column="0" Header="Practice Management System" Padding="10">
-            <Grid Width="300">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Column="0" Grid.Row="0" Header="Provider" Padding="10">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
@@ -20,6 +24,26 @@
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Address Line 1"/>
+                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Address1}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Address Line 2"/>
+                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Address2}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="TIN"/>
+                <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Tin}"/>
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="State"/>
+                <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding State}"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="0" Grid.Row="1" Header="Practice Management System" Padding="10">
+            <Grid Width="300">
+                <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
@@ -45,16 +69,9 @@
                     <Button Grid.Column="1" Content="Select..." Background="White" Foreground="Black" BorderBrush="LightGray"
                             Command="{Binding SelectPath}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
                 </Grid>
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Address Line 1"/>
-                <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Address1}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="Address Line 2"/>
-                <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Address2}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                <TextBlock Grid.Row="8" Grid.Column="0" Text="TIN"/>
-                <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding Tin}"/>
-                <TextBlock Grid.Row="10" Grid.Column="0" Text="State"/>
-                <TextBox Grid.Row="10" Grid.Column="2" Text="{Binding State}"/>
-                <CheckBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" />
-            </Grid>            
+                <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" />
+                <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartLauncher}" Content="Launch plugin when PMS starts" />
+            </Grid>
         </GroupBox>
         <GroupBox Grid.Column="2" Header="Network" Padding="10">
             <Grid Width="250">

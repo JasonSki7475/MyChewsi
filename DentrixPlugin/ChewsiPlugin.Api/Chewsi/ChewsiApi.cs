@@ -56,7 +56,7 @@ namespace ChewsiPlugin.Api.Chewsi
                 RenderingAddress1 = providerAddress.RenderingAddress1,
                 RenderingAddress2 = providerAddress.RenderingAddress2,
                 NPI = provider.NPI,
-                SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
+                SubscriberDOB = subscriber.SubscriberDateOfBirth?.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
                 SubscriberLastName = subscriber.SubscriberLastName,
                 ChewsiID = subscriber.Id ?? ""
@@ -75,7 +75,7 @@ namespace ChewsiPlugin.Api.Chewsi
                 NPI = provider.NPI,
                 // TODO PIN = ,
                 ProviderID = provider.Id,
-                SubscriberDOB = subscriber.SubscriberDateOfBirth.ToString("d"),
+                SubscriberDOB = subscriber.SubscriberDateOfBirth?.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
                 PatientFirstName = subscriber.PatientFirstName,
                 SubscriberID = subscriber.Id,

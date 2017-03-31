@@ -10,7 +10,7 @@ namespace ChewsiPlugin.Api.Interfaces
         List<IAppointment> GetAppointmentsForToday();
         Provider GetProvider(string providerId);
         string GetVersion();
-        string Name { get; }
+        //string Name { get; }
         void Unload();
         //bool Initialized { get; }
         void Start();

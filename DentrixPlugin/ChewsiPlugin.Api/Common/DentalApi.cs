@@ -47,11 +47,9 @@ namespace ChewsiPlugin.Api.Common
 
         public void Start()
         {
-            // Is already running?
-            Process[] runningProcesses = Process.GetProcesses();
             var currentSessionId = Process.GetCurrentProcess().SessionId;
-            var processesOfCurrentUser = runningProcesses.Where(p => p.SessionId == currentSessionId).ToList();
-            if (processesOfCurrentUser.All(m => m.ProcessName != Path.GetFileNameWithoutExtension(PmsExeRelativePath)))
+            Process[] runningProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(PmsExeRelativePath));
+            if (runningProcesses.All(m => m.SessionId != currentSessionId ))
             {
                 // Start
                 string folder;

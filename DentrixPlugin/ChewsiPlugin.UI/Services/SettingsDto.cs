@@ -16,9 +16,10 @@ namespace ChewsiPlugin.UI.Services
         private string _proxyPassword;
         private string _state;
         private bool _startPms;
+        private bool _startLauncher;
 
         public SettingsDto(Settings.PMS.Types pmsType, string pmsPath, string address1, string address2, string tin, 
-            bool useProxy, string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword, string state, bool startPms)
+            bool useProxy, string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword, string state, bool startPms, bool startLauncher)
         {
             _pmsType = pmsType;
             _pmsPath = pmsPath;
@@ -32,6 +33,7 @@ namespace ChewsiPlugin.UI.Services
             _proxyPassword = proxyPassword;
             _state = state;
             _startPms = startPms;
+            _startLauncher = startLauncher;
         }
 
         public Settings.PMS.Types PmsType
@@ -67,6 +69,11 @@ namespace ChewsiPlugin.UI.Services
         public bool StartPms
         {
             get { return _startPms; }
+        }
+
+        public bool StartLauncher
+        {
+            get { return _startLauncher; }
         }
 
         public string ProxyAddress

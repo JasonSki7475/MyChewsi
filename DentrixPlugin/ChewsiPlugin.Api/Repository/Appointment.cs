@@ -7,7 +7,6 @@ namespace ChewsiPlugin.Api.Repository
         public int Id { get; set; }
         public string ChewsiId { get; set; }
         public DateTime DateTime { get; set; }
-        public DateTime? SubmissionDate { get; set; }
         public AppointmentState State { get; set; }
         public string StatusText { get; set; }
         public string PatientName { get; set; }
