@@ -6,6 +6,7 @@ namespace ChewsiPlugin.OpenDentalApi
     internal class Appointment : IAppointment
     {
         public DateTime Date { get; set; }
+        public string Id { get; set; }
         public string ProviderId { get; set; }
         public string ChewsiId { get; set; }
         public string PatientName { get; set; }

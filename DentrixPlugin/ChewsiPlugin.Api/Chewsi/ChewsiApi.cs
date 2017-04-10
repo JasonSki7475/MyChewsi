@@ -22,14 +22,17 @@ namespace ChewsiPlugin.Api.Chewsi
         private int _proxyPort;
         private string _proxyUserName;
         private string _proxyPassword;
-        private const string Url = "http://chewsi-dev-txapi-predeploy.azurewebsites.net";//"http://chewsi-dev-txapi.azurewebsites.net";//"http://chewsi-dev.azurewebsites.net/TXApi/"; //TODO https://www.chewsidental.com/TXAPI/
+        private const string Url = "http://chewsi-stage-txapi.azurewebsites.net";
+            //"http://chewsi-dev-txapi-predeploy.azurewebsites.net";
+            //"http://chewsi-dev-txapi.azurewebsites.net";
+            //"http://chewsi-dev.azurewebsites.net/TXApi/";
+            // https://www.chewsidental.com/TXAPI/
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";
         private const string Request835DownloadsUri = "Request835Downloads";
         private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus";
         private const string DownloadFileUri = "DownloadFile";
-        private const string ReceiveMemberAuthorizationUri = "ReceiveMemberAuthorization";
         private const string UpdatePluginRegistrationUri = "UpdatePluginRegistration";
 
         public ChewsiApi(IDialogService dialogService)
@@ -40,9 +43,6 @@ namespace ChewsiPlugin.Api.Chewsi
         /// <summary>
         /// Validates the subscriber and provider.
         /// </summary>
-        /// <param name="provider">The provider.</param>
-        /// <param name="providerAddress"></param>
-        /// <param name="subscriber">The subscriber.</param>
         /// <returns>Chewsi Provider ID</returns>
         public ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider, ProviderAddressInformation providerAddress, 
             SubscriberInformation subscriber)
@@ -61,7 +61,7 @@ namespace ChewsiPlugin.Api.Chewsi
                 SubscriberLastName = subscriber.SubscriberLastName,
                 ChewsiID = subscriber.Id ?? ""
             },
-                ValidateSubscriberAndProviderUri);
+                ValidateSubscriberAndProviderUri, true);
         }
 
         public void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures)
@@ -78,11 +78,12 @@ namespace ChewsiPlugin.Api.Chewsi
                 SubscriberDOB = subscriber.SubscriberDateOfBirth?.ToString("d"),
                 SubscriberFirstName = subscriber.SubscriberFirstName,
                 PatientFirstName = subscriber.PatientFirstName,
+                // TODO Should it be Chewsi Id?
                 SubscriberID = subscriber.Id,
                 SubscriberLastName = subscriber.SubscriberLastName,
                 PatientLastName = subscriber.PatientLastName
             },
-            ProcessClaimUri);
+            ProcessClaimUri, true);
         }
 
         /// <summary>
@@ -90,33 +91,28 @@ namespace ChewsiPlugin.Api.Chewsi
         /// </summary>
         public string RegisterPlugin(RegisterPluginRequest request)
         {
-            var response = Post<string>(request, RegisterPluginUri);
+            var response = Post<string>(request, RegisterPluginUri, true);
             return response;
         }
 
         public void UpdatePluginRegistration(UpdatePluginRegistrationRequest request)
         {
-            Post<string>(request, UpdatePluginRegistrationUri);
+            Post<string>(request, UpdatePluginRegistrationUri, true);
         }
 
         public Request835DownloadsResponse Get835Downloads(Request835Downloads request)
         {
-            return Post<Request835DownloadsResponse>(request, Request835DownloadsUri);
+            return Post<Request835DownloadsResponse>(request, Request835DownloadsUri, true);
         }
-
-        public void ReceiveMemberAuthorization(ReceiveMemberAuthorizationRequest request)
-        {
-            Post<string>(request, ReceiveMemberAuthorizationUri);
-        }
-
+        
         public ClaimProcessingStatusResponse GetClaimProcessingStatus(ClaimProcessingStatusRequest request)
         {
-            return Post<ClaimProcessingStatusResponse>(request, RequestClaimProcessingStatusUri);
+            return Post<ClaimProcessingStatusResponse>(request, RequestClaimProcessingStatusUri, false);
         }
 
         public Stream DownloadFile(DownoadFileRequest request)
         {
-            return GetStream(request, DownloadFileUri, HttpMethod.Post);
+            return GetStream(request, DownloadFileUri, HttpMethod.Post, true);
         }
 
         public void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword)
@@ -129,9 +125,9 @@ namespace ChewsiPlugin.Api.Chewsi
             _proxyPassword = proxyPassword;
         }
         
-        private T Post<T>(object request, string uri) where T: class
+        private T Post<T>(object request, string uri, bool showErrors) where T: class
         {
-            var stream = GetStream(request, uri, HttpMethod.Post);
+            var stream = GetStream(request, uri, HttpMethod.Post, showErrors);
             if (stream != null)
             {
                 var reader = new StreamReader(stream);
@@ -151,7 +147,7 @@ namespace ChewsiPlugin.Api.Chewsi
             }
         }
 
-        private Stream GetStream(object request, string uri, HttpMethod method)
+        private Stream GetStream(object request, string uri, HttpMethod method, bool showErrors)
         {
             var url = new Uri(new Uri(Url, UriKind.Absolute), uri);
             var webRequest = WebRequest.Create(url) as HttpWebRequest;
@@ -188,6 +184,14 @@ namespace ChewsiPlugin.Api.Chewsi
                     {
                         return response.GetResponseStream();
                     }
+                }
+                Logger.Error("Empty response. Uri={0}", uri);
+            }
+            catch (WebException e)
+            {
+                if (e.Response != null)
+                {
+                    var response = (HttpWebResponse) e.Response;
                     if (response.StatusCode == HttpStatusCode.NoContent)
                     {
                         // 204
@@ -197,33 +201,30 @@ namespace ChewsiPlugin.Api.Chewsi
                     {
                         // 401
                         Logger.Error("Error 401. Uri={0}", uri);
-                        throw new InvalidOperationException("Wrong user name or password");
+                        // throw new InvalidOperationException("Wrong user name or password");
+                        // Server may respond with code 401 in case if data is inconsistent; for example when TIN not found on the server
+                        return null;
                     }
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
                         // 404
                         Logger.Error("Error 404. Uri={0}", uri);
-                        throw new InvalidOperationException("Resource not found");
                     }
                     if (response.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         // 500
                         Logger.Error("Error 500. Uri={0}", uri);
-                        throw new InvalidOperationException("Error occured on the Chewsi server. Try again later");
                     }
-                    Logger.Error("Unsupported status code {0}. Uri={1}", response.StatusCode, uri);
-                    throw new InvalidOperationException($"Unsupported status code {response.StatusCode}");
+                    Logger.Error("Unsupported status code {0}. Uri={1}", response.StatusCode, uri);                
                 }
-                Logger.Error("Empty response. Uri={0}", uri);
-                throw new InvalidOperationException($"Empty response");
-            }
-            catch (WebException e)
-            {
                 var msg = "Unable to connect to Chewsi server. ";
-                _dialogService.Show(msg + e.Message, "Error");
+                if (showErrors)
+                {
+                    _dialogService.Show(msg + e.Message, "Error");
+                }
                 Logger.Error(msg, e);
-                return null;
             }
+            return null;
         }
     }
 }

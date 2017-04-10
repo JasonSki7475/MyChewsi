@@ -11,5 +11,10 @@ namespace ChewsiPlugin.Api.Chewsi
         public string ChewsiID { get; set; }
         public string MessageToDisplay { get; set; }
         public string Status { get; set; }
+
+        /// <summary>
+        /// Set by the plugin
+        /// </summary>
+        public string ProviderId { get; set; }
     }
 }

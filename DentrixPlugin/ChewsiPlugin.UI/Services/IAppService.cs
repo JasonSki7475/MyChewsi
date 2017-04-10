@@ -12,18 +12,17 @@ namespace ChewsiPlugin.UI.Services
         SettingsDto GetSettings();
         void InitializeChewsiApi();
         void UpdatePluginRegistration();
-        void RefreshAppointments(bool loadFromPms);
+        void RefreshAppointments(bool loadFromPms, bool loadFromService);
         ObservableCollection<ClaimItemViewModel> ClaimItems { get; }
         bool IsProcessingPayment { get; }
         bool IsLoadingAppointments { get; }
         bool AppointmentsLoaded { get; }
-        void DeleteAppointment(string chewsiId, DateTime date);
+        void DeleteAppointment(string id);
         void DeleteOldAppointments();
         event Action OnStartPaymentStatusLookup;
-        void ValidateAndSubmitClaim(string chewsiId, DateTime date, string providerId, string patientId, Action callEndCallback);
+        void ValidateAndSubmitClaim(string appointmentId, DateTime date, string providerId, string patientId, Action callEndCallback);
         void StartPmsIfRequired();
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         Provider GetProvider();
-        void SetLauncherStartup(bool enabled);
     }
 }

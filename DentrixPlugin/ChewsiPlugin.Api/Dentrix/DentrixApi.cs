@@ -94,10 +94,10 @@ namespace ChewsiPlugin.Api.Dentrix
             }).FirstOrDefault();
         }
 
-        public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId)
+        public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId, DateTime appointmentDate)
         {
-            // TODO use appt id
-            var dateRange = GetTimeRangeForToday();
+            var beginDate = appointmentDate.Date;
+            var endDate = appointmentDate.Date.AddDays(1).AddSeconds(-1);
 
             // get patient_guid
             var res =
@@ -112,8 +112,8 @@ namespace ChewsiPlugin.Api.Dentrix
                     new Dictionary<string, string>
                     {
                         {"patient_guid", patientGuid},
-                        {"BeginDate", dateRange.Item1.ToString("G")},
-                        {"EndDate", dateRange.Item2.ToString("G")},
+                        {"BeginDate", beginDate.ToString("G")},
+                        {"EndDate", endDate.ToString("G")},
                         {"byCreateDate", "0"}
                     });
                 if (procedures != null && procedures.Count != 0)
@@ -142,9 +142,9 @@ namespace ChewsiPlugin.Api.Dentrix
 
             var dateRange = GetTimeRangeForToday();
 
-            var result = ExecuteCommand($"select patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
+            var result = ExecuteCommand($"select appointment_id, patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
-                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id" },
+                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id", "appointment_id" },
                 false);
             
             return new List<IAppointment>(result.Select(m =>
@@ -153,6 +153,7 @@ namespace ChewsiPlugin.Api.Dentrix
                 patientIds.TryGetValue(m["patient_id"], out insuranceId);
                 return new Appointment
                 {
+                    Id = m["appointment_id"].Trim(),
                     PatientName = m["patient_name"].Trim(),
                     PatientId = m["patient_id"].Trim(),
                     Date = DateTime.Parse(m["appointment_date"]),
@@ -193,9 +194,9 @@ namespace ChewsiPlugin.Api.Dentrix
             return GetDentrixFolder(out folder);
         }
 
-        protected override string PmsExeRelativePath => "Office.exe";
+        public bool Initialized => _initialized;
 
-        //public string Name { get { return "Dentrix"; } }
+        protected override string PmsExeRelativePath => "Office.exe";
 
         public void Unload()
         {

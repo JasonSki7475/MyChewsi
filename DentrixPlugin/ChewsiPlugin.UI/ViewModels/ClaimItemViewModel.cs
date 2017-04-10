@@ -24,6 +24,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _submitCommand;
         private ICommand _deleteCommand;
         private bool _isClaimStatus;
+        private string _id;
 
         public ClaimItemViewModel(IAppService appService)
         {
@@ -40,6 +41,16 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _isClaimStatus = value;
                 RaisePropertyChanged(() => IsClaimStatus);
+            }
+        }
+
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                RaisePropertyChanged(() => Id);
             }
         }
 
@@ -156,8 +167,14 @@ namespace ChewsiPlugin.UI.ViewModels
 
         public bool Equals(ClaimItemViewModel item)
         {
+            if (IsClaimStatus ^ item.IsClaimStatus)
+            {
+                return false;
+            }
             return Date == item.Date
-                   && PatientId == item.PatientId
+                   && PatientName == item.PatientName
+                   && ClaimNumber == item.ClaimNumber
+                   && SubscriberFirstName == item.SubscriberFirstName
                    && ChewsiId == item.ChewsiId
                    && ProviderId == item.ProviderId;
         }
@@ -177,7 +194,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnSubmitCommandExecute()
         {
             IsBeingSubmitted = true;
-            _appService.ValidateAndSubmitClaim(ChewsiId, Date, ProviderId, PatientId, () =>
+            _appService.ValidateAndSubmitClaim(Id, Date, ProviderId, PatientId, () =>
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
@@ -195,7 +212,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDeleteCommandExecute()
         {
-            _appService.DeleteAppointment(ChewsiId, Date);
+            _appService.DeleteAppointment(Id);
         }
         #endregion
         #endregion

@@ -151,6 +151,10 @@ namespace ChewsiPlugin.OpenDentalApi
         {
             return InvokeStaticMethodForList<List<ProcedureInfo>, ProcedureInfo>(_openDentBusinessDllPath, "OpenDentBusiness.Procedures", "GetCompleteForPats", new object[] { new List<long> { patientId } });
         }
+        public List<ProcedureInfo> GetProceduresByAppointment(long appointmentId)
+        {
+            return InvokeStaticMethodForList<List<ProcedureInfo>, ProcedureInfo>(_openDentBusinessDllPath, "OpenDentBusiness.Procedures", "GetProcsMultApts", new object[] { new List<long> { appointmentId }, false });
+        }
 
         public List<ProcedureCodeInfo> GetAllCodes()
         {

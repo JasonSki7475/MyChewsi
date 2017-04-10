@@ -95,7 +95,6 @@
     <Compile Include="Chewsi\ProviderAddressInformation.cs" />
     <Compile Include="Chewsi\ProviderInformation.cs" />
     <Compile Include="Chewsi\RegisterPluginRequest.cs" />
-    <Compile Include="Chewsi\ReceiveMemberAuthorizationRequest.cs" />
     <Compile Include="Chewsi\Request835Downloads.cs" />
     <Compile Include="Chewsi\Request835DownloadsResponse.cs" />
     <Compile Include="Chewsi\ClaimProcessingStatusRequest.cs" />

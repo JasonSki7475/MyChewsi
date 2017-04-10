@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\ChewsiApiTests.cs" />
+    <Compile Include="Integration\CustomActionsTests.cs" />
     <Compile Include="Unit\MainViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -87,6 +88,10 @@
     <ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
       <Project>{d1582bd8-ef79-493a-aad9-4f39ca3995d2}</Project>
       <Name>ChewsiPlugin.OpenDentalApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChewsiPlugin.Setup.CustomActions\ChewsiPlugin.Setup.CustomActions.csproj">
+      <Project>{c0fe5d5d-4948-4706-8591-cd44c620400c}</Project>
+      <Name>ChewsiPlugin.Setup.CustomActions</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChewsiPlugin.UI\ChewsiPlugin.UI.csproj">
       <Project>{2a3f38eb-1c8e-4ebf-a2a4-d1d7839b0875}</Project>

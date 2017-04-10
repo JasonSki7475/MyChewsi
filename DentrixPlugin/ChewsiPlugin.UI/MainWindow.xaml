@@ -36,7 +36,7 @@
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshAppointmentsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                     </Grid>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" SelectedItem="{Binding SelectedClaim}">
+                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" SelectedItem="{Binding SelectedClaim}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding Date, StringFormat='d'}" Width="110" />
                             <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*" />
@@ -81,7 +81,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Action" MinWidth="180">
+                            <DataGridTemplateColumn Header="Action" MinWidth="200">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid HorizontalAlignment="Center" Visibility="{Binding State, Converter={StaticResource EnumToVisibilityInverseConverter}, 
@@ -135,7 +135,7 @@
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                     </Grid>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}" SelectedItem="{Binding SelectedDownloadItem}">
+                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}" SelectedItem="{Binding SelectedDownloadItem}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Resources>
                             <controls1:BindingProxy x:Key="proxy" Data="{Binding}" />
                         </DataGrid.Resources>
@@ -164,7 +164,7 @@
                             Command="{Binding OpenSettingsCommand}">
             <ContentControl Content="{StaticResource SettingsIcon}" />
         </Button>
-        <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+        <!--<controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Header="Processing Payment" ButtonText="Close"
                             CloseCommand="{Binding PaymentProcessingCloseCommand}"
                             ButtonCommand="{Binding PaymentProcessingCloseCommand}"
@@ -179,7 +179,7 @@
                 <ProgressBar Grid.Row="2" Height="20" Value="50" IsIndeterminate="True"/>
                 <TextBlock Grid.Row="2" Text="{Binding PaymentProcessingMessage}" Margin="20,0" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
             </Grid>
-        </controls1:LightBox>
+        </controls1:LightBox>-->
         <controls1:LightBox d:IsHidden="true" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                            Visibility="{Binding SettingsViewModel, Converter={StaticResource NullToVisibilityConverter}}"
                            Header="Settings" ButtonText="Save" ShowCloseButton="False"

@@ -7,16 +7,17 @@ namespace ChewsiPlugin.UI.Converters
 {
     internal class BooleanToVisibilityInverseConverter : IValueConverter
     {
-        BooleanToVisibilityConverter converter = new BooleanToVisibilityConverter();
+        readonly BooleanToVisibilityConverter _converter = new BooleanToVisibilityConverter();
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return converter.ConvertBack(value, targetType, parameter, culture);
+            var val = (bool) value;
+            return _converter.Convert(!val, targetType, parameter, culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return converter.Convert(value, targetType, parameter, culture);
+            throw new NotImplementedException();
         }
     }
 }

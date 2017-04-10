@@ -6,12 +6,12 @@ namespace ChewsiPlugin.Api.Repository
     public interface IRepository
     {
         void AddAppointment(Appointment item);
-        Appointment GetAppointmentByChewsiIdAndDate(string chewsiId, DateTime date);
         List<Appointment> GetAppointments();
+        Appointment GetAppointmentById(string id);
         T GetSettingValue<T>(string key);
         void SaveSetting(string key, object value);
         void UpdateAppointment(Appointment item);
-        void BulkDeleteAppointments(List<int> ids);
+        void BulkDeleteAppointments(List<string> ids);
         bool Initialized { get; }
         void Initialize();
     }

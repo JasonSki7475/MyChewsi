@@ -41,6 +41,17 @@ namespace ChewsiPlugin.UI.ViewModels
             _chewsiApi = chewsiApi;
         }
 
+        private void StartLoadingAppointments(bool firstRun)
+        {
+            SettingsViewModel = null;
+
+            AppService.RefreshAppointments(true, !firstRun);
+
+            // Refresh appointments every 3 minutes
+            new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background,
+                (m, n) => AppService.RefreshAppointments(true, true), Dispatcher.CurrentDispatcher);
+        }
+
         public void Initialize(bool firstRun)
         {
             AppService.OnStartPaymentStatusLookup += () =>
@@ -55,17 +66,24 @@ namespace ChewsiPlugin.UI.ViewModels
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
 
             _dialogService.ShowLoadingIndicator();
-            AppService.DeleteOldAppointments();
+            //TODO
+            //AppService.DeleteOldAppointments();
 
             // Refresh appointments now
             var loadAppointmentsWorker = new BackgroundWorker();
             loadAppointmentsWorker.DoWork += (i, j) =>
             {
-                AppService.RefreshAppointments(true);
-
-                // Refresh appointments every 3 minutes
-                new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background,
-                    (m, n) => AppService.RefreshAppointments(true), Dispatcher.CurrentDispatcher);
+                if (!AppService.Initialized && !firstRun)
+                {
+                    _dialogService.HideLoadingIndicator();
+                    Logger.Debug("Cannot load appointments. Settings are empty. Opening settings view");
+                    // ask user to choose PMS type and location
+                    SettingsViewModel = new SettingsViewModel(AppService, () => StartLoadingAppointments(firstRun), _dialogService);
+                }
+                else
+                {
+                    StartLoadingAppointments(firstRun);                   
+                }
             };
 
             // Initialize application
@@ -74,8 +92,22 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 if (firstRun)
                 {
-                    loadAppointmentsWorker.RunWorkerAsync();
-                    OpenSettingsForReview();
+/*                    if (!AppService.Initialized)
+                    {
+                        _dialogService.HideLoadingIndicator();
+                        Logger.Debug("First run. Settings are empty. Opening settings view");
+                        // ask user to choose PMS type and location
+                        SettingsViewModel = new SettingsViewModel(AppService, () =>
+                        {
+                            SettingsViewModel = null;
+                            loadAppointmentsWorker.RunWorkerAsync();
+                        }, _dialogService);
+                    }
+                    else*/
+                    {
+                        loadAppointmentsWorker.RunWorkerAsync();
+                        OpenSettingsForReview();
+                    }
                 }
                 else
                 {
@@ -133,6 +165,9 @@ namespace ChewsiPlugin.UI.ViewModels
                             SettingsViewModel.State = provider.State;
                             SettingsViewModel.Tin = provider.Tin;
                             SettingsViewModel.StartLauncher = true;
+
+                            SettingsViewModel.ProxyAddress = "localhost";
+                            SettingsViewModel.ProxyPort = 8888;
                         });
                     }
                 }
@@ -208,7 +243,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshAppointmentsCommandExecute()
         {
-            AppService.RefreshAppointments(true);
+            AppService.RefreshAppointments(true, true);
         }
         #endregion
 
@@ -276,7 +311,7 @@ namespace ChewsiPlugin.UI.ViewModels
             SettingsViewModel = new SettingsViewModel(AppService, () =>
             {
                 SettingsViewModel = null;
-                AppService.RefreshAppointments(true);
+                AppService.RefreshAppointments(true, true);
             }, _dialogService);
         }
         #endregion

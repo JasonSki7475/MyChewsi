@@ -31,7 +31,7 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"INSERT INTO Appointments (ChewsiId, DateTime, State, StatusText, PatientName, ProviderId, PatientId, SubscriberFirstName) VALUES (@ChewsiId, @DateTime, @State, @StatusText, @PatientName, @ProviderId, @PatientId, @SubscriberFirstName)", item);
+                connection.Execute(@"INSERT INTO Appointments (Id, ChewsiId, DateTime, State, StatusText, PatientName, ProviderId, PatientId, SubscriberFirstName) VALUES (@Id, @ChewsiId, @DateTime, @State, @StatusText, @PatientName, @ProviderId, @PatientId, @SubscriberFirstName)", item);
             }
         }
 
@@ -56,6 +56,13 @@ namespace ChewsiPlugin.Api.Repository
                 return connection.QueryFirstOrDefault<Appointment>(@"SELECT * FROM Appointments WHERE ChewsiId = @Id AND DateTime = @DateTime", new { Id = chewsiId, DateTime = date });
             }
         }
+        public Appointment GetAppointmentById(string id)
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.QueryFirstOrDefault<Appointment>(@"SELECT * FROM Appointments WHERE Id = @Id", new { Id = id });
+            }
+        }
 
         public List<Appointment> GetAppointments()
         {
@@ -73,7 +80,7 @@ namespace ChewsiPlugin.Api.Repository
             }
         }
 
-        public void BulkDeleteAppointments(List<int> ids)
+        public void BulkDeleteAppointments(List<string> ids)
         {
             using (var connection = GetConnection())
             {
@@ -82,37 +89,49 @@ namespace ChewsiPlugin.Api.Repository
         }
 
         public bool Initialized => File.Exists(_databaseFilePath)
+                                   && TablesExist()
                                    && GetSettingValue<string>(Settings.PMS.TypeKey) != null
                                    && GetSettingValue<string>(Settings.PMS.PathKey) != null
                                    && GetSettingValue<string>(Settings.MachineIdKey) != null;
+
+        private bool TablesExist()
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.ExecuteScalar<int>(@"SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'Settings'") == 1;
+            }
+        }
 
         public void Initialize()
         {
             if (!File.Exists(_databaseFilePath))
             {
                 SQLiteConnection.CreateFile(_databaseFilePath);
-                // Create tables
-                using (var connection = GetConnection())
+            }
+            
+            using (var connection = GetConnection())
+            {
+                if (!TablesExist())
                 {
                     connection.Execute(
                         @"create table Settings
-                              (
-                                 Key        TEXT primary key,
-                                 Value      TEXT null
-                              )");
+                                  (
+                                     Key        TEXT primary key,
+                                     Value      TEXT null
+                                  )");
                     connection.Execute(
                         @"create table Appointments
-                              (
-                                 Id                 INTEGER PRIMARY KEY AUTOINCREMENT,
-                                 ChewsiId           TEXT not null,
-                                 PatientId          TEXT not null,
-                                 PatientName        TEXT not null,
-                                 SubscriberFirstName    TEXT not null,
-                                 ProviderId         TEXT not null,
-                                 StatusText         TEXT null,
-                                 DateTime           DATETIME not null,
-                                 State              INTEGER not null
-                              )");
+                                  (
+                                     Id                 TEXT primary key not null,
+                                     ChewsiId           TEXT not null,
+                                     PatientId          TEXT null,
+                                     PatientName        TEXT not null,
+                                     SubscriberFirstName    TEXT not null,
+                                     ProviderId         TEXT not null,
+                                     StatusText         TEXT null,
+                                     DateTime           DATETIME not null,
+                                     State              INTEGER not null
+                                  )");
                 }
             }
         }

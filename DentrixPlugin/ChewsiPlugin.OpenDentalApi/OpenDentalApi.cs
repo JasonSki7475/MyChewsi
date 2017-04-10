@@ -83,7 +83,7 @@ namespace ChewsiPlugin.OpenDentalApi
                 _proxy.Initialize(Path.Combine(_openDentalInstallationDirectory, OpenDentalBusinessName));
                 if ((bool) _proxy.InvokeMethod("TryToConnect", null))
                 {
-                    Logger.Info("Successfully initialized DB connection. OpenDental version: " + GetVersion());
+                    Logger.Info("Successfully initialized DB connection");
                     _procedureCodes = _proxy.GetAllCodes().ToDictionary(m => m.CodeNum, m => m.ProcCode);
                     _initialized = true;
                 }
@@ -94,21 +94,21 @@ namespace ChewsiPlugin.OpenDentalApi
             }
         }
 
-        public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId)
+        public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId, DateTime appointmentDate)
         {
             Initialize();
-
-            // TODO use appt id
-            var procedures = _proxy.GetProcedures(long.Parse(patientId));
+            
+            var procedures = _proxy.GetProceduresByAppointment(long.Parse(appointmentId));
             if (procedures != null && procedures.Any())
             {
-                return procedures.Select(p => new ProcedureInfo
-                {
-                    Amount = p.ProcFee,
-                    Code = _procedureCodes[p.CodeNum],
-                    Date = p.ProcDate
-                })
-                .ToList();
+                return procedures.Where(m => m.IsCompleted)
+                    .Select(p => new ProcedureInfo
+                    {
+                        Amount = p.ProcFee,
+                        Code = _procedureCodes[p.CodeNum],
+                        Date = p.ProcDate
+                    })
+                    .ToList();
             }
             return null;
         }
@@ -143,6 +143,7 @@ namespace ChewsiPlugin.OpenDentalApi
                         var patient = patientInfos[m.PatNum];
                         var appointment = new Appointment
                         {
+                            Id = m.AptNum.ToString(),
                             Date = m.AptDateTime,
                             ChewsiId = patient.ChewsiId,
                             PatientId = m.PatNum.ToString(),
@@ -178,6 +179,8 @@ namespace ChewsiPlugin.OpenDentalApi
 
         public string GetVersion()
         {
+            Initialize();
+
             return FileVersionInfo.GetVersionInfo(Path.Combine(_openDentalInstallationDirectory, OpenDentalBusinessName)).ProductVersion;
         }
 
@@ -201,7 +204,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return false;
         }
 
-        //public string Name => "Open Dental";
+        public bool Initialized => _initialized;
 
         public void Unload()
         {

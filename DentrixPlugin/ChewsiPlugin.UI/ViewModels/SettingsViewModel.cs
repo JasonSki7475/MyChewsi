@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Interfaces;
@@ -221,6 +222,15 @@ namespace ChewsiPlugin.UI.ViewModels
         {
             try
             {
+                if (SelectedType == Settings.PMS.Types.OpenDental)
+                {
+                    if (string.IsNullOrEmpty(Path) || !Directory.Exists(Path))
+                    {
+                        _dialogService.Show("Path to OpenDental directory should be set", "Error");
+                        return;
+                    }
+                }
+
                 _dialogService.ShowLoadingIndicator();
                 _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, State, StartPms, StartLauncher));
             }

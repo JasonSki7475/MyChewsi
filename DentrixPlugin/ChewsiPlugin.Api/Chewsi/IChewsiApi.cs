@@ -11,7 +11,6 @@ namespace ChewsiPlugin.Api.Chewsi
         ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider,
             ProviderAddressInformation providerAddress, SubscriberInformation subscriber);
         Request835DownloadsResponse Get835Downloads(Request835Downloads request);
-        void ReceiveMemberAuthorization(ReceiveMemberAuthorizationRequest request);
         ClaimProcessingStatusResponse GetClaimProcessingStatus(ClaimProcessingStatusRequest request);
         Stream DownloadFile(DownoadFileRequest request);
         void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword);
