@@ -81,10 +81,7 @@ namespace ChewsiPlugin.UI
                 var vm = ServiceLocator.Current.GetInstance<MainViewModel>();
                 // when 'init' parameter exists - display settings view; try to fill Address, State and TIN
                 vm.Initialize(arg == "init");
-                var window = new MainWindow
-                {
-                    DataContext = ServiceLocator.Current.GetInstance<MainViewModel>()
-                };
+                var window = new MainWindow();
                 window.Show();
             }
         }

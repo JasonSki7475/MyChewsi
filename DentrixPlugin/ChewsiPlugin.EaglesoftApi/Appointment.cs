@@ -3,7 +3,7 @@ using ChewsiPlugin.Api.Interfaces;
 
 namespace ChewsiPlugin.EaglesoftApi
 {
-    public class Appointment : IAppointment
+    internal class Appointment : IAppointment
     {
         public DateTime Date { get; set; }
         public string Id { get; set; }

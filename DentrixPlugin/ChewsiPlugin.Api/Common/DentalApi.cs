@@ -31,7 +31,7 @@ namespace ChewsiPlugin.Api.Common
             var dateEnd = new DateTime(2012, 6, 1, 23, 59, 59);
 */
             var dateStart = new DateTime(2017, 1, 1, 23, 59, 59);
-            var dateEnd = new DateTime(2017, 5, 1, 23, 59, 59);
+            var dateEnd = new DateTime(2017, 6, 1, 23, 59, 59);
 /*
             
             var dateStart = now.Date;
@@ -42,14 +42,13 @@ namespace ChewsiPlugin.Api.Common
 
         public abstract bool TryGetFolder(out string folder);
         protected abstract string PmsExeRelativePath { get; }
-        
-        //public bool Initialized { get { return _initialized; } }
+        public bool Initialized => _initialized;
 
         public void Start()
         {
             var currentSessionId = Process.GetCurrentProcess().SessionId;
             Process[] runningProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(PmsExeRelativePath));
-            if (runningProcesses.All(m => m.SessionId != currentSessionId ))
+            if (runningProcesses.All(m => m.SessionId != currentSessionId))
             {
                 // Start
                 string folder;

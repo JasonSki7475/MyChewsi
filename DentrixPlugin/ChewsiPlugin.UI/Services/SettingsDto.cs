@@ -2,103 +2,50 @@
 
 namespace ChewsiPlugin.UI.Services
 {
-    public class SettingsDto
+    internal class SettingsDto
     {
-        private Settings.PMS.Types _pmsType;
-        private string _pmsPath;
-        private string _address1;
-        private string _address2;
-        private string _tin;
-        private bool _useProxy;
-        private string _proxyAddress;
-        private int _proxyPort;
-        private string _proxyLogin;
-        private string _proxyPassword;
-        private string _state;
-        private bool _startPms;
-        private bool _startLauncher;
-
         public SettingsDto(Settings.PMS.Types pmsType, string pmsPath, string address1, string address2, string tin, 
             bool useProxy, string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword, string state, bool startPms, bool startLauncher)
         {
-            _pmsType = pmsType;
-            _pmsPath = pmsPath;
-            _address1 = address1;
-            _address2 = address2;
-            _tin = tin;
-            _useProxy = useProxy;
-            _proxyAddress = proxyAddress;
-            _proxyPort = proxyPort;
-            _proxyLogin = proxyLogin;
-            _proxyPassword = proxyPassword;
-            _state = state;
-            _startPms = startPms;
-            _startLauncher = startLauncher;
+            PmsType = pmsType;
+            PmsPath = pmsPath;
+            Address1 = address1;
+            Address2 = address2;
+            Tin = tin;
+            UseProxy = useProxy;
+            ProxyAddress = proxyAddress;
+            ProxyPort = proxyPort;
+            ProxyLogin = proxyLogin;
+            ProxyPassword = proxyPassword;
+            State = state;
+            StartPms = startPms;
+            StartLauncher = startLauncher;
         }
 
-        public Settings.PMS.Types PmsType
-        {
-            get { return _pmsType; }
-        }
+        public Settings.PMS.Types PmsType { get; }
 
-        public string PmsPath
-        {
-            get { return _pmsPath; }
-        }
+        public string PmsPath { get; }
 
-        public string Address1
-        {
-            get { return _address1; }
-        }
+        public string Address1 { get; }
 
-        public string Address2
-        {
-            get { return _address2; }
-        }
+        public string Address2 { get; }
 
-        public string Tin
-        {
-            get { return _tin; }
-        }
+        public string Tin { get; }
 
-        public bool UseProxy
-        {
-            get { return _useProxy; }
-        }
+        public bool UseProxy { get; }
 
-        public bool StartPms
-        {
-            get { return _startPms; }
-        }
+        public bool StartPms { get; }
 
-        public bool StartLauncher
-        {
-            get { return _startLauncher; }
-        }
+        public bool StartLauncher { get; }
 
-        public string ProxyAddress
-        {
-            get { return _proxyAddress; }
-        }
+        public string ProxyAddress { get; }
 
-        public int ProxyPort
-        {
-            get { return _proxyPort; }
-        }
+        public int ProxyPort { get; }
 
-        public string ProxyLogin
-        {
-            get { return _proxyLogin; }
-        }
+        public string ProxyLogin { get; }
 
-        public string ProxyPassword
-        {
-            get { return _proxyPassword; }
-        }
+        public string ProxyPassword { get; }
 
-        public string State
-        {
-            get { return _state; }
-        }
+        public string State { get; }
     }
 }

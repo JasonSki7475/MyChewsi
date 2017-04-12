@@ -69,7 +69,7 @@
                     <Button Grid.Column="1" Content="Select..." Background="White" Foreground="Black" BorderBrush="LightGray"
                             Command="{Binding SelectPath}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
                 </Grid>
-                <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" />
+                <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" IsEnabled="{Binding CanChangeStartPms}" />
                 <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartLauncher}" Content="Launch plugin when PMS starts" />
             </Grid>
         </GroupBox>

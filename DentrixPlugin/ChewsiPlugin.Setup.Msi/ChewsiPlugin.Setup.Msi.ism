@@ -261,7 +261,6 @@
 		<row><td>ISSELFREG.DLL</td><td/><td>&lt;ISRedistPlatformDependentFolder&gt;\isregsvr.dll</td></row>
 		<row><td>NewBinary1</td><td/><td>&lt;ISProductFolder&gt;\Support\Themes\InstallShield Blue Theme\banner.jpg</td></row>
 		<row><td>NewBinary10</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\CompleteSetupIco.ibd</td></row>
-		<row><td>NewBinary11</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\CustomSetupIco.ibd</td></row>
 		<row><td>NewBinary12</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\DestIcon.ibd</td></row>
 		<row><td>NewBinary13</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\NetworkInstall.ico</td></row>
 		<row><td>NewBinary14</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\DontInstall.ico</td></row>
@@ -359,7 +358,8 @@
 		<row><td>ChewsiPlugin.OpenDentalApi.dll</td><td>{1B24C815-1CD0-4F2C-B764-8C9496FD5593}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.opendentalapi.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>{7696794E-FB77-4E30-AAE2-4B71AA66A293}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.customact</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.UI.exe</td><td>{FB636077-2899-4F49-B645-9C116DADFE37}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.ui.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>CreateUser_dBNa5Agn.exe</td><td>{D604B389-0EAE-403D-B4A2-8A454BD7CA57}</td><td>INSTALLDIR</td><td>8</td><td/><td>createuser_dbna5agn.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>CreateUser_dBNa5Agn.exe</td><td>{D604B389-0EAE-403D-B4A2-8A454BD7CA57}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>CreateUser_dBNa5Agn.exe1</td><td>{143CB5EB-8C57-4368-B180-DDF1FEFBFA33}</td><td>INSTALLDIR</td><td>8</td><td/><td>createuser_dbna5agn.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Dapper.dll</td><td>{89C1434E-E05F-409C-9C64-BBB890B9BAC0}</td><td>INSTALLDIR</td><td>8</td><td/><td>dapper.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>GalaSoft.MvvmLight.Extras.dll</td><td>{3AB274F0-614B-46EE-8B12-70CDAD28FDCF}</td><td>INSTALLDIR</td><td>8</td><td/><td>galasoft.mvvmlight.extras.dl</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>GalaSoft.MvvmLight.dll</td><td>{2D0ADB30-3CD4-4F4C-A4B0-8F818C7221FF}</td><td>INSTALLDIR</td><td>8</td><td/><td>galasoft.mvvmlight.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -369,7 +369,14 @@
 		<row><td>SQLite.Interop.dll</td><td>{86A04DDA-81E1-41D0-AB69-276DAFB22E19}</td><td>X64</td><td>8</td><td/><td>sqlite.interop.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>SQLite.Interop.dll1</td><td>{42A5742C-2633-42B3-AC72-3D509A799315}</td><td>X86</td><td>8</td><td/><td>sqlite.interop.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>System.Data.SQLite.dll</td><td>{3C579223-ACDF-42B9-8B4D-01ABFC3AD633}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.data.sqlite.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>System.Net.Http.dll</td><td>{855702E6-5F6F-479A-A760-9AD31C692BAA}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.IO.dll</td><td>{A6B145FF-DED4-44B5-9B92-D4F6511ACDDE}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.io.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.Extensions.dll</td><td>{981BD8C9-C44E-45D9-BCA2-0A775897CC4C}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.extensions.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.Primitives.dll</td><td>{3A508196-4711-4964-8FAE-58BA329EBDF7}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.primitives.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.WebRequest.dll</td><td>{0C78B7F0-AECA-4580-94F7-D22D958FC8FB}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.webrequest.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.dll</td><td>{855702E6-5F6F-479A-A760-9AD31C692BAA}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.dll1</td><td>{974F32D5-1169-43C7-B80E-AF7FA8927954}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Runtime.dll</td><td>{EA9F44C2-637E-4309-8759-8E2434F4260D}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.runtime.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Threading.Tasks.dll</td><td>{2469B6DC-B6C1-4FE7-8D4C-84EF47DBCB73}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.threading.tasks.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>System.Windows.Interactivity.dll</td><td>{B79E3499-4FD3-4A8D-8AFD-51AF10AB14EF}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.windows.interactivity</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -581,7 +588,7 @@
 		<row><td>LicenseAgreement</td><td>DlgLine</td><td>Line</td><td>48</td><td>234</td><td>326</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>LicenseAgreement</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS__IsLicenseDlg_LicenseAgreement##</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>LicenseAgreement</td><td>ISPrintButton</td><td>PushButton</td><td>301</td><td>188</td><td>65</td><td>17</td><td>3</td><td/><td>##IDS_PRINT_BUTTON##</td><td>Agree</td><td/><td>0</td><td/><td/><td/></row>
-		<row><td>LicenseAgreement</td><td>Memo</td><td>ScrollableText</td><td>8</td><td>55</td><td>358</td><td>130</td><td>7</td><td/><td/><td/><td/><td>0</td><td/><td>&lt;VSSolutionFolder&gt;\LicenseAgreement.rtf</td><td/></row>
+		<row><td>LicenseAgreement</td><td>Memo</td><td>ScrollableText</td><td>8</td><td>55</td><td>358</td><td>130</td><td>7</td><td/><td/><td/><td/><td>0</td><td/><td>&lt;VSSolutionFolder&gt;\Installer\LicenseAgreement.rtf</td><td/></row>
 		<row><td>LicenseAgreement</td><td>Next</td><td>PushButton</td><td>230</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_NEXT##</td><td>Cancel</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceType</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_BACK##</td><td>Next</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceType</td><td>Banner</td><td>Bitmap</td><td>0</td><td>0</td><td>374</td><td>44</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary1</td></row>
@@ -592,14 +599,12 @@
 		<row><td>MaintenanceType</td><td>DlgDesc</td><td>Text</td><td>21</td><td>23</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS__IsMaintenanceDlg_MaitenanceOptions##</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceType</td><td>DlgLine</td><td>Line</td><td>48</td><td>234</td><td>326</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceType</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS__IsMaintenanceDlg_ProgramMaintenance##</td><td/><td/><td>0</td><td/><td/><td/></row>
-		<row><td>MaintenanceType</td><td>Ico1</td><td>Icon</td><td>35</td><td>75</td><td>24</td><td>24</td><td>5242881</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary6</td></row>
-		<row><td>MaintenanceType</td><td>Ico2</td><td>Icon</td><td>35</td><td>135</td><td>24</td><td>24</td><td>5242881</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary7</td></row>
-		<row><td>MaintenanceType</td><td>Ico3</td><td>Icon</td><td>35</td><td>195</td><td>24</td><td>24</td><td>5242881</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary8</td></row>
+		<row><td>MaintenanceType</td><td>Ico2</td><td>Icon</td><td>33</td><td>91</td><td>24</td><td>24</td><td>5767169</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary7</td></row>
+		<row><td>MaintenanceType</td><td>Ico3</td><td>Icon</td><td>34</td><td>173</td><td>24</td><td>24</td><td>5767169</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary8</td></row>
 		<row><td>MaintenanceType</td><td>Next</td><td>PushButton</td><td>230</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_NEXT##</td><td>Cancel</td><td/><td>0</td><td/><td/><td/></row>
-		<row><td>MaintenanceType</td><td>RadioGroup</td><td>RadioButtonGroup</td><td>21</td><td>55</td><td>290</td><td>170</td><td>3</td><td>_IsMaintenance</td><td/><td>Back</td><td/><td>0</td><td/><td/><td/></row>
-		<row><td>MaintenanceType</td><td>Text1</td><td>Text</td><td>80</td><td>72</td><td>260</td><td>35</td><td>3</td><td/><td>##IDS__IsMaintenanceDlg_ChangeFeatures##</td><td/><td/><td>0</td><td/><td/><td/></row>
-		<row><td>MaintenanceType</td><td>Text2</td><td>Text</td><td>80</td><td>135</td><td>260</td><td>35</td><td>3</td><td/><td>##IDS__IsMaintenanceDlg_RepairMessage##</td><td/><td/><td>0</td><td/><td/><td/></row>
-		<row><td>MaintenanceType</td><td>Text3</td><td>Text</td><td>80</td><td>192</td><td>260</td><td>35</td><td>131075</td><td/><td>##IDS__IsMaintenanceDlg_RemoveProductName##</td><td/><td/><td>0</td><td/><td/><td/></row>
+		<row><td>MaintenanceType</td><td>RadioGroup</td><td>RadioButtonGroup</td><td>19</td><td>54</td><td>290</td><td>170</td><td>3</td><td>_IsMaintenance</td><td/><td>Back</td><td/><td>0</td><td/><td/><td/></row>
+		<row><td>MaintenanceType</td><td>Text2</td><td>Text</td><td>78</td><td>91</td><td>260</td><td>35</td><td>3</td><td/><td>##IDS__IsMaintenanceDlg_RepairMessage##</td><td/><td/><td>0</td><td/><td/><td/></row>
+		<row><td>MaintenanceType</td><td>Text3</td><td>Text</td><td>79</td><td>170</td><td>260</td><td>35</td><td>131075</td><td/><td>##IDS__IsMaintenanceDlg_RemoveProductName##</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceWelcome</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>1</td><td/><td>##IDS_BACK##</td><td>Next</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceWelcome</td><td>Cancel</td><td>PushButton</td><td>301</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_CANCEL##</td><td>Back</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceWelcome</td><td>DlgLine</td><td>Line</td><td>0</td><td>234</td><td>374</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
@@ -955,21 +960,17 @@
 		<row><td>LicenseAgreement</td><td>Next</td><td>NewDialog</td><td>ReadyToInstall</td><td>AgreeToLicense = "Yes"</td><td>0</td></row>
 		<row><td>MaintenanceType</td><td>Back</td><td>NewDialog</td><td>MaintenanceWelcome</td><td>1</td><td>0</td></row>
 		<row><td>MaintenanceType</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>NewDialog</td><td>CustomSetup</td><td>_IsMaintenance = "Change"</td><td>12</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>NewDialog</td><td>ReadyToInstall</td><td>_IsMaintenance = "Reinstall"</td><td>13</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>NewDialog</td><td>ReadyToRemove</td><td>_IsMaintenance = "Remove"</td><td>11</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>Reinstall</td><td>ALL</td><td>_IsMaintenance = "Reinstall"</td><td>10</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>ReinstallMode</td><td>[ReinstallModeText]</td><td>_IsMaintenance = "Reinstall"</td><td>9</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType0]</td><td>Modify</td><td>_IsMaintenance = "Change"</td><td>2</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>NewDialog</td><td>ReadyToInstall</td><td>_IsMaintenance = "Reinstall"</td><td>8</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>NewDialog</td><td>ReadyToRemove</td><td>_IsMaintenance = "Remove"</td><td>7</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>Reinstall</td><td>ALL</td><td>_IsMaintenance = "Reinstall"</td><td>6</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>ReinstallMode</td><td>[ReinstallModeText]</td><td>_IsMaintenance = "Reinstall"</td><td>5</td></row>
 		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType0]</td><td>Repair</td><td>_IsMaintenance = "Reinstall"</td><td>1</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType1]</td><td>Modifying</td><td>_IsMaintenance = "Change"</td><td>3</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType1]</td><td>Repairing</td><td>_IsMaintenance = "Reinstall"</td><td>4</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType2]</td><td>modified</td><td>_IsMaintenance = "Change"</td><td>6</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType2]</td><td>repairs</td><td>_IsMaintenance = "Reinstall"</td><td>5</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType3]</td><td>modifies</td><td>_IsMaintenance = "Change"</td><td>7</td></row>
-		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType3]</td><td>repairs</td><td>_IsMaintenance = "Reinstall"</td><td>8</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType1]</td><td>Repairing</td><td>_IsMaintenance = "Reinstall"</td><td>2</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType2]</td><td>repairs</td><td>_IsMaintenance = "Reinstall"</td><td>3</td></row>
+		<row><td>MaintenanceType</td><td>Next</td><td>[ProgressType3]</td><td>repairs</td><td>_IsMaintenance = "Reinstall"</td><td>4</td></row>
 		<row><td>MaintenanceWelcome</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>MaintenanceWelcome</td><td>Next</td><td>NewDialog</td><td>MaintenanceType</td><td>1</td><td>0</td></row>
+		<row><td>MaintenanceWelcome</td><td>Next</td><td>[_IsMaintenance]</td><td>Reinstall</td><td>1</td><td>1</td></row>
 		<row><td>MsiRMFilesInUse</td><td>Cancel</td><td>EndDialog</td><td>Exit</td><td>1</td><td>1</td></row>
 		<row><td>MsiRMFilesInUse</td><td>OK</td><td>EndDialog</td><td>Return</td><td>1</td><td>1</td></row>
 		<row><td>MsiRMFilesInUse</td><td>OK</td><td>RMShutdownAndRestart</td><td>0</td><td>RestartManagerOption="CloseRestart"</td><td>2</td></row>
@@ -1055,6 +1056,8 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>CHEWSI</td><td>AllOtherFiles4</td></row>
 		<row><td>CommonAppDataFolder</td><td>AllOtherFiles3</td></row>
+		<row><td>INSTALLDIR</td><td>CreateUser_dBNa5Agn.exe</td></row>
+		<row><td>INSTALLDIR</td><td>System.Net.Http.dll</td></row>
 		<row><td>X64</td><td>AllOtherFiles2</td></row>
 		<row><td>X86</td><td>AllOtherFiles1</td></row>
 	</table>
@@ -1885,6 +1888,7 @@
 		<row><td>basicmsi_Files</td><td>ChewsiPlugin.Setup.CustomActions.dll</td></row>
 		<row><td>basicmsi_Files</td><td>ChewsiPlugin.UI.exe</td></row>
 		<row><td>basicmsi_Files</td><td>CreateUser_dBNa5Agn.exe</td></row>
+		<row><td>basicmsi_Files</td><td>CreateUser_dBNa5Agn.exe1</td></row>
 		<row><td>basicmsi_Files</td><td>Dapper.dll</td></row>
 		<row><td>basicmsi_Files</td><td>GalaSoft.MvvmLight.Extras.dll</td></row>
 		<row><td>basicmsi_Files</td><td>GalaSoft.MvvmLight.dll</td></row>
@@ -1894,7 +1898,14 @@
 		<row><td>basicmsi_Files</td><td>SQLite.Interop.dll</td></row>
 		<row><td>basicmsi_Files</td><td>SQLite.Interop.dll1</td></row>
 		<row><td>basicmsi_Files</td><td>System.Data.SQLite.dll</td></row>
+		<row><td>basicmsi_Files</td><td>System.IO.dll</td></row>
+		<row><td>basicmsi_Files</td><td>System.Net.Http.Extensions.dll</td></row>
+		<row><td>basicmsi_Files</td><td>System.Net.Http.Primitives.dll</td></row>
+		<row><td>basicmsi_Files</td><td>System.Net.Http.WebRequest.dll</td></row>
 		<row><td>basicmsi_Files</td><td>System.Net.Http.dll</td></row>
+		<row><td>basicmsi_Files</td><td>System.Net.Http.dll1</td></row>
+		<row><td>basicmsi_Files</td><td>System.Runtime.dll</td></row>
+		<row><td>basicmsi_Files</td><td>System.Threading.Tasks.dll</td></row>
 		<row><td>basicmsi_Files</td><td>System.Windows.Interactivity.dll</td></row>
 	</table>
 
@@ -1917,11 +1928,13 @@
 		<row><td>chewsiplugin.setup.customact</td><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.Setup.CustomActions.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.Setup.CustomActions.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe</td><td>ChewsiPlugin.UI.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.UI.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.UI.exe</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe.config</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.UI.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.UI.exe.config</td><td>1</td><td/></row>
-		<row><td>createuser_dbna5agn.exe</td><td>CreateUser_dBNa5Agn.exe</td><td>CREATE~1.EXE|CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\CreateUser_dBNa5Agn.exe</td><td>1</td><td/></row>
+		<row><td>createuser_dbna5agn.exe</td><td>CreateUser_dBNa5Agn.exe1</td><td>CREATE~1.EXE|CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\CreateUser_dBNa5Agn.exe</td><td>1</td><td/></row>
 		<row><td>dapper.dll</td><td>Dapper.dll</td><td>Dapper.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\Dapper.dll</td><td>1</td><td/></row>
+		<row><td>database.sqlite</td><td>AllOtherFiles4</td><td>DATABA~1.SQL|Database.sqlite</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\Database.sqlite</td><td>1</td><td/></row>
 		<row><td>dbna5agn.dtxkey</td><td>AllOtherFiles</td><td>DBNA5A~1.DTX|dBNa5Agn.dtxkey</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\dBNa5Agn.dtxkey</td><td>1</td><td/></row>
 		<row><td>galasoft.mvvmlight.dll</td><td>GalaSoft.MvvmLight.dll</td><td>GALASO~1.DLL|GalaSoft.MvvmLight.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\GalaSoft.MvvmLight.dll</td><td>1</td><td/></row>
 		<row><td>galasoft.mvvmlight.extras.dl</td><td>GalaSoft.MvvmLight.Extras.dll</td><td>GALASO~1.DLL|GalaSoft.MvvmLight.Extras.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\GalaSoft.MvvmLight.Extras.dll</td><td>1</td><td/></row>
+		<row><td>log.txt</td><td>AllOtherFiles4</td><td>Log.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\Log.txt</td><td>1</td><td/></row>
 		<row><td>microsoft.practices.servicel</td><td>Microsoft.Practices.ServiceLocation.dll</td><td>MICROS~1.DLL|Microsoft.Practices.ServiceLocation.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\Microsoft.Practices.ServiceLocation.dll</td><td>1</td><td/></row>
 		<row><td>newtonsoft.json.dll</td><td>Newtonsoft.Json.dll</td><td>NEWTON~1.DLL|Newtonsoft.Json.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\Newtonsoft.Json.dll</td><td>1</td><td/></row>
 		<row><td>nlog.config</td><td>AllOtherFiles</td><td>NLOG~1.CON|NLog.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\NLog.config</td><td>1</td><td/></row>
@@ -1929,7 +1942,13 @@
 		<row><td>sqlite.interop.dll</td><td>SQLite.Interop.dll</td><td>SQLITE~1.DLL|SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\x64\SQLite.Interop.dll</td><td>1</td><td/></row>
 		<row><td>sqlite.interop.dll1</td><td>SQLite.Interop.dll1</td><td>SQLITE~1.DLL|SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\x86\SQLite.Interop.dll</td><td>1</td><td/></row>
 		<row><td>system.data.sqlite.dll</td><td>System.Data.SQLite.dll</td><td>SYSTEM~1.DLL|System.Data.SQLite.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Data.SQLite.dll</td><td>1</td><td/></row>
-		<row><td>system.net.http.dll</td><td>System.Net.Http.dll</td><td>SYSTEM~1.DLL|System.Net.Http.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.dll</td><td>1</td><td/></row>
+		<row><td>system.io.dll</td><td>System.IO.dll</td><td>SYSTEM~1.DLL|System.IO.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.IO.dll</td><td>1</td><td/></row>
+		<row><td>system.net.http.dll</td><td>System.Net.Http.dll1</td><td>SYSTEM~1.DLL|System.Net.Http.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.dll</td><td>1</td><td/></row>
+		<row><td>system.net.http.extensions.d</td><td>System.Net.Http.Extensions.dll</td><td>SYSTEM~1.DLL|System.Net.Http.Extensions.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.Extensions.dll</td><td>1</td><td/></row>
+		<row><td>system.net.http.primitives.d</td><td>System.Net.Http.Primitives.dll</td><td>SYSTEM~1.DLL|System.Net.Http.Primitives.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.Primitives.dll</td><td>1</td><td/></row>
+		<row><td>system.net.http.webrequest.d</td><td>System.Net.Http.WebRequest.dll</td><td>SYSTEM~1.DLL|System.Net.Http.WebRequest.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.WebRequest.dll</td><td>1</td><td/></row>
+		<row><td>system.runtime.dll</td><td>System.Runtime.dll</td><td>SYSTEM~1.DLL|System.Runtime.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Runtime.dll</td><td>1</td><td/></row>
+		<row><td>system.threading.tasks.dll</td><td>System.Threading.Tasks.dll</td><td>SYSTEM~1.DLL|System.Threading.Tasks.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Threading.Tasks.dll</td><td>1</td><td/></row>
 		<row><td>system.windows.interactivity</td><td>System.Windows.Interactivity.dll</td><td>SYSTEM~1.DLL|System.Windows.Interactivity.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Windows.Interactivity.dll</td><td>1</td><td/></row>
 	</table>
 
@@ -2101,6 +2120,7 @@
 		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td/><td/><td>_5863EA36_0F4E_4C39_A7BA_8A9D3315738E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.UI.exe</td><td/><td/><td>_928F9BC1_2992_4077_B683_6452BB78715E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td/><td/><td>_85861240_EC61_4CE3_80B1_F6FF5DB43DA9_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>CreateUser_dBNa5Agn.exe1</td><td/><td/><td>_DB6670EC_78CD_4BA4_A693_2EA5C84D0016_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Dapper.dll</td><td/><td/><td>_D9F5076B_1A8D_46C7_A154_B58640AD64E6_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>GalaSoft.MvvmLight.Extras.dll</td><td/><td/><td>_89A4E82C_CD68_473F_853C_ABF42B92D3FE_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>GalaSoft.MvvmLight.dll</td><td/><td/><td>_669A8512_5B99_4194_A112_A3EF170821C8_FILTER</td><td/><td/><td/><td/></row>
@@ -2110,7 +2130,14 @@
 		<row><td>SQLite.Interop.dll</td><td/><td/><td>_60F24055_F88D_4EF3_8B5B_68B0086142B7_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>SQLite.Interop.dll1</td><td/><td/><td>_7C3FAD12_C18E_4BDD_88F3_64B083B007F4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>System.Data.SQLite.dll</td><td/><td/><td>_4527FAD3_7BFD_4CF8_BA0B_B404462D8A25_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.IO.dll</td><td/><td/><td>_7FBD2067_0154_49DA_B908_5BF80CFD7EEF_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.Net.Http.Extensions.dll</td><td/><td/><td>_176BC28B_C8AC_4073_B2B4_406A8EB2F51B_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.Net.Http.Primitives.dll</td><td/><td/><td>_D6395D84_3BCA_4AB0_9A49_9A3397079930_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.Net.Http.WebRequest.dll</td><td/><td/><td>_5486C890_62FA_4140_9738_A62C81D5476B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>System.Net.Http.dll</td><td/><td/><td>_6BFA8F58_F3D7_4FA5_A5A9_5C723C12DAA8_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.Net.Http.dll1</td><td/><td/><td>_E455007A_C651_47CD_9C6A_6CAF1CE706AD_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.Runtime.dll</td><td/><td/><td>_FA9FABA8_BE5F_42EF_83A9_6B389DB73CF4_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>System.Threading.Tasks.dll</td><td/><td/><td>_FC282C5E_BC58_4FA8_B612_A9F638A15DA6_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>System.Windows.Interactivity.dll</td><td/><td/><td>_F7BC08C6_A775_48D0_BF17_D420BD93C5BF_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
@@ -2301,6 +2328,8 @@
 		<col def="I4">Permission</col>
 		<col def="I4">Attributes</col>
 		<row><td>CHEWSI</td><td>CreateFolder</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031743</td><td>0</td></row>
+		<row><td>database.sqlite</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
+		<row><td>log.txt</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
 	</table>
 
 	<table name="ISLogicalDisk">
@@ -3557,6 +3586,7 @@
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME3</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1046113231</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME4</td><td>1033</td><td>LAUNCH~1.EXE|Launch CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td>-1046131727</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME5</td><td>1033</td><td>Chewsi~1.EXE|Chewsi Launcher</td><td>0</td><td/><td>-106581135</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME6</td><td>1033</td><td>LAUNCH~1.EXE|Launch CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td>572852085</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>1033</td><td>From the list of servers below, select the database server you would like to target.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>1033</td><td>From the list of catalog names below, select the database catalog you would like to target.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>1033</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>1495601858</td></row>
@@ -4531,9 +4561,8 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<row><td>ApplicationUsers</td><td>2</td><td>OnlyCurrentUser</td><td>1</td><td>23</td><td>290</td><td>14</td><td>##IDS__IsRegisterUserDlg_OnlyMe##</td><td/><td/></row>
 		<row><td>RestartManagerOption</td><td>1</td><td>CloseRestart</td><td>6</td><td>9</td><td>331</td><td>14</td><td>##IDS__IsMsiRMFilesInUse_CloseRestart##</td><td/><td/></row>
 		<row><td>RestartManagerOption</td><td>2</td><td>Reboot</td><td>6</td><td>21</td><td>331</td><td>14</td><td>##IDS__IsMsiRMFilesInUse_RebootAfter##</td><td/><td/></row>
-		<row><td>_IsMaintenance</td><td>1</td><td>Change</td><td>0</td><td>0</td><td>290</td><td>14</td><td>##IDS__IsMaintenanceDlg_Modify##</td><td/><td/></row>
-		<row><td>_IsMaintenance</td><td>2</td><td>Reinstall</td><td>0</td><td>60</td><td>290</td><td>14</td><td>##IDS__IsMaintenanceDlg_Repair##</td><td/><td/></row>
-		<row><td>_IsMaintenance</td><td>3</td><td>Remove</td><td>0</td><td>120</td><td>290</td><td>14</td><td>##IDS__IsMaintenanceDlg_Remove##</td><td/><td/></row>
+		<row><td>_IsMaintenance</td><td>2</td><td>Reinstall</td><td>0</td><td>16</td><td>290</td><td>14</td><td>##IDS__IsMaintenanceDlg_Repair##</td><td/><td>0</td></row>
+		<row><td>_IsMaintenance</td><td>3</td><td>Remove</td><td>0</td><td>96</td><td>290</td><td>14</td><td>##IDS__IsMaintenanceDlg_Remove##</td><td/><td>0</td></row>
 		<row><td>_IsSetupTypeMin</td><td>1</td><td>Typical</td><td>0</td><td>0</td><td>264</td><td>14</td><td>##IDS__IsSetupTypeMinDlg_Complete##</td><td/><td/></row>
 		<row><td>_IsSetupTypeMin</td><td>2</td><td>Custom</td><td>0</td><td>60</td><td>264</td><td>14</td><td>##IDS__IsSetupTypeMinDlg_Custom##</td><td/><td/></row>
 	</table>

@@ -2,7 +2,7 @@
 
 namespace ChewsiPlugin.UI.ViewModels
 {
-    public class DownloadItemViewModel : ViewModelBase
+    internal class DownloadItemViewModel : ViewModelBase
     {
         private readonly string _ediDocumentId;
         private readonly string _pdfReportDocumentId;

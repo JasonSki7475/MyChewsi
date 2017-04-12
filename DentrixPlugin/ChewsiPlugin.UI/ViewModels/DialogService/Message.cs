@@ -6,7 +6,7 @@ using GalaSoft.MvvmLight.Command;
 
 namespace ChewsiPlugin.UI.ViewModels.DialogService
 {
-    public class Message : ViewModelBase, IMessage
+    internal class Message : ViewModelBase, IMessage
     {
         private readonly DialogService _dialogService;
         private readonly Action _dialogResultCallback;

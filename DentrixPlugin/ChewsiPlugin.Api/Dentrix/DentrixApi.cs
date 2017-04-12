@@ -193,9 +193,7 @@ namespace ChewsiPlugin.Api.Dentrix
         {
             return GetDentrixFolder(out folder);
         }
-
-        public bool Initialized => _initialized;
-
+        
         protected override string PmsExeRelativePath => "Office.exe";
 
         public void Unload()

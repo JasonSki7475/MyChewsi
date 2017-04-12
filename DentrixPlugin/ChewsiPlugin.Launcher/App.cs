@@ -46,24 +46,20 @@ namespace ChewsiPlugin.Launcher
             var repository = new Repository();
             repository.Initialize();
 
-            var pmsTypeString = repository.GetSettingValue<string>(Settings.PMS.TypeKey);
-            if (pmsTypeString != null)
+            var pmsType = repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
+            switch (pmsType)
             {
-                var pmsType = (Settings.PMS.Types) Enum.Parse(typeof (Settings.PMS.Types), pmsTypeString);
-                switch (pmsType)
-                {
-                    case Settings.PMS.Types.Dentrix:
-                        _pmsProcessName = DentrixExecutableNameWithoutExtension;
-                        break;
-                    case Settings.PMS.Types.OpenDental:
-                        _pmsProcessName = OpenDentalExecutableNameWithoutExtension;
-                        break;
-                    case Settings.PMS.Types.Eaglesoft:
-                        _pmsProcessName = EagleSoftExecutableNameWithoutExtension;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                case Settings.PMS.Types.Dentrix:
+                    _pmsProcessName = DentrixExecutableNameWithoutExtension;
+                    break;
+                case Settings.PMS.Types.OpenDental:
+                    _pmsProcessName = OpenDentalExecutableNameWithoutExtension;
+                    break;
+                case Settings.PMS.Types.Eaglesoft:
+                    _pmsProcessName = EagleSoftExecutableNameWithoutExtension;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             _notifyIcon = new NotifyIcon

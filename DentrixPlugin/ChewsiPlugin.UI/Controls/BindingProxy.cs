@@ -2,7 +2,7 @@
 
 namespace ChewsiPlugin.UI.Controls
 {
-    public class BindingProxy : Freezable
+    internal class BindingProxy : Freezable
     {
         #region Overrides of Freezable
 

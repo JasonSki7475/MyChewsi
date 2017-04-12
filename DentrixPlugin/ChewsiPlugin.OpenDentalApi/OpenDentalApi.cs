@@ -203,9 +203,7 @@ namespace ChewsiPlugin.OpenDentalApi
             folder = null;
             return false;
         }
-
-        public bool Initialized => _initialized;
-
+        
         public void Unload()
         {
             if (_domain != null)

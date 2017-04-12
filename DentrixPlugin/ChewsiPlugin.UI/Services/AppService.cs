@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
@@ -17,6 +19,7 @@ using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.ViewModels;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Win32;
 using NLog;
@@ -24,7 +27,7 @@ using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace ChewsiPlugin.UI.Services
 {
-    public class AppService : ViewModelBase, IAppService, IDisposable
+    internal class AppService : ViewModelBase, IAppService, IDisposable
     {
         private const int RefreshIntervalMs = 10000;
         private const int AppointmentTtlDays = 1;
@@ -67,7 +70,122 @@ namespace ChewsiPlugin.UI.Services
         }
 
         public bool Initialized => _repository.Initialized && DentalApi != null;
+
+        private SettingsViewModel SettingsViewModel => SimpleIoc.Default.GetInstance<SettingsViewModel>();
+
+        private void StartLoadingAppointments(bool firstRun)
+        {
+            RefreshAppointments(true, !firstRun);
+
+            // Refresh appointments every 3 minutes
+            new DispatcherTimer(new TimeSpan(0, 3, 0), DispatcherPriority.Background,
+                (m, n) => RefreshAppointments(true, true), Dispatcher.CurrentDispatcher);
+        }
+
+        public void Initialize(bool firstRun)
+        {
+            _dialogService.ShowLoadingIndicator();
+            //TODO
+            //DeleteOldAppointments();
+
+            // Refresh appointments now
+            var loadAppointmentsWorker = new BackgroundWorker();
+            loadAppointmentsWorker.DoWork += (i, j) =>
+            {
+                if (!Initialized && !firstRun)
+                {
+                    _dialogService.HideLoadingIndicator();
+                    Logger.Debug("Cannot load appointments. Settings are empty. Opening settings view");
+                    // ask user to choose PMS type and location
+                    SettingsViewModel.Show(() => StartLoadingAppointments(firstRun));
+                }
+                else
+                {
+                    StartLoadingAppointments(firstRun);
+                }
+            };
+
+            // Initialize application
+            var initWorker = new BackgroundWorker();
+            initWorker.DoWork += (i, j) =>
+            {
+                if (firstRun)
+                {
+                    /*                    if (!AppService.Initialized)
+                                        {
+                                            _dialogService.HideLoadingIndicator();
+                                            Logger.Debug("First run. Settings are empty. Opening settings view");
+                                            // ask user to choose PMS type and location
+                                            SettingsViewModel = new SettingsViewModel(AppService, () =>
+                                            {
+                                                SettingsViewModel = null;
+                                                loadAppointmentsWorker.RunWorkerAsync();
+                                            }, _dialogService);
+                                        }
+                                        else*/
+                    {
+                        loadAppointmentsWorker.RunWorkerAsync();
+                        OpenSettingsForReview();
+                    }
+                }
+                else
+                {
+                    // if internal DB file is missing or it's empty
+                    if (!Initialized)
+                    {
+                        _dialogService.HideLoadingIndicator();
+                        Logger.Debug("Settings are empty. Opening settings view");
+                        // ask user to choose PMS type and location
+                        SettingsViewModel.Show(() =>
+                        {
+                            loadAppointmentsWorker.RunWorkerAsync();
+                        });
+                    }
+                    else
+                    {
+                        StartPmsIfRequired();
+                        InitializeChewsiApi();
+                        UpdatePluginRegistration();
+                        loadAppointmentsWorker.RunWorkerAsync();
+                    }
+                }
+            };
+            initWorker.RunWorkerAsync();
+        }
         
+        /// <summary>
+        /// Display settings view; try to fill Address, State and TIN
+        /// </summary>
+        private void OpenSettingsForReview()
+        {
+            Logger.Info("App first run: setup settings");
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    // wait till appointments list is ready
+                    while (!AppointmentsLoaded || IsLoadingAppointments)
+                    {
+                        Thread.Sleep(200);
+                    }
+
+                    // try to find Address, State and TIN in PMS
+                    _dialogService.ShowLoadingIndicator();
+
+                    Provider provider = GetProvider();
+                    if (provider != null)
+                    {
+                        SettingsViewModel.Show(() => {});
+                        SettingsViewModel.Fill(provider.AddressLine1, provider.AddressLine2, provider.State, provider.Tin, true, "localhost", 8888);
+                    }
+                }
+                finally
+                {
+                    _dialogService.HideLoadingIndicator();
+                }
+            });
+        }
+
         public void SaveSettings(SettingsDto settingsDto)
         {
             try
@@ -356,7 +474,6 @@ namespace ChewsiPlugin.UI.Services
                 DispatcherHelper.RunAsync(() =>
                 {
                     SetAppointmentState(appointmentId, AppointmentState.ValidationCompletedAndClaimSubmitted);
-                    RaiseIsProcessingPaymentGetter();
                     RefreshAppointments(false, false);
                     Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
                 });
@@ -485,7 +602,8 @@ namespace ChewsiPlugin.UI.Services
 
         public void RefreshAppointments(bool loadFromPms, bool loadFromService)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            var worker = new BackgroundWorker();
+            worker.DoWork += (i, j) =>
             {
                 if (!_loadingAppointments)
                 {
@@ -495,6 +613,7 @@ namespace ChewsiPlugin.UI.Services
                         {
                             _loadingAppointments = true;
                             _dialogService.ShowLoadingIndicator();
+
                             try
                             {
                                 var list = LoadAppointments(loadFromPms, loadFromService);
@@ -522,18 +641,22 @@ namespace ChewsiPlugin.UI.Services
                                         existingList.Add(item);
                                     }
                                 }
-                                ClaimItems.Clear();
 
-                                // remove old
-                                foreach (var item in existingList)
+                                DispatcherHelper.RunAsync(() =>
                                 {
-                                    if (list.Any(m => item.Equals(m)))
-                                    {
-                                        ClaimItems.Add(item);
-                                    }
-                                }
+                                    ClaimItems.Clear();
 
-                                _dialogService.HideLoadingIndicator();
+                                    // remove old
+                                    foreach (var item in existingList)
+                                    {
+                                        if (list.Any(m => item.Equals(m)))
+                                        {
+                                            ClaimItems.Add(item);
+                                        }
+                                    }
+
+                                    _dialogService.HideLoadingIndicator();
+                                });
                             }
                             finally
                             {
@@ -543,23 +666,14 @@ namespace ChewsiPlugin.UI.Services
                         }
                     }
                 }
-            });
+            };
+            worker.RunWorkerAsync();
         }
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; private set; }
 
-        public bool IsProcessingPayment
-        {
-            get { return ClaimItems.Any(m => m.State == AppointmentState.ValidationCompletedAndClaimSubmitted); }
-        }
-
-        public bool IsLoadingAppointments { get { return _loadingAppointments; } }
-        public bool AppointmentsLoaded { get { return _appointmentsLoaded; } }
-
-        private void RaiseIsProcessingPaymentGetter()
-        {
-            OnStartPaymentStatusLookup?.Invoke();
-        }
+        public bool IsLoadingAppointments => _loadingAppointments;
+        public bool AppointmentsLoaded => _appointmentsLoaded;
 
         /// <summary>
         /// Loads appointments from PMS (optionally), loads claim statuses from the service (optionally), caches them in local DB
@@ -792,7 +906,7 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        public event Action OnStartPaymentStatusLookup;
+        //public event Action OnStartPaymentStatusLookup;
 
         public void ValidateAndSubmitClaim(string appointmentId, DateTime date, string providerId, string patientId, Action callEndCallback)
         {
@@ -849,8 +963,9 @@ namespace ChewsiPlugin.UI.Services
 
         public void StartPmsIfRequired()
         {
+            var type = _repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
             var start = _repository.GetSettingValue<bool>(Settings.StartPms);
-            if (start)
+            if (start || type == Settings.PMS.Types.Eaglesoft)
             {
                 DentalApi.Start();
             }
@@ -907,6 +1022,28 @@ namespace ChewsiPlugin.UI.Services
                 return DentalApi.GetProvider(providerId);
             }
             return null;
+        }
+
+        public List<DownloadItemViewModel> GetDownloads()
+        {
+            _dialogService.ShowLoadingIndicator();
+            try
+            {
+                var settings = GetSettings();
+                var list = _chewsiApi.Get835Downloads(new Request835Downloads
+                {
+                    TIN = settings.Tin,
+                    State = settings.State,
+                    Address = $"{settings.Address1} {settings.Address2}"
+                })
+                .Select(m => new DownloadItemViewModel(m.EDI_835_EDI, m.EDI_835_Report, m.Status, m.PostedDate))
+                .ToList();
+                return list;
+            }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
         }
 
         private bool GetLauncherStartup()

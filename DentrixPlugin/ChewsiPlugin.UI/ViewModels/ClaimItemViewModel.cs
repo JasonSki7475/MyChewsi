@@ -8,7 +8,7 @@ using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
-    public class ClaimItemViewModel : ViewModelBase
+    internal class ClaimItemViewModel : ViewModelBase
     {
         private readonly IAppService _appService;
         private DateTime _date;

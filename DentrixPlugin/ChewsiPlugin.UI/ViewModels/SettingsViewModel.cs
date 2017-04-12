@@ -7,15 +7,16 @@ using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 using NLog;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
-    public class SettingsViewModel : ViewModelBase
+    internal class SettingsViewModel : ViewModelBase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IAppService _appService;
-        private readonly Action _onClose;
+        private Action _onClose;
         private readonly IDialogService _dialogService;
         private Settings.PMS.Types _selectedType;
         private string _path;
@@ -33,11 +34,11 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _state;
         private bool _startPms;
         private bool _startLauncher;
+        private bool _isVisible;
 
-        public SettingsViewModel(IAppService appService, Action onClose, IDialogService dialogService)
+        public SettingsViewModel(IAppService appService, IDialogService dialogService)
         {
             _appService = appService;
-            _onClose = onClose;
             _dialogService = dialogService;
             Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.Eaglesoft, Settings.PMS.Types.OpenDental };
 
@@ -57,7 +58,43 @@ namespace ChewsiPlugin.UI.ViewModels
             _startLauncher = s.StartLauncher;
         }
 
+        public void Fill(string addressLine1, string addressLine2, string state, string tin, bool startLauncher, string proxyAddress, int proxyPort)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                Address1 = addressLine1;
+                Address2 = addressLine2;
+                State = state;
+                Tin = tin;
+                StartLauncher = startLauncher;
+
+                ProxyAddress = proxyAddress;
+                ProxyPort = proxyPort;
+            });
+        }
+
         public Settings.PMS.Types[] Types { get; private set; }
+        
+        public void Show(Action onClose)
+        {
+            _onClose = onClose;
+            IsVisible = true;
+        }
+        private void Hide()
+        {
+            IsVisible = false;
+            _onClose?.Invoke();
+        }
+
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            private set
+            {
+                _isVisible = value;
+                RaisePropertyChanged(() => IsVisible);
+            }
+        }
 
         public Settings.PMS.Types SelectedType
         {
@@ -67,6 +104,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 _selectedType = value;
                 RaisePropertyChanged(() => SelectedType);
                 RaisePropertyChanged(() => NeedsPath);
+                RaisePropertyChanged(() => CanChangeStartPms);
             }
         }
 
@@ -195,6 +233,8 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public bool CanChangeStartPms => SelectedType != Settings.PMS.Types.Eaglesoft;
+
         #region CloseCommand
         public ICommand CloseCommand
         {
@@ -208,6 +248,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnCloseCommandExecute()
         {
+            Hide();
             _onClose?.Invoke();
         }
         #endregion 
@@ -239,6 +280,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 _dialogService.HideLoadingIndicator();
             }
             Logger.Debug("Settings were saved");
+            Hide();
             _onClose?.Invoke();
         }
         #endregion   

@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace ChewsiPlugin.UI.Controls
 {
     [TemplatePart(Name = "PART_Container")]
-    public class LightBox : HeaderedContentControl
+    internal class LightBox : HeaderedContentControl
     {
         public static readonly DependencyProperty ButtonTextProperty = DependencyProperty.Register(
             "ButtonText", typeof (string), typeof (LightBox), new PropertyMetadata(default(string)));
