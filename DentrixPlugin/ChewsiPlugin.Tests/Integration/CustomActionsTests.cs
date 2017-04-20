@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace ChewsiPlugin.Tests.Integration
 {
-    [TestFixture]
+    [TestFixture(Ignore = "Manual")]
     public class CustomActionsTests
     {
         [Test]

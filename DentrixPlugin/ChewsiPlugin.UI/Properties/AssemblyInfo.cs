@@ -36,3 +36,4 @@ using System.Windows;
 )]
 
 [assembly: InternalsVisibleTo("ChewsiPlugin.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

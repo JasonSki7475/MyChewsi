@@ -1,6 +1,6 @@
 ﻿using ChewsiPlugin.Api.Repository;
 
-namespace ChewsiPlugin.UI.Services
+namespace ChewsiPlugin.UI.Models
 {
     internal class SettingsDto
     {

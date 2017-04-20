@@ -11,7 +11,6 @@ namespace ChewsiPlugin.UI.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
-        private readonly SettingsViewModel _settingsViewModel;
         private ICommand _downloadReportCommand;
         private ICommand _downloadCommand;
         private ICommand _refreshDownloadsCommand;
@@ -20,9 +19,8 @@ namespace ChewsiPlugin.UI.ViewModels
         private ClaimItemViewModel _selectedClaim;
         private DownloadItemViewModel _selectedDownloadItem;
 
-        public MainViewModel(IDialogService dialogService, IAppService appService, SettingsViewModel settingsViewModel)
+        public MainViewModel(IDialogService dialogService, IAppService appService)
         {
-            _settingsViewModel = settingsViewModel;
             DialogService = dialogService;
             AppService = appService;
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
@@ -64,10 +62,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         #region Commands       
         #region RefreshAppointmentsCommand
-        public ICommand RefreshAppointmentsCommand
-        {
-            get { return _refreshAppointmentsCommand ?? (_refreshAppointmentsCommand = new RelayCommand(OnRefreshAppointmentsCommandExecute, CanExecuteRefreshAppointmentsCommand)); }
-        }
+        public ICommand RefreshAppointmentsCommand => _refreshAppointmentsCommand ?? (_refreshAppointmentsCommand = new RelayCommand(OnRefreshAppointmentsCommandExecute, CanExecuteRefreshAppointmentsCommand));
 
         private bool CanExecuteRefreshAppointmentsCommand()
         {
@@ -81,11 +76,8 @@ namespace ChewsiPlugin.UI.ViewModels
         #endregion
         
         #region RefreshDownloadsCommand
-        public ICommand RefreshDownloadsCommand
-        {
-            get { return _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute, CanExecuteRefreshDownloadsCommand)); }
-        }
-        
+        public ICommand RefreshDownloadsCommand => _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute, CanExecuteRefreshDownloadsCommand));
+
         private void OnRefreshDownloadsCommandExecute()
         {
             var worker = new BackgroundWorker();
@@ -111,25 +103,16 @@ namespace ChewsiPlugin.UI.ViewModels
         #endregion
 
         #region OpenSettingsCommand
-        public ICommand OpenSettingsCommand
-        {
-            get { return _openSettingsCommandCommand ?? (_openSettingsCommandCommand = new RelayCommand(OnOpenSettingsCommandCommandExecute)); }
-        }
+        public ICommand OpenSettingsCommand => _openSettingsCommandCommand ?? (_openSettingsCommandCommand = new RelayCommand(OnOpenSettingsCommandCommandExecute));
 
         private void OnOpenSettingsCommandCommandExecute()
         {
-            _settingsViewModel.Show(() =>
-            {
-                AppService.RefreshAppointments(true, true);
-            });
+            AppService.OpenSettings();
         }
         #endregion
 
         #region DownloadReportCommand
-        public ICommand DownloadReportCommand
-        {
-            get { return _downloadReportCommand ?? (_downloadReportCommand = new RelayCommand(OnDownloadReportCommandExecute)); }
-        }
+        public ICommand DownloadReportCommand => _downloadReportCommand ?? (_downloadReportCommand = new RelayCommand(OnDownloadReportCommandExecute));
 
         private void OnDownloadReportCommandExecute()
         {
@@ -138,10 +121,7 @@ namespace ChewsiPlugin.UI.ViewModels
         #endregion
 
         #region DownloadCommand
-        public ICommand DownloadCommand
-        {
-            get { return _downloadCommand ?? (_downloadCommand = new RelayCommand(OnDownloadCommandExecute)); }
-        }
+        public ICommand DownloadCommand => _downloadCommand ?? (_downloadCommand = new RelayCommand(OnDownloadCommandExecute));
 
         private void OnDownloadCommandExecute()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using ChewsiPlugin.UI.Models;
 using ChewsiPlugin.UI.ViewModels;
 
 namespace ChewsiPlugin.UI.Services
@@ -18,5 +19,6 @@ namespace ChewsiPlugin.UI.Services
         void ValidateAndSubmitClaim(string appointmentId, DateTime date, string providerId, string patientId, Action callEndCallback);
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         List<DownloadItemViewModel> GetDownloads();
+        void OpenSettings();
     }
 }

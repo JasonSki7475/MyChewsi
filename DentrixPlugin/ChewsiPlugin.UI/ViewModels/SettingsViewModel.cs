@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using ChewsiPlugin.UI.Models;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -12,10 +13,10 @@ using NLog;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
-    internal class SettingsViewModel : ViewModelBase
+    internal class SettingsViewModel : ViewModelBase, ISettingsViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly IAppService _appService;
+        private IAppService _appService;
         private Action _onClose;
         private readonly IDialogService _dialogService;
         private Settings.PMS.Types _selectedType;
@@ -36,26 +37,10 @@ namespace ChewsiPlugin.UI.ViewModels
         private bool _startLauncher;
         private bool _isVisible;
 
-        public SettingsViewModel(IAppService appService, IDialogService dialogService)
+        public SettingsViewModel(IDialogService dialogService)
         {
-            _appService = appService;
             _dialogService = dialogService;
             Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.Eaglesoft, Settings.PMS.Types.OpenDental };
-
-            var s = _appService.GetSettings();
-            _address1 = s.Address1;
-            _address2 = s.Address2;
-            _tin = s.Tin;
-            _useProxy = s.UseProxy;
-            _proxyAddress = s.ProxyAddress;
-            _proxyPort = s.ProxyPort;
-            _proxyLogin = s.ProxyLogin;
-            _proxyPassword = s.ProxyPassword;
-            _selectedType = s.PmsType;
-            _path = s.PmsPath;
-            _state = s.State;
-            _startPms = s.StartPms;
-            _startLauncher = s.StartLauncher;
         }
 
         public void Fill(string addressLine1, string addressLine2, string state, string tin, bool startLauncher, string proxyAddress, int proxyPort)
@@ -80,6 +65,27 @@ namespace ChewsiPlugin.UI.ViewModels
             _onClose = onClose;
             IsVisible = true;
         }
+
+        public void InjectAppServiceAndInit(IAppService appService)
+        {
+            _appService = appService;
+
+            var s = _appService.GetSettings();
+            _address1 = s.Address1;
+            _address2 = s.Address2;
+            _tin = s.Tin;
+            _useProxy = s.UseProxy;
+            _proxyAddress = s.ProxyAddress;
+            _proxyPort = s.ProxyPort;
+            _proxyLogin = s.ProxyLogin;
+            _proxyPassword = s.ProxyPassword;
+            _selectedType = s.PmsType;
+            _path = s.PmsPath;
+            _state = s.State;
+            _startPms = s.StartPms;
+            _startLauncher = s.StartLauncher;
+        }
+
         private void Hide()
         {
             IsVisible = false;
