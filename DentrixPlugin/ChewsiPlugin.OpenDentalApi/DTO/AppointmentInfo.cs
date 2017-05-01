@@ -12,5 +12,6 @@ namespace ChewsiPlugin.OpenDentalApi.DTO
         public long PatNum { get; set; }
         public long ProvNum { get; set; }
         public DateTime AptDateTime { get; set; }
+        public DateTime DateTStamp { get; set; }
     }
 }

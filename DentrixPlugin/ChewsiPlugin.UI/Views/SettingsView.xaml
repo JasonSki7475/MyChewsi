@@ -4,103 +4,124 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:ChewsiPlugin.UI.ViewModels"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type viewModels:SettingsViewModel}}" >
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <GroupBox Grid.Column="0" Grid.Row="0" Header="Provider" Padding="10">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="15"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Address Line 1"/>
-                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Address1}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Address Line 2"/>
-                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Address2}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="TIN"/>
-                <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Tin}"/>
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="State"/>
-                <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding State}"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox Grid.Column="0" Grid.Row="1" Header="Practice Management System" Padding="10">
-            <Grid Width="300">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="15"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Type"/>
-                <ComboBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Folder"/>
-                <Grid Grid.Row="2" Grid.Column="2">
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type viewModels:SettingsViewModel}}">
+    <StackPanel>
+        <TextBlock Visibility="{Binding IsServer, Converter={StaticResource BooleanToVisibilityInverseConverter}}" 
+                   FontWeight="Bold" Margin="20,10" Text="This plugin instance is client, all settings are read-only."></TextBlock>
+        <Grid IsEnabled="{Binding IsServer}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Column="0" Grid.Row="1" Header="Provider" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Text="{Binding Path}" IsEnabled="{Binding NeedsPath}" ToolTip="{Binding Path}"/>
-                    <Button Grid.Column="1" Content="Select..." Background="White" Foreground="Black" BorderBrush="LightGray"
-                            Command="{Binding SelectPath}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Address Line 1"/>
+                    <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Address1}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Address Line 2"/>
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Address2}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="TIN"/>
+                    <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Tin}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="State"/>
+                    <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding State}"/>
                 </Grid>
-                <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" IsEnabled="{Binding CanChangeStartPms}" />
-                <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartLauncher}" Content="Launch plugin when PMS starts" />
-            </Grid>
-        </GroupBox>
-        <GroupBox Grid.Column="2" Header="Network" Padding="10">
-            <Grid Width="250">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="15"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" Content="Use proxy server" IsChecked="{Binding UseProxy}" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Host"/>
-                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding ProxyAddress}" IsEnabled="{Binding UseProxy}"/>
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Port"/>
-                <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding ProxyPort}" IsEnabled="{Binding UseProxy}"/>
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="User name"/>
-                <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding ProxyLogin}" IsEnabled="{Binding UseProxy}"/>
-                <TextBlock Grid.Row="8" Grid.Column="0" Text="Password"/>
-                <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding ProxyPassword}" IsEnabled="{Binding UseProxy}"/>
-            </Grid>            
-        </GroupBox>
-    </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="0" Header="Practice Management System" Padding="10">
+                <Grid Width="300">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Type"/>
+                    <ComboBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Folder"/>
+                    <Grid Grid.Row="2" Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding Path}" IsEnabled="{Binding NeedsPath}" ToolTip="{Binding Path}"/>
+                        <Button Grid.Column="1" Content="Select..." Background="White" Foreground="Black" BorderBrush="LightGray"
+                                Command="{Binding SelectPathCommand}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
+                    </Grid>
+                    <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" IsEnabled="{Binding CanChangeStartPms}" />
+                    <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartLauncher}" Content="Launch plugin when PMS starts" />
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Grid.Column="2" Header="Network" Padding="10">
+                <Grid Width="250">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center" Content="Use proxy server" IsChecked="{Binding UseProxy}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Host"/>
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding ProxyAddress}" IsEnabled="{Binding UseProxy}"/>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Port"/>
+                    <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding ProxyPort}" IsEnabled="{Binding UseProxy}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="User name"/>
+                    <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding ProxyLogin}" IsEnabled="{Binding UseProxy}"/>
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Password"/>
+                    <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding ProxyPassword}" IsEnabled="{Binding UseProxy}"/>
+                </Grid>            
+            </GroupBox>
+            <GroupBox Grid.Column="2" Grid.Row="0" Header="General" Padding="10">
+                <Grid Width="300">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" IsEnabled="{Binding CanChangeStartPms}" />
+                    <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartLauncher}" Content="Launch plugin when PMS starts" />
+                </Grid>
+            </GroupBox>
+        </Grid>        
+    </StackPanel>
+
 </UserControl>

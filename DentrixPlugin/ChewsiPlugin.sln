@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.EaglesoftApi",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Launcher", "ChewsiPlugin.Launcher\ChewsiPlugin.Launcher.csproj", "{35159BDE-9AE6-47C8-8978-9907498DC523}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Service", "ChewsiPlugin.Service\ChewsiPlugin.Service.csproj", "{1968015A-3642-440C-86B2-51B809A077D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,14 @@ Global
 		{35159BDE-9AE6-47C8-8978-9907498DC523}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35159BDE-9AE6-47C8-8978-9907498DC523}.Release|x86.ActiveCfg = Release|Any CPU
 		{35159BDE-9AE6-47C8-8978-9907498DC523}.Release|x86.Build.0 = Release|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Debug|x86.Build.0 = Debug|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Release|x86.ActiveCfg = Release|Any CPU
+		{1968015A-3642-440C-86B2-51B809A077D5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

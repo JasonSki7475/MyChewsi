@@ -11,6 +11,7 @@ namespace ChewsiPlugin.Api.Repository
         public string StatusText { get; set; }
         public string PatientName { get; set; }
         public string SubscriberFirstName { get; set; }
+        public DateTime PmsModifiedDate { get; set; }
         public string ProviderId { get; set; }
         public string PatientId { get; set; }
     }

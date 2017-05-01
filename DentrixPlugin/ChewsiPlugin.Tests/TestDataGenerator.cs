@@ -3,27 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
-using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
+using Appointment = ChewsiPlugin.Api.Common.Appointment;
 
 namespace ChewsiPlugin.Tests
 {
     internal static class TestDataGenerator
     {
-        internal class Appointment : IAppointment
+        public static List<Appointment> GetAppointments(string providerId)
         {
-            public DateTime Date { get; set; }
-            public string Id { get; set; }
-            public string InsuranceId { get; set; }
-            public string PatientId { get; set; }
-            public string PatientName { get; set; }
-            public string ProviderId { get; set; }
-            public string ChewsiId { get; set; }
-        }
-
-        public static List<IAppointment> GetAppointments(string providerId)
-        {
-            return new List<IAppointment>(Enumerable.Range(0, 30).Select(m => GetAppointment(providerId)).ToList());
+            return new List<Appointment>(Enumerable.Range(0, 30).Select(m => GetAppointment(providerId)).ToList());
         }
 
         static readonly Random Random = new Random();
@@ -33,7 +22,6 @@ namespace ChewsiPlugin.Tests
             return new Appointment
             {
                 ChewsiId = "Test Chewsi Id; should NOT be unique in tests (DentalApi.GetPatientInfo)",
-                InsuranceId = Random.Next(10000, 100000).ToString(),
                 PatientName = "John Smith #" + Random.Next(100, 1000),
                 ProviderId = providerId,
                 PatientId = Random.Next(100, 1000).ToString(),
@@ -55,7 +43,7 @@ namespace ChewsiPlugin.Tests
             };
         }
 
-        public static Api.Repository.Appointment ToRepositoryAppointment(IAppointment m)
+        public static Api.Repository.Appointment ToRepositoryAppointment(Appointment m)
         {
             return new Api.Repository.Appointment
             {

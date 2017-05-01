@@ -8,7 +8,7 @@ namespace ChewsiPlugin.UI.Controls
     internal class LightBox : HeaderedContentControl
     {
         public static readonly DependencyProperty ButtonTextProperty = DependencyProperty.Register(
-            "ButtonText", typeof (string), typeof (LightBox), new PropertyMetadata(default(string)));
+            "ButtonText", typeof (string), typeof (LightBox), new PropertyMetadata("Ok"));
 
         public string ButtonText
         {
@@ -41,6 +41,15 @@ namespace ChewsiPlugin.UI.Controls
         {
             get { return (bool) GetValue(ShowCloseButtonProperty); }
             set { SetValue(ShowCloseButtonProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowHeaderAndFooterProperty = DependencyProperty.Register(
+            "ShowHeaderAndFooter", typeof (bool), typeof (LightBox), new PropertyMetadata(true));
+
+        public bool ShowHeaderAndFooter
+        {
+            get { return (bool) GetValue(ShowHeaderAndFooterProperty); }
+            set { SetValue(ShowHeaderAndFooterProperty, value); }
         }
     }
 }

@@ -42,9 +42,13 @@ namespace ChewsiPlugin.Api.Common
 
         public abstract bool TryGetFolder(out string folder);
         protected abstract string PmsExeRelativePath { get; }
-        public bool Initialized => _initialized;
 
-        public void Start()
+        public bool IsInitialized()
+        {
+            return _initialized;
+        } 
+
+        public void StartPms()
         {
             var currentSessionId = Process.GetCurrentProcess().SessionId;
             Process[] runningProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(PmsExeRelativePath));

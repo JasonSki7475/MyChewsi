@@ -10,7 +10,8 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
     {
         private readonly Queue<IMessage> _lightBoxes = new Queue<IMessage>();
         private bool _isLoading;
-        
+        private string _loadingMessage;
+
         public IMessage Message
         {
             get { return _lightBoxes.Count != 0 ? _lightBoxes.Peek() : null; }
@@ -18,6 +19,16 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
             {
                 _lightBoxes.Enqueue(value);
                 RaisePropertyChanged(() => Message);
+            }
+        }
+
+        public string LoadingMessage
+        {
+            get { return _loadingMessage; }
+            private set
+            {
+                _loadingMessage = value;
+                RaisePropertyChanged(() => LoadingMessage);
             }
         }
 
@@ -31,9 +42,9 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
             }
         }
 
-        public void Show(string message, string header = null, Action onDialogClosed = null)
+        public void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null)
         {
-            Message = new Message(this, message, header, onDialogClosed);
+            Message = new Message(this, message, header, onDialogClosed, buttonText);
         }
 
         public void ShowLoadingIndicator()
@@ -41,6 +52,15 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 IsLoading = true;
+            });
+        }
+
+        public void ShowLoadingIndicator(string message)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                IsLoading = true;
+                LoadingMessage = message;
             });
         }
 

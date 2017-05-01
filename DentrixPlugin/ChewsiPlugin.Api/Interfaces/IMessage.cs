@@ -4,5 +4,6 @@
     {
         string Header { get; }
         string Text { get; }
+        string ButtonText { get; }
     }
 }

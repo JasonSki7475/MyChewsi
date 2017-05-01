@@ -19,7 +19,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private ClaimItemViewModel _selectedClaim;
         private DownloadItemViewModel _selectedDownloadItem;
 
-        public MainViewModel(IDialogService dialogService, IAppService appService)
+        public MainViewModel(IDialogService dialogService, IClientAppService appService)
         {
             DialogService = dialogService;
             AppService = appService;
@@ -28,7 +28,7 @@ namespace ChewsiPlugin.UI.ViewModels
         
         public void Initialize(bool firstRun)
         {
-            AppService.Initialize(firstRun);
+            AppService.Initialize();
         }
 
         #region Properties
@@ -36,7 +36,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         public IDialogService DialogService { get; }
 
-        public IAppService AppService { private set; get; }
+        public IClientAppService AppService { private set; get; }
 
         public ClaimItemViewModel SelectedClaim
         {
@@ -71,7 +71,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshAppointmentsCommandExecute()
         {
-            AppService.RefreshAppointments(true, true);
+            AppService.RefreshAppointments();
         }
         #endregion
         

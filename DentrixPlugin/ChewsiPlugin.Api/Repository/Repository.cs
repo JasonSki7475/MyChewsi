@@ -48,14 +48,7 @@ namespace ChewsiPlugin.Api.Repository
                 return connection.ExecuteScalar<T>(query, new { Key = key });
             }
         }
-
-        public Appointment GetAppointmentByChewsiIdAndDate(string chewsiId, DateTime date)
-        {
-            using (var connection = GetConnection())
-            {
-                return connection.QueryFirstOrDefault<Appointment>(@"SELECT * FROM Appointments WHERE ChewsiId = @Id AND DateTime = @DateTime", new { Id = chewsiId, DateTime = date });
-            }
-        }
+        
         public Appointment GetAppointmentById(string id)
         {
             using (var connection = GetConnection())

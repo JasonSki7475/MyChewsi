@@ -8,12 +8,12 @@ namespace ChewsiPlugin.Api.Interfaces
     {
         PatientInfo GetPatientInfo(string patientId);
         List<ProcedureInfo> GetProcedures(string patientId, string appointmentId, DateTime appointmentDate);
-        List<IAppointment> GetAppointmentsForToday();
+        List<Appointment> GetAppointmentsForToday();
         Provider GetProvider(string providerId);
         string GetVersion();
         void Unload();
-        void Start();
+        void StartPms();
         bool TryGetFolder(out string folder);
-        bool Initialized { get; }
+        bool IsInitialized();
     }
 }

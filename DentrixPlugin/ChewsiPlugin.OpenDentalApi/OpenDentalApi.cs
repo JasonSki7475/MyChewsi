@@ -7,6 +7,7 @@ using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.OpenDentalApi.DTO;
+using Appointment = ChewsiPlugin.Api.Common.Appointment;
 using PatientInfo = ChewsiPlugin.Api.Common.PatientInfo;
 using ProcedureInfo = ChewsiPlugin.Api.Common.ProcedureInfo;
 using Provider = ChewsiPlugin.Api.Common.Provider;
@@ -24,10 +25,9 @@ namespace ChewsiPlugin.OpenDentalApi
         private Proxy _proxy;
         private AppDomain _domain;
 
-        public OpenDentalApi(IRepository repository, IDialogService dialogService)
+        public OpenDentalApi(IRepository repository)
         {
             _repository = repository;
-            _dialogService = dialogService;
         }
 
         public PatientInfo GetPatientInfo(string patientId)
@@ -119,7 +119,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return a.FirstOrDefault();
         }
 
-        public List<IAppointment> GetAppointmentsForToday()
+        public List<Appointment> GetAppointmentsForToday()
         {
             Initialize();
 
@@ -137,13 +137,14 @@ namespace ChewsiPlugin.OpenDentalApi
                 var patientIds = filtered.Select(m => m.PatNum).Distinct();
                 var patientInfos = patientIds.ToDictionary(m => m, GetPatientInfo);
 
-                return new List<IAppointment>(filtered
+                return new List<Appointment>(filtered
                     .Select(m =>
                     {
                         var patient = patientInfos[m.PatNum];
                         var appointment = new Appointment
                         {
                             Id = m.AptNum.ToString(),
+                            PmsModifiedDate = m.DateTStamp,
                             Date = m.AptDateTime,
                             ChewsiId = patient.ChewsiId,
                             PatientId = m.PatNum.ToString(),
@@ -154,7 +155,7 @@ namespace ChewsiPlugin.OpenDentalApi
                     })
                     .ToList());                
             }
-            return new List<IAppointment>();
+            return new List<Appointment>();
         }
 
         public Provider GetProvider(string providerId)

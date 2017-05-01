@@ -60,7 +60,7 @@ namespace ChewsiPlugin.UI
             {
                 // This method  is called from a custom action during installation
                 var api = new DentrixApi(new MessageBoxDialogService());
-                if (!api.Initialized)
+                if (!api.IsInitialized())
                 {
                     Logger.Info("Installing key for Dentrix");
                     // install Dentrix key

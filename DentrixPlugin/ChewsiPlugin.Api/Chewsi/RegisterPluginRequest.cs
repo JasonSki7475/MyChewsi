@@ -1,4 +1,6 @@
-﻿namespace ChewsiPlugin.Api.Chewsi
+﻿using ChewsiPlugin.Api.Common;
+
+namespace ChewsiPlugin.Api.Chewsi
 {
     public class RegisterPluginRequest
     {

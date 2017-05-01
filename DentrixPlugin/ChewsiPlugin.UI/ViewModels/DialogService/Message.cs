@@ -12,17 +12,20 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
         private readonly Action _dialogResultCallback;
         private RelayCommand _closeCommand;
 
-        public Message(DialogService dialogService, string text, string header = null, Action dialogResultCallback = null)
+        public Message(DialogService dialogService, string text, string header = null, Action dialogResultCallback = null, string buttonText = "Ok")
         {
             _dialogService = dialogService;
             _dialogResultCallback = dialogResultCallback;
             Text = text;
+            ButtonText = buttonText;
             Header = header;
         }
 
-        public string Text { get; private set; }
+        public string Text { get; }
 
-        public string Header { get; private set; }
+        public string ButtonText { get; }
+
+        public string Header { get; }
         
         public ICommand CloseCommand
         {
@@ -42,5 +45,7 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
                 _dialogResultCallback();
             }
         }
+
+
     }
 }

@@ -6,19 +6,21 @@ namespace ChewsiPlugin.Api.Common
 {
     public class MessageBoxDialogService : IDialogService
     {
-        public IMessage Message { get; }
-        public bool IsLoading { get; }
         public void Close()
         {
             throw new NotImplementedException();
         }
 
-        public void Show(string message, string header = null, Action onDialogClosed = null)
+        public void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null)
         {
             MessageBox.Show(message, header);
         }
 
         public void ShowLoadingIndicator()
+        {
+            throw new NotImplementedException();
+        }
+        public void ShowLoadingIndicator(string message)
         {
             throw new NotImplementedException();
         }

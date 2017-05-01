@@ -2,9 +2,9 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
-using ChewsiPlugin.UI.Models;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -16,7 +16,6 @@ namespace ChewsiPlugin.UI.ViewModels
     internal class SettingsViewModel : ViewModelBase, ISettingsViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private IAppService _appService;
         private Action _onClose;
         private readonly IDialogService _dialogService;
         private Settings.PMS.Types _selectedType;
@@ -31,11 +30,13 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _proxyLogin;
         private string _proxyPassword;
         private ICommand _saveCommand;
-        private ICommand _selectPath;
+        private ICommand _selectPathCommand;
         private string _state;
         private bool _startPms;
         private bool _startLauncher;
         private bool _isVisible;
+        private IClientAppService _appService;
+        private string _machineId;
 
         public SettingsViewModel(IDialogService dialogService)
         {
@@ -58,6 +59,8 @@ namespace ChewsiPlugin.UI.ViewModels
             });
         }
 
+        public bool IsServer { get; set; }
+
         public Settings.PMS.Types[] Types { get; private set; }
         
         public void Show(Action onClose)
@@ -66,24 +69,25 @@ namespace ChewsiPlugin.UI.ViewModels
             IsVisible = true;
         }
 
-        public void InjectAppServiceAndInit(IAppService appService)
+        public void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings)
         {
             _appService = appService;
-
-            var s = _appService.GetSettings();
-            _address1 = s.Address1;
-            _address2 = s.Address2;
-            _tin = s.Tin;
-            _useProxy = s.UseProxy;
-            _proxyAddress = s.ProxyAddress;
-            _proxyPort = s.ProxyPort;
-            _proxyLogin = s.ProxyLogin;
-            _proxyPassword = s.ProxyPassword;
-            _selectedType = s.PmsType;
-            _path = s.PmsPath;
-            _state = s.State;
-            _startPms = s.StartPms;
-            _startLauncher = s.StartLauncher;
+            
+            _address1 = settings.Address1;
+            _address2 = settings.Address2;
+            _tin = settings.Tin;
+            _useProxy = settings.UseProxy;
+            _proxyAddress = settings.ProxyAddress;
+            _proxyPort = settings.ProxyPort;
+            _proxyLogin = settings.ProxyLogin;
+            _proxyPassword = settings.ProxyPassword;
+            _selectedType = settings.PmsType;
+            _path = settings.PmsPath;
+            _state = settings.State;
+            _startPms = settings.StartPms;
+            _startLauncher = settings.StartLauncher;
+            _machineId = settings.MachineId;
+            IsServer = !settings.IsClient;
         }
 
         private void Hide()
@@ -238,7 +242,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => ProxyPassword);
             }
         }
-
+        
         public bool CanChangeStartPms => SelectedType != Settings.PMS.Types.Eaglesoft;
 
         #region CloseCommand
@@ -279,7 +283,8 @@ namespace ChewsiPlugin.UI.ViewModels
                 }
 
                 _dialogService.ShowLoadingIndicator();
-                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, State, StartPms, StartLauncher));
+                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, 
+                    State, StartPms, StartLauncher, _machineId, !IsServer));
             }
             finally
             {
@@ -291,18 +296,18 @@ namespace ChewsiPlugin.UI.ViewModels
         }
         #endregion   
 
-        #region SelectPath
-        public ICommand SelectPath
+        #region SelectPathCommand
+        public ICommand SelectPathCommand
         {
-            get { return _selectPath ?? (_selectPath = new RelayCommand(OnSelectPath, CanSelectPath)); }
+            get { return _selectPathCommand ?? (_selectPathCommand = new RelayCommand(OnSelectPathCommandExecute, CanSelectPathCommandExecute)); }
         }
 
-        private bool CanSelectPath()
+        private bool CanSelectPathCommandExecute()
         {
             return NeedsPath;
         }
 
-        private void OnSelectPath()
+        private void OnSelectPathCommandExecute()
         {
             using (var dialog = new FolderBrowserDialog())
             {
@@ -313,6 +318,6 @@ namespace ChewsiPlugin.UI.ViewModels
                 }
             }
         }
-        #endregion   
+        #endregion 
     }
 }

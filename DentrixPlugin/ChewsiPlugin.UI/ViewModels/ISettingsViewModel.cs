@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 
@@ -20,7 +21,7 @@ namespace ChewsiPlugin.UI.ViewModels
         int ProxyPort { get; set; }
         ICommand SaveCommand { get; }
         Settings.PMS.Types SelectedType { get; set; }
-        ICommand SelectPath { get; }
+        ICommand SelectPathCommand { get; }
         bool StartLauncher { get; set; }
         bool StartPms { get; set; }
         string State { get; set; }
@@ -31,6 +32,6 @@ namespace ChewsiPlugin.UI.ViewModels
         void Fill(string addressLine1, string addressLine2, string state, string tin, bool startLauncher, string proxyAddress, int proxyPort);
         void Show(Action onClose);
 
-        void InjectAppServiceAndInit(IAppService appService);
+        void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings);
     }
 }

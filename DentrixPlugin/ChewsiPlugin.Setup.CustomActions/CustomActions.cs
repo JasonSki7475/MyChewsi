@@ -22,7 +22,7 @@ namespace ChewsiPlugin.Setup.CustomActions
         {
             try
             {
-                Logger.Info("Started custom action. Type={0}. Folder={1}", pmsType, installFolder);
+                Logger.Info("Setting current PMS. Type={0}. Folder={1}", pmsType, installFolder);
                 var repository = new Repository();
                 repository.Initialize();
                 var dialogService = new MessageBoxDialogService();
@@ -55,7 +55,7 @@ namespace ChewsiPlugin.Setup.CustomActions
                     pmsTypeSetting = Settings.PMS.Types.OpenDental;
 
                     // copy config file into installation folder
-                    api = new OpenDentalApi.OpenDentalApi(repository, dialogService);
+                    api = new OpenDentalApi.OpenDentalApi(repository);
                 }
                 else if (pmsType == "Eaglesoft")
                 {
@@ -79,6 +79,23 @@ namespace ChewsiPlugin.Setup.CustomActions
             catch (Exception ex)
             {
                 Logger.Error(ex, "Failed to initialize settings for " + pmsType);
+                throw;
+            }
+        }
+
+        public static bool SetClientFlag(int isClient)
+        {
+            try
+            {
+                Logger.Info("Setting IsClient flag. Value={0}", isClient);
+                var repository = new Repository();
+                repository.Initialize();
+                repository.SaveSetting(Settings.IsClient, isClient == 1);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to set IsClient flag");
                 throw;
             }
         }

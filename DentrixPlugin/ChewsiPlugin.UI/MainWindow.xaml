@@ -98,7 +98,7 @@
                                                         Command="{Binding Path=SubmitCommand}"/>
                                                 <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
                                                         Visibility="{Binding CanResubmit, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Command="{Binding Path=SubmitCommand}"/>                                                
+                                                        Command="{Binding Path=SubmitCommand}"/>
                                             </Grid>
                                             <Button Grid.Column="2" Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
                                                     Visibility="{Binding IsClaimStatus, Converter={StaticResource BooleanToVisibilityInverseConverter}}"
@@ -173,12 +173,39 @@
             <views:SettingsView />
         </controls1:LightBox>
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Header="{Binding DialogService.Message.Header}"
-                            ButtonText="Ok" 
+                            ButtonText="{Binding DialogService.Message.ButtonText}" 
                             Visibility="{Binding DialogService.Message, Converter={StaticResource NullToVisibilityConverter}}"
                             CloseCommand="{Binding DialogService.Message.CloseCommand}"
                             ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="True">
             <TextBlock Text="{Binding DialogService.Message.Text}" Width="500" TextWrapping="Wrap" MinHeight="65"/>
         </controls1:LightBox>
         <controls1:LoadingControl d:IsHidden="true" Visibility="{Binding DialogService.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"/>
+        <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Header="{Binding DialogService.Message.Header}"
+                            ButtonText="{Binding DialogService.Message.ButtonText}"
+                            Visibility="{Binding DialogService.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            CloseCommand="{Binding DialogService.Message.CloseCommand}"
+                            ShowHeaderAndFooter="False"
+                            ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="False">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto" MinWidth="200"/>
+                    <ColumnDefinition Width="10"/>
+                </Grid.ColumnDefinitions>
+                <controls1:LoadingControl Grid.Column="1" RenderTransformOrigin="0.5,0.5" >
+                    <controls1:LoadingControl.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </controls1:LoadingControl.RenderTransform>
+                </controls1:LoadingControl>
+                <TextBlock Grid.Column="3" Text="{Binding DialogService.LoadingMessage}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            </Grid>
+        </controls1:LightBox>
     </Grid>
 </Window>

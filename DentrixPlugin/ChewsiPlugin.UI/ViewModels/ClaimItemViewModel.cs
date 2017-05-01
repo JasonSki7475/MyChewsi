@@ -4,13 +4,12 @@ using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
     internal class ClaimItemViewModel : ViewModelBase
     {
-        private readonly IAppService _appService;
+        private readonly IClientAppService _appService;
         private DateTime _date;
         private string _chewsiId;
         private string _patientName;
@@ -25,8 +24,9 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _deleteCommand;
         private bool _isClaimStatus;
         private string _id;
+        private DateTime _pmsModifiedDate;
 
-        public ClaimItemViewModel(IAppService appService)
+        public ClaimItemViewModel(IClientAppService appService)
         {
             _appService = appService;
         }
@@ -124,6 +124,16 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public DateTime PmsModifiedDate
+        {
+            get { return _pmsModifiedDate; }
+            set
+            {
+                _pmsModifiedDate = value;
+                RaisePropertyChanged(() => PmsModifiedDate);
+            }
+        }
+
         public string StatusText
         {
             get { return _statusText; }
@@ -194,13 +204,8 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnSubmitCommandExecute()
         {
             IsBeingSubmitted = true;
-            _appService.ValidateAndSubmitClaim(Id, Date, ProviderId, PatientId, () =>
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    IsBeingSubmitted = false;
-                });
-            });
+            _appService.ValidateAndSubmitClaim(Id, Date, ProviderId, PatientId, PmsModifiedDate);
+            IsBeingSubmitted = false;
         }
         #endregion
 

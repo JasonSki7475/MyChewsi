@@ -10,6 +10,7 @@ using ChewsiPlugin.UI.Services;
 using ChewsiPlugin.UI.ViewModels;
 using Moq;
 using NUnit.Framework;
+using Appointment = ChewsiPlugin.Api.Common.Appointment;
 
 namespace ChewsiPlugin.Tests.Unit
 {   
@@ -19,13 +20,13 @@ namespace ChewsiPlugin.Tests.Unit
         private Mock<IDialogService> _dialogServiceMock;
         private bool _loadingIndicatorShown;
         private Mock<IChewsiApi> _apiMock;
-        private List<IAppointment> _appointmentsPms;
+        private List<Appointment> _appointmentsPms;
         private Mock<ISettingsViewModel> _settingsViewModelMock;
         private Mock<IRepository> _repositoryMock;
         private Mock<IDentalApiFactoryService> _dentalApiFactoryService;
         private Mock<IDentalApi> _dentalApiMock;
         private Provider _provider;
-        private List<Appointment> _appointmentsRepository;
+        private List<Api.Repository.Appointment> _appointmentsRepository;
         private PatientInfo _patientInfo;
 
         [SetUp]
@@ -77,7 +78,7 @@ namespace ChewsiPlugin.Tests.Unit
             _repositoryMock.Setup(m => m.Initialized).Returns(false);    
                     
             // Act
-            var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object, _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+            var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object, _settingsViewModelMock.Object);
 
             // Assert
             //AssertLoadingIndicator();
@@ -93,7 +94,7 @@ namespace ChewsiPlugin.Tests.Unit
         {
             // Arrange
             var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object, 
-                _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+                _settingsViewModelMock.Object);
 
             // Act
             appService.Initialize(true);
@@ -124,7 +125,7 @@ namespace ChewsiPlugin.Tests.Unit
         {
             // Arrange
             var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object, 
-                _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+                _settingsViewModelMock.Object);
 
             // Act
             appService.Initialize(false);
@@ -173,7 +174,7 @@ namespace ChewsiPlugin.Tests.Unit
             _apiMock.Setup(m => m.GetClaimProcessingStatus(It.IsAny<ClaimProcessingStatusRequest>())).Returns(statusResponse);
 
             var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object, 
-                _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+                _settingsViewModelMock.Object);
 
             // Act
             appService.Initialize(false);
@@ -222,7 +223,7 @@ namespace ChewsiPlugin.Tests.Unit
             _repositoryMock.Setup(m => m.GetSettingValue<string>(Settings.AppVersionKey)).Returns(Utils.GetPluginVersion());
             _dentalApiMock.Setup(m => m.GetVersion()).Returns("v2");
             var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object,
-                _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+                _settingsViewModelMock.Object);
 
             // Act
             appService.Initialize(false);
@@ -242,7 +243,7 @@ namespace ChewsiPlugin.Tests.Unit
             _repositoryMock.Setup(m => m.GetSettingValue<string>(Settings.AppVersionKey)).Returns(Utils.GetPluginVersion());
             _dentalApiMock.Setup(m => m.GetVersion()).Returns("v1");
             var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object,
-                _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+                _settingsViewModelMock.Object);
 
             // Act
             appService.Initialize(false);
@@ -258,7 +259,7 @@ namespace ChewsiPlugin.Tests.Unit
         {
             // Arrange
             var appService = new AppService(_apiMock.Object, _repositoryMock.Object, _dialogServiceMock.Object,
-                _dentalApiFactoryService.Object, _settingsViewModelMock.Object);
+                _settingsViewModelMock.Object);
             appService.Initialize(false);
             var procedure = new ProcedureInfo
             {
@@ -269,7 +270,7 @@ namespace ChewsiPlugin.Tests.Unit
             _dentalApiMock.Setup(m => m.GetProcedures(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
                 .Returns(new List<ProcedureInfo> { procedure });
             _repositoryMock.Setup(m => m.GetAppointmentById(It.IsAny<string>())).Returns(_appointmentsRepository[0]);
-            _repositoryMock.Setup(m => m.UpdateAppointment(It.IsAny<Appointment>()))
+            _repositoryMock.Setup(m => m.UpdateAppointment(It.IsAny<Api.Repository.Appointment>()))
                 .Callback(() => _appointmentsRepository[0].State = AppointmentState.ValidationCompletedAndClaimSubmitted);
             _apiMock.Setup(m => m.ValidateSubscriberAndProvider(
                 It.IsAny<ProviderInformation>(),
@@ -310,7 +311,7 @@ namespace ChewsiPlugin.Tests.Unit
             _apiMock.Verify(m => m.ProcessClaim(
                 It.Is<ProviderInformation>(n => n.NPI == _provider.Npi
                                                 && n.TIN == _provider.Tin),
-                It.Is<SubscriberInformation>(n => n.Id == _patientInfo.PatientFirstName
+                It.Is<SubscriberInformation>(n => n.Id == _patientInfo.ChewsiId
                                                   && n.PatientFirstName == _patientInfo.PatientFirstName
                                                   && n.PatientLastName == _patientInfo.PatientLastName
                                                   && n.SubscriberFirstName == _patientInfo.SubscriberFirstName
@@ -332,7 +333,7 @@ namespace ChewsiPlugin.Tests.Unit
             Assert.IsFalse(_loadingIndicatorShown, "Loading is not hidden");
         }
 
-        private static void AssertClaims(IEnumerable<ClaimItemViewModel> models, List<IAppointment> appointments)
+        private static void AssertClaims(IEnumerable<ClaimItemViewModel> models, List<Appointment> appointments)
         {
             foreach (var claimItem in models)
             {

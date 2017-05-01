@@ -21,5 +21,6 @@ namespace ChewsiPlugin.Api.Chewsi
         public string SubscriberDOB { get; set; }
         public string PIN { get; set; }
         public List<ClaimLine> ClaimLines { get; set; }
+        public string PMSModifiedDate { get; set; }
     }
 }

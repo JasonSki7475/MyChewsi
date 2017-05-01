@@ -35,5 +35,7 @@
         public const string ProxyPort = "ProxyPort";
         public const string ProxyLogin = "ProxyLogin";
         public const string ProxyPassword = "ProxyPassword";
+        public const string IsClient = "IsClient";
+        public const string ServerAddress = "ServerAddress";
     }
 }

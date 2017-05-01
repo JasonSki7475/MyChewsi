@@ -131,23 +131,23 @@ namespace ChewsiPlugin.Api.Dentrix
             return new List<ProcedureInfo>();
         }
        
-        public List<IAppointment> GetAppointmentsForToday()
+        public List<Appointment> GetAppointmentsForToday()
         {
             Dictionary<string, string> patientIds = GetAllPatientsInsurance();
             if (patientIds.Count == 0)
             {
                 Logger.Warn("No Chewsi patients found");
-                return new List<IAppointment>();
+                return new List<Appointment>();
             }
 
             var dateRange = GetTimeRangeForToday();
 
-            var result = ExecuteCommand($"select appointment_id, patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
+            var result = ExecuteCommand($"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
-                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id", "appointment_id" },
+                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id", "appointment_id", "modified_date" },
                 false);
             
-            return new List<IAppointment>(result.Select(m =>
+            return new List<Appointment>(result.Select(m =>
             {
                 string insuranceId;
                 patientIds.TryGetValue(m["patient_id"], out insuranceId);
@@ -157,6 +157,7 @@ namespace ChewsiPlugin.Api.Dentrix
                     PatientName = m["patient_name"].Trim(),
                     PatientId = m["patient_id"].Trim(),
                     Date = DateTime.Parse(m["appointment_date"]),
+                    PmsModifiedDate = DateTime.Parse(m["modified_date"]),
                     ProviderId = m["provider_id"].Trim(),
                     ChewsiId = insuranceId
                 };
