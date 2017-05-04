@@ -4,37 +4,20 @@ namespace ChewsiPlugin.UI.ViewModels
 {
     internal class DownloadItemViewModel : ViewModelBase
     {
-        private readonly string _ediDocumentId;
-        private readonly string _pdfReportDocumentId;
-        private readonly string _status;
-        private readonly string _postedDate;
-
         public DownloadItemViewModel(string ediDocumentId, string pdfReportDocumentId, string status, string postedDate)
         {
-            _ediDocumentId = ediDocumentId;
-            _pdfReportDocumentId = pdfReportDocumentId;
-            _status = status;
-            _postedDate = postedDate;
+            EdiDocumentId = ediDocumentId;
+            PdfReportDocumentId = pdfReportDocumentId;
+            Status = status;
+            PostedDate = postedDate;
         }
 
-        public string EdiDocumentId
-        {
-            get { return _ediDocumentId; }
-        }
+        public string EdiDocumentId { get; }
 
-        public string PdfReportDocumentId
-        {
-            get { return _pdfReportDocumentId; }
-        }
+        public string PdfReportDocumentId { get; }
 
-        public string Status
-        {
-            get { return _status; }
-        }
+        public string Status { get; }
 
-        public string PostedDate
-        {
-            get { return _postedDate; }
-        }
+        public string PostedDate { get; }
     }
 }

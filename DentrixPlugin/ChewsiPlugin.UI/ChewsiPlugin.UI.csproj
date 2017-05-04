@@ -61,9 +61,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>../Certificate.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
@@ -157,6 +154,7 @@
       <DependentUpon>LoadingControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Models\ClientState.cs" />
     <Compile Include="Services\CallbackHandler.cs" />
     <Compile Include="Services\ClientAppService.cs" />
     <Compile Include="Services\IClientAppService.cs" />
@@ -221,7 +219,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="../Certificate.pfx" />
     <Resource Include="icon.ico" />
     <Content Include="..\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -262,12 +259,10 @@
       <Name>ChewsiPlugin.OpenDentalApi</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)build\signtool.exe sign /f "$(SolutionDir)build\Certificate.pfx" /p BlR0nTNYXQ1LoJTAZ4d1 /t http://timestamp.comodoca.com/authenticode /a "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)build\signtool.exe sign /f "$(SolutionDir)build\CertificateDentrix.pfx" /p BlR0nTNYXQ1LoJTAZ4d1 /t http://timestamp.comodoca.com/authenticode /a "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

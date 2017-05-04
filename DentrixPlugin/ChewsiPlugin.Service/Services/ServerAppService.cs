@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Reflection;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
+using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
@@ -16,71 +16,140 @@ using Microsoft.Win32;
 using NLog;
 using Appointment = ChewsiPlugin.Api.Repository.Appointment;
 
-namespace ChewsiPlugin.Service
+namespace ChewsiPlugin.Service.Services
 {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Single, InstanceContextMode = InstanceContextMode.Single)]
     internal class ServerAppService : IServerAppService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly object _appointmentsLockObject = new object();
+        private const int StatusLookupTimeoutSeconds = 60;
+        private const int StatusRefreshIntervalMs = 10000;
         private const string ChewsiLauncherRegistryKey = "Chewsi Launcher";
         private const string ChewsiLauncherExecutableName = "ChewsiPlugin.Launcher.exe";
         private const int AppointmentTtlDays = 1;
+        private const int LoadIntervalMs = 180000;
+
+        private readonly object _appointmentsLockObject = new object();
+        private readonly object _statusWaitListLock = new object();
+        private readonly object _dentalApiInitializationLock = new object();
+
         private readonly List<ClaimDto> _serviceClaims = new List<ClaimDto>();
+        private readonly List<StatusLookupWaitItem> _statusWaitList = new List<StatusLookupWaitItem>();
+        private readonly List<ClaimDto> _claimItems = new List<ClaimDto>();
         private readonly IRepository _repository;
         private readonly IChewsiApi _chewsiApi;
         private bool _loadingAppointments;
-        private bool _appointmentsLoaded;
         private readonly CancellationTokenSource _tokenSource;
         private readonly CancellationTokenSource _loadTokenSource;
-        private readonly List<StatusLookupWaitItem> _statusWaitList = new List<StatusLookupWaitItem>();
-        private const int StatusLookupTimeoutSeconds = 60;
-        private readonly object _statusWaitListLock = new object();
-        private const int StatusRefreshIntervalMs = 10000;
-
         private IDentalApi _dentalApi;
         private Settings.PMS.Types _pmsType;
-        private readonly object _dentalApiInitializationLock = new object();
         private readonly IDentalApiFactoryService _dentalApiFactoryService;
-        private readonly DialogServiceBroadcaster _dialogServiceBroadcaster;
-        private const int LoadIntervalMs = 180000;
-        private readonly List<ClaimDto> _claimItems = new List<ClaimDto>();
+        private readonly IClientCallbackService _clientCallbackService;
+        private readonly IDialogService _dialogService;
+        private ServerState _state;
 
-        public ServerAppService(IRepository repository, IChewsiApi chewsiApi, IDentalApiFactoryService dentalApiFactoryService, DialogServiceBroadcaster dialogServiceBroadcaster)
+        public ServerAppService(IRepository repository, IChewsiApi chewsiApi, IDentalApiFactoryService dentalApiFactoryService, 
+            IClientCallbackService clientCallbackService, IDialogService dialogService)
         {
             _repository = repository;
-            _repository.Initialize();
-
-            _dentalApiFactoryService = dentalApiFactoryService;
-            _dialogServiceBroadcaster = dialogServiceBroadcaster;
-            _dentalApi = GetDentalApi();
-            
             _chewsiApi = chewsiApi;
+            _dentalApiFactoryService = dentalApiFactoryService;
+            _clientCallbackService = clientCallbackService;
+            _dialogService = dialogService;
             _tokenSource = new CancellationTokenSource();
             _loadTokenSource = new CancellationTokenSource();
-            Task.Factory.StartNew(StatusLookup, _tokenSource.Token);
+
+            Initialize();
         }
 
-        public bool InitClient()
+        private async void Initialize()
         {
-            if (_dentalApi == null)
-                return false;
+            _state = ServerState.Initializing;
+            Logger.Info("Initializing service");
+            _repository.Initialize();
+            if (_repository.Ready)
+            {
+                Logger.Info("Repository is ready. Loading dental API");
+                _dentalApi = GetDentalApi();
+                if (_dentalApi != null)
+                {
+                    DeleteOldAppointments();
+                    StartPmsIfRequired();
+                    InitializeChewsiApi();
+                    UpdatePluginRegistration();
+                    await RefreshAppointments(true, true, false);
+                    _state = ServerState.Ready;
+                    Task.Factory.StartNew(LoadAppointmentsLoop, _loadTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                    Task.Factory.StartNew(StatusLookup, _tokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                }
+            }
+            else
+            {
+                Logger.Info("Repository is not ready. First run?");
+                _state = ServerState.InvalidSettings;
+            }
+        }
 
-            var callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
-            _dialogServiceBroadcaster.AddClient(OperationContext.Current.Channel.SessionId, callback);
-            return true;
+        public List<ClaimDto> GetClaims(bool force)
+        {
+            if (force)
+            {
+                // old items are returned immediately, new items will be broadcasted soon
+                RefreshAppointments(true, true, true);
+            }
+            return _claimItems;
+        }
+
+        public ServerState InitClient()
+        {
+            if (_dentalApi != null)
+            {
+                var callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
+                _clientCallbackService.AddClient(OperationContext.Current.Channel.SessionId, callback);                
+            }
+            return _state;
         }
 
         public void DisconnectClient()
         {
             OperationContext.Current.Channel.Faulted += ChannelOnFaulted;
-            _dialogServiceBroadcaster.RemoveClient(OperationContext.Current.Channel.SessionId);
+            _clientCallbackService.RemoveClient(OperationContext.Current.Channel.SessionId);
+        }
+
+        public Provider GetProvider(string providerId)
+        {
+            return _dentalApi.GetProvider(providerId);
+        }
+
+        public InitialSettingsDto GetInitialSettings()
+        {
+            if (_state == ServerState.InvalidSettings)
+            {
+                var list = GetDentalApi().GetAppointmentsForToday();
+                if (list.Count > 0)
+                {
+                    var p = GetProvider(list[0].ProviderId);
+                    return new InitialSettingsDto
+                    {
+                        State = p.State,
+                        Tin = p.Tin,
+                        AddressLine1 = p.AddressLine1,
+                        AddressLine2 = p.AddressLine2
+                    };
+                }
+            }
+            return null;
+        }
+
+        public ServerState GetState()
+        {
+            return _state;
         }
 
         private void ChannelOnFaulted(object sender, EventArgs eventArgs)
         {
             var ch = sender as IContextChannel;
-            _dialogServiceBroadcaster.RemoveClient(ch.SessionId);
+            _clientCallbackService.RemoveClient(ch.SessionId);
         }
 
         private IDentalApi GetDentalApi()
@@ -110,10 +179,6 @@ namespace ChewsiPlugin.Service
             return null;
         }
         
-        public bool Initialized => _repository.Initialized && GetDentalApi() != null;
-
-        public bool IsLoadingAppointments => _loadingAppointments;
-
         private ValidateSubscriberAndProviderResponse ValidateClaim(string providerId, string patientId,
             out ProviderInformation providerInformation, out SubscriberInformation subscriberInformation,
             out Provider provider)
@@ -160,14 +225,14 @@ namespace ChewsiPlugin.Service
                 else
                 {
                     var msg = "Cannot find patient " + patientId;
-                    _dialogServiceBroadcaster.Show(msg, "Error");
+                    _dialogService.Show(msg, "Error");
                     Logger.Error(msg);
                 }
             }
             else
             {
                 var msg = "Cannot find provider " + providerId;
-                _dialogServiceBroadcaster.Show(msg, "Error");
+                _dialogService.Show(msg, "Error");
                 Logger.Error(msg);
             }
             providerInformation = null;
@@ -175,37 +240,35 @@ namespace ChewsiPlugin.Service
             return null;
         }
 
-        private void SubmitClaim(string appointmentId, DateTime appointmentDate, string patientId, ProviderInformation providerInformation, 
+        private void SubmitClaim(string id, DateTime appointmentDate, string patientId, ProviderInformation providerInformation, 
             SubscriberInformation subscriberInformation, DateTime pmsModifiedDate)
         {
-            var procedures = GetDentalApi().GetProcedures(patientId, appointmentId, appointmentDate);
+            var procedures = GetDentalApi().GetProcedures(patientId, id, appointmentDate);
             if (procedures.Any())
             {
                 // Since we cannot match claim number to appointment (ProcessClaim response is empty; claim number was expected to be there, but API developers cannot implement it so)
                 // We have to save current claim numbers for providerId+chewsiId+date+claimnumbers and wait till one more status appear for this combination in status lookup response; or till timeout
                 lock (_statusWaitListLock)
                 {
-                    _statusWaitList.Add(new StatusLookupWaitItem(subscriberInformation.Id, providerInformation.Id, appointmentDate.Date,
+                    _statusWaitList.Add(new StatusLookupWaitItem(subscriberInformation.Id, providerInformation.Id,
+                        appointmentDate.Date,
                         _claimItems.Where(m => m.IsClaimStatus
-                                              && m.ProviderId == providerInformation.Id
-                                              && m.ChewsiId == subscriberInformation.Id
-                                              && m.Date.Date == appointmentDate.Date)
+                                               && m.ProviderId == providerInformation.Id
+                                               && m.ChewsiId == subscriberInformation.Id
+                                               && m.Date.Date == appointmentDate.Date)
                             .Select(m => m.ClaimNumber).ToList()));
                 }
-                _chewsiApi.ProcessClaim(providerInformation, subscriberInformation, 
+                _chewsiApi.ProcessClaim(id, providerInformation, subscriberInformation,
                     procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList(),
                     pmsModifiedDate);
-                //DispatcherHelper.RunAsync(() =>
-                //{
-                    SetAppointmentState(appointmentId, AppointmentState.ValidationCompletedAndClaimSubmitted);
-                    RefreshAppointments(false, false);
-                    Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
-                //});
+                SetAppointmentState(id, AppointmentState.ValidationCompletedAndClaimSubmitted);
+                RefreshAppointments(false, false, true);
+                Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
             }
             else
             {
                 var msg = "Cannot find any procedures for the patient";
-                _dialogServiceBroadcaster.Show(msg, "Error");
+                _dialogService.Show(msg, "Error");
                 Logger.Error(msg + " " + patientId);
             }
         }
@@ -236,7 +299,7 @@ namespace ChewsiPlugin.Service
             return result;
         }
 
-        private void StatusLookup()
+        private  void StatusLookup()
         {
             // stop if already canceled
             _tokenSource.Token.ThrowIfCancellationRequested();
@@ -269,7 +332,7 @@ namespace ChewsiPlugin.Service
                 }
                 if (pendingLookup)
                 {
-                    RefreshAppointments(false, true);
+                    RefreshAppointments(false, true, true);
                 }
                 Thread.Sleep(StatusRefreshIntervalMs);
             }
@@ -281,10 +344,9 @@ namespace ChewsiPlugin.Service
             _loadTokenSource.Cancel();
         }
 
-        public void RefreshAppointments(bool loadFromPms, bool loadFromService)
+        private async Task<bool> RefreshAppointments(bool loadFromPms, bool loadFromService, bool notifyClients)
         {
-            var worker = new BackgroundWorker();
-            worker.DoWork += (i, j) =>
+            return await Task<bool>.Factory.StartNew(() =>
             {
                 if (!_loadingAppointments)
                 {
@@ -293,60 +355,43 @@ namespace ChewsiPlugin.Service
                         if (!_loadingAppointments)
                         {
                             _loadingAppointments = true;
-                            _dialogServiceBroadcaster.ShowLoadingIndicator("Loading...");
-
                             try
                             {
                                 var list = LoadAppointments(loadFromPms, loadFromService);
-
-                                //DispatcherHelper.RunAsync(() =>
-                                //{
-                                    _claimItems.Clear();
-                                    foreach (var item in list)
-                                    {
-                                        _claimItems.Add(item);
-                                    }
-
-                                    _dialogServiceBroadcaster.HideLoadingIndicator();
-                                    _loadingAppointments = false;
-                                    _appointmentsLoaded = true;
-                                //});
+                                _claimItems.Clear();
+                                _claimItems.AddRange(list);
+                                if (notifyClients)
+                                {
+                                    _clientCallbackService.SetClaims(list);
+                                }
                             }
-                            catch (Exception)
+                            finally
                             {
-                                _loadingAppointments = false;
-                                _appointmentsLoaded = true;
+                                _loadingAppointments = false;                            
                             }
                         }
                     }
                 }
-            };
-            worker.RunWorkerAsync();
+                return true;
+            });
         }
-
-        private void StartLoadingAppointments(bool firstRun)
-        {
-            RefreshAppointments(true, !firstRun);
-            
-            Task.Factory.StartNew(LoadAppointmentsLoop, _loadTokenSource.Token);
-        }
-
-        private void LoadAppointmentsLoop()
+        
+        private async void LoadAppointmentsLoop()
         {
             // stop if already canceled
             _tokenSource.Token.ThrowIfCancellationRequested();
 
             while (true)
             {
+                // Refresh appointments every 3 minutes
+                Thread.Sleep(LoadIntervalMs);
+
                 if (_tokenSource.Token.IsCancellationRequested)
                 {
                     _tokenSource.Token.ThrowIfCancellationRequested();
                 }
 
-                RefreshAppointments(true, true);
-                
-                // Refresh appointments every 3 minutes
-                Thread.Sleep(LoadIntervalMs);
+                await RefreshAppointments(true, true, true);
             }
         }
 
@@ -373,7 +418,7 @@ namespace ChewsiPlugin.Service
             }
             if (updated)
             {
-                RefreshAppointments(false, false);
+                RefreshAppointments(false, false, true);
             }
         }
 
@@ -384,14 +429,20 @@ namespace ChewsiPlugin.Service
             public const string ReadyToSubmit = "Please submit this claim..";
         }
 
-        public void ValidateAndSubmitClaim(string appointmentId, DateTime date, string providerId, string patientId, DateTime pmsModifiedDate)
+        public void ValidateAndSubmitClaim(string id)
         {
             ProviderInformation providerInformation;
             SubscriberInformation subscriberInformation;
             Provider provider;
 
-            SetAppointmentState(appointmentId, AppointmentState.TreatmentCompleted, StatusMessage.PaymentProcessing);
-            var validationResponse = ValidateClaim(providerId, patientId, out providerInformation, out subscriberInformation, out provider);
+            var claim = _claimItems.FirstOrDefault(m => m.Id == id);
+            if (claim == null)
+            {
+                throw new FaultException("Cannot find claim");
+            }
+
+            SetAppointmentState(id, AppointmentState.TreatmentCompleted, StatusMessage.PaymentProcessing);
+            var validationResponse = ValidateClaim(id, claim.PatientId, out providerInformation, out subscriberInformation, out provider);
             if (validationResponse != null)
             {
                 if (validationResponse.ValidationPassed)
@@ -399,7 +450,7 @@ namespace ChewsiPlugin.Service
                     providerInformation.Id = validationResponse.ProviderID;
                     providerInformation.OfficeNbr = validationResponse.OfficeNumber;
 
-                    SubmitClaim(appointmentId, date, patientId, providerInformation, subscriberInformation, pmsModifiedDate);
+                    SubmitClaim(id, claim.Date, claim.PatientId, providerInformation, subscriberInformation, claim.PmsModifiedDate);
                 }
                 else
                 {
@@ -421,12 +472,12 @@ namespace ChewsiPlugin.Service
 
                     #endregion
 
-                    SetAppointmentState(appointmentId, AppointmentState.ValidationError, statusText);
+                    SetAppointmentState(id, AppointmentState.ValidationError, statusText);
                 }
             }
             else
             {
-                SetAppointmentState(appointmentId, AppointmentState.ValidationError, StatusMessage.PaymentProcessingError);
+                SetAppointmentState(id, AppointmentState.ValidationError, StatusMessage.PaymentProcessingError);
             }
         }
 
@@ -456,6 +507,7 @@ namespace ChewsiPlugin.Service
             var start = _repository.GetSettingValue<bool>(Settings.StartPms);
             if (start || type == Settings.PMS.Types.Eaglesoft)
             {
+                Logger.Info("Starting PMS");
                 GetDentalApi().StartPms();
             }
         }
@@ -523,7 +575,7 @@ namespace ChewsiPlugin.Service
                 string pluginVersionOld = null;
                 string tinOld = null;
 
-                var firstAppRun = !_repository.Initialized;
+                var firstAppRun = !_repository.Ready;
                 if (!firstAppRun)
                 {
                     // DB already has all the settings, load current values to detect changes below
@@ -591,9 +643,7 @@ namespace ChewsiPlugin.Service
                         {
                             Logger.Info("Configuration changes detected. Updating plugin registration...");
                             var machineId = _repository.GetSettingValue<string>(Settings.MachineIdKey);
-                            InitializeChewsiApi();
                             _chewsiApi.UpdatePluginRegistration(new UpdatePluginRegistrationRequest(machineId, settingsDto.Address1, settingsDto.Address2, settingsDto.PmsType, pmsVersion));
-                            Logger.Info("Plugin registration successfully updated");
                         }
                     }
                     else
@@ -602,14 +652,15 @@ namespace ChewsiPlugin.Service
                         var machineId = _chewsiApi.RegisterPlugin(new RegisterPluginRequest(settingsDto.Tin, settingsDto.Address1, settingsDto.Address2, settingsDto.PmsType, pmsVersion));
                         Logger.Info("Machine Id: " + machineId);
                         _repository.SaveSetting(Settings.MachineIdKey, machineId);
-                        InitializeChewsiApi();
                     }
                 }
+
+                Initialize();
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, "Error saving settings");
-                _dialogServiceBroadcaster.Show("Some settings are incorrect or empty. Please enter again.", "Error");
+                _dialogService.Show("Some settings are incorrect or empty. Please enter again.", "Error");
             }
         }
 
@@ -681,55 +732,9 @@ namespace ChewsiPlugin.Service
 
         private void InitializeChewsiApi()
         {
+            Logger.Info("Initializing Chewsi API");
             var s = GetSettings();
             _chewsiApi.Initialize(s.MachineId, s.UseProxy, s.ProxyAddress, s.ProxyPort, s.ProxyLogin, s.ProxyPassword);
-        }
-
-        private void loadAppointmentsWorker(bool firstRun)
-        {
-            if (!Initialized && !firstRun)
-            {
-                _dialogServiceBroadcaster.HideLoadingIndicator();
-                Logger.Debug("Cannot load appointments. Settings are empty. Opening settings view");
-                // ask user to choose PMS type and location
-                //_settingsViewModel.Show(() => StartLoadingAppointments(firstRun));
-            }
-            else
-            {
-                StartLoadingAppointments(firstRun);
-            }
-        }
-
-        public void Initialize(bool firstRun)
-        {
-            DeleteOldAppointments();
-
-            if (firstRun)
-            {
-                loadAppointmentsWorker(firstRun);
-                //OpenSettingsForReview();
-            }
-            else
-            {
-                // if internal DB file is missing or it's empty
-                if (!Initialized)
-                {
-                    _dialogServiceBroadcaster.HideLoadingIndicator();
-                    Logger.Debug("Settings are empty. Opening settings view");
-                    // ask user to choose PMS type and location
-                    //_settingsViewModel.Show(() =>
-                    //{
-                    //    loadAppointmentsWorker(firstRun);
-                    //});
-                }
-                else
-                {
-                    StartPmsIfRequired();
-                    InitializeChewsiApi();
-                    UpdatePluginRegistration();
-                    loadAppointmentsWorker(firstRun);
-                }
-            }
         }
 
         public void DeleteAppointment(string id)
@@ -741,7 +746,7 @@ namespace ChewsiPlugin.Service
                 {
                     existing.State = AppointmentState.Deleted;
                     _repository.UpdateAppointment(existing);
-                    RefreshAppointments(false, false);
+                    RefreshAppointments(false, false, true);
                 }
             }
         }
@@ -749,8 +754,9 @@ namespace ChewsiPlugin.Service
         /// <summary>
         /// Loads appointments from PMS (optionally), loads claim statuses from the service (optionally), caches them in local DB
         /// </summary>
-        public List<ClaimDto> LoadAppointments(bool loadFromPms, bool loadFromService)
+        private List<ClaimDto> LoadAppointments(bool loadFromPms, bool loadFromService)
         {
+            Logger.Info("Loading appointments");
             try
             {
                 // load cached in repository items
@@ -778,8 +784,7 @@ namespace ChewsiPlugin.Service
                     // add new appointments into repository, exist in PMS, not in the DB
                     foreach (var item in pms)
                     {
-                        var cachedItem = cached.FirstOrDefault(m => item.Id == m.Id);
-                        if (cachedItem == null)
+                        if (!_repository.AppointmentExists(item.Id))
                         {
                             Logger.Debug($"Adding new PMS appointment in the cache Id={item.Id}");
                             _repository.AddAppointment(new Appointment
@@ -793,7 +798,7 @@ namespace ChewsiPlugin.Service
                                 PatientId = item.PatientId,
                                 PatientName = item.PatientName,
                                 ProviderId = item.ProviderId,
-                                SubscriberFirstName = subscriberNames[item.ChewsiId]
+                                SubscriberFirstName = subscriberNames[item.ChewsiId] 
                             });
                             repositoryUpdated = true;
                         }
@@ -847,7 +852,7 @@ namespace ChewsiPlugin.Service
                                     state = AppointmentState.ValidationErrorNoResubmit;
                                 }
 
-                                _serviceClaims.Add(new ClaimDto()
+                                _serviceClaims.Add(new ClaimDto
                                 {
                                     //Id = item.Id,
                                     ProviderId = item.ProviderId,
@@ -900,14 +905,14 @@ namespace ChewsiPlugin.Service
                          PatientId = c.PatientId,
                          SubscriberFirstName = c.SubscriberFirstName,
                          IsClaimStatus = false,
-                         PmsModifiedDate = c.PmsModifiedDate
+                         PmsModifiedDate = c.PmsModifiedDate,
                          //ClaimNumber = c.ClaimNumber
                      })
                         .Concat(_serviceClaims)
                         .ToList();
                 if (Logger.IsDebugEnabled)
                 {
-                    result.ForEach(m => Logger.Debug($"Loaded appointment VM ChewsiId={m.ChewsiId}, State={m.State}"));
+                    result.ForEach(m => Logger.Debug($"Loaded appointment ChewsiId={m.ChewsiId}, State={m.State}"));
                 }
 
                 return result;

@@ -11,7 +11,7 @@ namespace ChewsiPlugin.Api.Common
             throw new NotImplementedException();
         }
 
-        public void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null)
+        public void Show(string message, string header = null, string buttonText = null)
         {
             MessageBox.Show(message, header);
         }

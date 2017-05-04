@@ -30,6 +30,8 @@ namespace ChewsiPlugin.Api.Chewsi
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";
+        private const string StorePluginClientRowStatusUri = "StorePluginClientRowStatus";
+        private const string RetrievePluginClientRowStatusesUri = "RetrievePluginClientRowStatuses?TIN={0}";
         private const string Request835DownloadsUri = "Request835Downloads";
         private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus";
         private const string DownloadFileUri = "DownloadFile";
@@ -40,6 +42,33 @@ namespace ChewsiPlugin.Api.Chewsi
             _dialogService = dialogService;
         }
 
+        /// <summary>
+        /// The RetrievePluginClientRowStatuses() call should be made before 
+        /// any Submits are done from your end, so that you can retrieve a list, 
+        /// by TIN, of any plugin rows we have stored on our end.  
+        /// This will allow you to loop through the returned list to match up on TIN, 
+        /// PMSClaimNbr (PMS_ID) and PMSModifiedDate on your end to make sure that you 
+        /// are not displaying any row in the plugin that we’re showing as Deleted (D) or already Submitted (S).
+        /// If a user is submitting a claim that comes back from us as already submitted 
+        /// then the plugin should pop up a message letting them know that the claim 
+        /// was already submitted by another user and that it will be removed from the display.
+        /// </summary>
+        public List<PluginClientRowStatus> RetrievePluginClientRowStatuses(string tin)
+        {
+            var response = Get<List<PluginClientRowStatus>>(null, string.Format(RetrievePluginClientRowStatusesUri, tin), false);
+            return response;
+        }
+
+        /// <summary>
+        /// The StorePluginiClientRowStatus() API should only be called when a user Deletes a claim 
+        /// through the plugin. This will store it on our end as a deleted row for your later retrieval via the RetrieveClientRowStatuses() call.  
+        /// </summary>
+        public bool StorePluginClientRowStatus(PluginClientRowStatus request)
+        {
+            var response = Post<bool>(request, StorePluginClientRowStatusUri, false);
+            return response;
+        }
+        
         /// <summary>
         /// Validates the subscriber and provider.
         /// </summary>
@@ -64,11 +93,11 @@ namespace ChewsiPlugin.Api.Chewsi
                 ValidateSubscriberAndProviderUri, true);
         }
 
-        public void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures)
+        public void ProcessClaim(string id, ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate)
         {
             Post<string>(new ProcessClaimRequest
             {
-                PMS_ID = Guid.NewGuid().ToString(),
+                PMS_ID = id,
                 TIN = provider.TIN,
                 OfficeNbr = provider.OfficeNbr,
                 ClaimLines = procedures,
@@ -81,7 +110,8 @@ namespace ChewsiPlugin.Api.Chewsi
                 // TODO Should it be Chewsi Id?
                 SubscriberID = subscriber.Id,
                 SubscriberLastName = subscriber.SubscriberLastName,
-                PatientLastName = subscriber.PatientLastName
+                PatientLastName = subscriber.PatientLastName,
+                PMSModifiedDate = pmsModifiedDate.ToString("G")
             },
             ProcessClaimUri, true);
         }
@@ -125,9 +155,20 @@ namespace ChewsiPlugin.Api.Chewsi
             _proxyPassword = proxyPassword;
         }
         
-        private T Post<T>(object request, string uri, bool showErrors) where T: class
+        private T Post<T>(object request, string uri, bool showErrors)
         {
             var stream = GetStream(request, uri, HttpMethod.Post, showErrors);
+            if (stream != null)
+            {
+                var reader = new StreamReader(stream);
+                return JsonConvert.DeserializeObject<T>(reader.ReadToEnd());
+            }
+            return default(T);
+        }
+
+        private T Get<T>(object request, string uri, bool showErrors) where T: class
+        {
+            var stream = GetStream(request, uri, HttpMethod.Get, showErrors);
             if (stream != null)
             {
                 var reader = new StreamReader(stream);

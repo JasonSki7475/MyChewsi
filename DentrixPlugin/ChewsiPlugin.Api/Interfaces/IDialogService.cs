@@ -7,10 +7,15 @@ namespace ChewsiPlugin.Api.Interfaces
         //IMessage Message { get; }
         //string LoadingMessage { get; }
         //bool IsLoading { get; }
-        void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null);
+        void Show(string message, string header = null, string buttonText = null);
         void ShowLoadingIndicator();
-        void Close();
+        //void Close();
         void ShowLoadingIndicator(string message);
         void HideLoadingIndicator();
+    }
+
+    public interface IClientDialogService : IDialogService
+    {
+        void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null);
     }
 }

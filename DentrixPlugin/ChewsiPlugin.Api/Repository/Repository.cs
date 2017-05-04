@@ -57,6 +57,14 @@ namespace ChewsiPlugin.Api.Repository
             }
         }
 
+        public bool AppointmentExists(string id)
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.ExecuteScalar<int>(@"SELECT 1 FROM Appointments WHERE Id = @Id", new { Id = id }) == 1;
+            }
+        }
+
         public List<Appointment> GetAppointments()
         {
             using (var connection = GetConnection())
@@ -81,7 +89,7 @@ namespace ChewsiPlugin.Api.Repository
             }
         }
 
-        public bool Initialized => File.Exists(_databaseFilePath)
+        public bool Ready => File.Exists(_databaseFilePath)
                                    && TablesExist()
                                    && GetSettingValue<string>(Settings.PMS.TypeKey) != null
                                    && GetSettingValue<string>(Settings.PMS.PathKey) != null

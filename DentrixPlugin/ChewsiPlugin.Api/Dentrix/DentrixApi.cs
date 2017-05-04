@@ -52,9 +52,8 @@ namespace ChewsiPlugin.Api.Dentrix
         static extern int DENTRIXAPI_Initialize(string szUserId, string szPassword);
         #endregion
 
-        public DentrixApi(IDialogService dialogService)
+        public DentrixApi()
         {
-            _dialogService = dialogService;
             Initialize();
         }
 
@@ -339,13 +338,12 @@ namespace ChewsiPlugin.Api.Dentrix
                     catch (UnauthorizedAccessException e)
                     {
                         Logger.Error(e, "Failed to initialize Dentrix API");
-                        _dialogService.Show($"Failed to initialize Dentrix API: {e.Message}. Try to run the plugin as administrator.");
                     }
                 }
             }
-            catch (DllNotFoundException)
+            catch (DllNotFoundException e)
             {
-                _dialogService.Show("Unable to find Dentrix API library. Make sure Dentrix G is installed.", "Error");
+                Logger.Error(e, "Unable to find Dentrix API library. Make sure Dentrix G is installed.");
             }
         }
 

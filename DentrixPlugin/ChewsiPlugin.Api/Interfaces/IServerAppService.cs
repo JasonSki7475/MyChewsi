@@ -15,26 +15,29 @@ namespace ChewsiPlugin.Api.Interfaces
         void SaveSettings(SettingsDto settingsDto);
 
         [OperationContract]
-        void Initialize(bool firstRun);
-
-        [OperationContract]
         void DeleteAppointment(string id);
 
         [OperationContract]
-        void ValidateAndSubmitClaim(string appointmentId, DateTime date, string providerId, string patientId, DateTime pmsModifiedDate);
-
-        bool Initialized { get; }
+        void ValidateAndSubmitClaim(string id);
 
         [OperationContract]
-        void RefreshAppointments(bool loadFromPms, bool loadFromService);
-
+        List<ClaimDto> GetClaims(bool force);
+        
         [OperationContract]
-        List<ClaimDto> LoadAppointments(bool loadFromPms, bool loadFromService);
-
-        [OperationContract]
-        bool InitClient();
+        ServerState InitClient();
 
         [OperationContract]
         void DisconnectClient();
+
+        [OperationContract]
+        Provider GetProvider(string providerId);
+
+        [OperationContract]
+        InitialSettingsDto GetInitialSettings();
+
+        /// <summary>
+        /// For tests, InitClient() should be used
+        /// </summary>
+        ServerState GetState();
     }
 }

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChewsiPlugin.Api", "ChewsiP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{AF2FB239-2E20-4237-B1EF-AEB698EE5D92}"
 	ProjectSection(SolutionItems) = preProject
-		Build\Certificate.pfx = Build\Certificate.pfx
+		Build\CertificateDentrix.pfx = Build\CertificateDentrix.pfx
 		Build\mssign32.dll = Build\mssign32.dll
 		Build\signtool.exe = Build\signtool.exe
 	EndProjectSection

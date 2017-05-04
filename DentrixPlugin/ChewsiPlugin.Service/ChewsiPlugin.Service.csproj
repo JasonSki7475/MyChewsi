@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1968015A-3642-440C-86B2-51B809A077D5}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ChewsiPlugin.Service</RootNamespace>
     <AssemblyName>ChewsiPlugin.Service</AssemblyName>
@@ -93,15 +93,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DentalApiFactoryService.cs" />
-    <Compile Include="DialogServiceBroadcaster.cs" />
+    <Compile Include="IClientCallbackService.cs" />
+    <Compile Include="Services\DentalApiFactoryService.cs" />
+    <Compile Include="Services\ClientBroadcastService.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="ServerAppService.cs" />
+    <Compile Include="Services\ServerAppService.cs" />
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -140,6 +141,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(SolutionDir)build\signtool.exe sign /f "$(SolutionDir)build\CertificateDentrix.pfx" /p BlR0nTNYXQ1LoJTAZ4d1 /t http://timestamp.comodoca.com/authenticode /a "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

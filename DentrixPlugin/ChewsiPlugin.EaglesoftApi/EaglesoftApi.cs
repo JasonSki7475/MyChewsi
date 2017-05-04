@@ -15,9 +15,8 @@ namespace ChewsiPlugin.EaglesoftApi
         private const string DatabaseServiceName = "SQLANYs_PattersonDBServer";
         private const int DatabaseServiceStartTimeoutMs = 30000;
 
-        public EaglesoftApi(IDialogService dialogService)
+        public EaglesoftApi()
         {
-            _dialogService = dialogService;
             Initialize();
         }
 
@@ -32,28 +31,21 @@ namespace ChewsiPlugin.EaglesoftApi
         {
             if (!_initialized)
             {
-                var msg = "Connecting to Eaglesoft";
-                _dialogService.ShowLoadingIndicator(msg);
                 AppDomainSetup setup = new AppDomainSetup
                 {
                     ApplicationBase = @"C:\EagleSoft\Shared Files\"
                 };
                 var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
-                msg += "."; _dialogService.ShowLoadingIndicator(msg);
                 var proxy = (Proxy)domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName);
-                msg += "."; _dialogService.ShowLoadingIndicator(msg);
                 _connectionString = proxy.GetConnectionString();
-                msg += "."; _dialogService.ShowLoadingIndicator(msg);
                 AppDomain.Unload(domain);
-                msg += "."; _dialogService.ShowLoadingIndicator(msg);
                 _initialized = true;
             }
             if (!TestDatabaseConnection())
             {
-                _dialogService.ShowLoadingIndicator("Starting database server...");
+                Logger.Info("Starting database server");
                 StartDatabaseService();
             }
-            _dialogService.HideLoadingIndicator();
         }
 
         private bool TestDatabaseConnection()

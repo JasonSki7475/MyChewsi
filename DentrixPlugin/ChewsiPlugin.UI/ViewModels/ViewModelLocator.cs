@@ -16,7 +16,9 @@ namespace ChewsiPlugin.UI.ViewModels
         public static void InitContainer()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-            SimpleIoc.Default.Register<IDialogService, DialogService.DialogService>();
+            SimpleIoc.Default.Register<IClientDialogService, DialogService.DialogService>(true);
+            var dialogService = SimpleIoc.Default.GetInstance<IClientDialogService>();
+            SimpleIoc.Default.Register<IDialogService>(() => dialogService);
             SimpleIoc.Default.Register<IChewsiApi, ChewsiApi>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<IRepository, Repository>();

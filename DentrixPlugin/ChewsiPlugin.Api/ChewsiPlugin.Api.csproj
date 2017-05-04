@@ -39,9 +39,6 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>../Certificate.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
@@ -115,6 +112,7 @@
     <Compile Include="Chewsi\ValidateSubscriberAndProviderRequest.cs" />
     <Compile Include="Common\ClaimDto.cs" />
     <Compile Include="Common\DentalApi.cs" />
+    <Compile Include="Common\InitialSettingsDto.cs" />
     <Compile Include="Common\MessageBoxDialogService.cs" />
     <Compile Include="Common\ProcedureInfo.cs" />
     <Compile Include="Chewsi\ClaimStatus.cs" />
@@ -141,10 +139,10 @@
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\Setting.cs" />
     <Compile Include="Common\Utils.cs" />
+    <Compile Include="ServerState.cs" />
     <Compile Include="ServiceDiscovery.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../Certificate.pfx" />
     <Content Include="dBNa5Agn.dtxkey">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -154,7 +152,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)build\signtool.exe sign /f "$(SolutionDir)build\Certificate.pfx" /p BlR0nTNYXQ1LoJTAZ4d1 /t http://timestamp.comodoca.com/authenticode /a "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)build\signtool.exe sign /f "$(SolutionDir)build\CertificateDentrix.pfx" /p BlR0nTNYXQ1LoJTAZ4d1 /t http://timestamp.comodoca.com/authenticode /a "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

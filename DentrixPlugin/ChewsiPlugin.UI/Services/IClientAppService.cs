@@ -8,16 +8,22 @@ namespace ChewsiPlugin.UI.Services
 {
     internal interface IClientAppService
     {
-        void ValidateAndSubmitClaim(string appointmentId, DateTime date, string providerId, string patientId, DateTime pmsModifiedDate);
+        void ValidateAndSubmitClaim(string id);
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         List<DownloadItemViewModel> GetDownloads();
         ObservableCollection<ClaimItemViewModel> ClaimItems { get; }
         bool Initialized { get; }
-        bool IsLoadingAppointments { get; set; }
+        bool IsLoadingClaims { get; }
         void OpenSettings();
         void Initialize();
         void DeleteAppointment(string id);
-        void RefreshAppointments();
+        void ReloadClaims(bool force);
         void SaveSettings(SettingsDto settingsDto);
+
+        #region Server callbacks
+        void LockClaim(string id);
+        void UnlockClaim(string id);
+        void SetClaims(List<ClaimDto> claims);
+        #endregion
     }
 }

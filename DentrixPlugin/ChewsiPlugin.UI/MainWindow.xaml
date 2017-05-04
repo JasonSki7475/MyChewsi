@@ -34,7 +34,7 @@
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
-                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshAppointmentsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
+                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshClaimsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
                     </Grid>
                     <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" SelectedItem="{Binding SelectedClaim}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Columns>
@@ -91,7 +91,7 @@
                                                 <ColumnDefinition Width="5"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Grid Grid.Column="0" Visibility="{Binding IsBeingSubmitted, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
+                                            <Grid Grid.Column="0" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
                                                 <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
                                                         Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
                                                         ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
@@ -167,7 +167,7 @@
         <controls1:LightBox d:IsHidden="true" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                            DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}"
                            Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Header="Settings" ButtonText="Save" ShowCloseButton="False"
+                           Header="Settings" ButtonText="{Binding CloseButtonText}" ShowCloseButton="False"
                            CloseCommand="{Binding CloseCommand}"
                            ButtonCommand="{Binding SaveCommand}">
             <views:SettingsView />

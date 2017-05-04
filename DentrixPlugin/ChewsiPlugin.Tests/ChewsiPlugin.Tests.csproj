@@ -97,7 +97,7 @@
     <Compile Include="Integration\ChewsiApiTests.cs" />
     <Compile Include="Integration\CustomActionsTests.cs" />
     <Compile Include="TestDataGenerator.cs" />
-    <Compile Include="Unit\AppServiceTests.cs" />
+    <Compile Include="Unit\ServerAppServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +112,10 @@
     <ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
       <Project>{d1582bd8-ef79-493a-aad9-4f39ca3995d2}</Project>
       <Name>ChewsiPlugin.OpenDentalApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChewsiPlugin.Service\ChewsiPlugin.Service.csproj">
+      <Project>{1968015a-3642-440c-86b2-51b809a077d5}</Project>
+      <Name>ChewsiPlugin.Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\ChewsiPlugin.Setup.CustomActions\ChewsiPlugin.Setup.CustomActions.csproj">
       <Project>{c0fe5d5d-4948-4706-8591-cd44c620400c}</Project>

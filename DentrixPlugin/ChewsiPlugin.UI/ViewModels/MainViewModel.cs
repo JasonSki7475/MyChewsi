@@ -15,28 +15,24 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _downloadCommand;
         private ICommand _refreshDownloadsCommand;
         private ICommand _openSettingsCommandCommand;
-        private ICommand _refreshAppointmentsCommand;
+        private ICommand _refreshClaimsCommand;
         private ClaimItemViewModel _selectedClaim;
         private DownloadItemViewModel _selectedDownloadItem;
 
-        public MainViewModel(IDialogService dialogService, IClientAppService appService)
+        public MainViewModel(IClientDialogService dialogService, IClientAppService appService)
         {
             DialogService = dialogService;
             AppService = appService;
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
-        }
-        
-        public void Initialize(bool firstRun)
-        {
             AppService.Initialize();
         }
 
         #region Properties
-        public ObservableCollection<DownloadItemViewModel> DownloadItems { get; private set; }
+        public ObservableCollection<DownloadItemViewModel> DownloadItems { get; }
 
         public IDialogService DialogService { get; }
 
-        public IClientAppService AppService { private set; get; }
+        public IClientAppService AppService { get; }
 
         public ClaimItemViewModel SelectedClaim
         {
@@ -62,16 +58,16 @@ namespace ChewsiPlugin.UI.ViewModels
 
         #region Commands       
         #region RefreshAppointmentsCommand
-        public ICommand RefreshAppointmentsCommand => _refreshAppointmentsCommand ?? (_refreshAppointmentsCommand = new RelayCommand(OnRefreshAppointmentsCommandExecute, CanExecuteRefreshAppointmentsCommand));
+        public ICommand RefreshClaimsCommand => _refreshClaimsCommand ?? (_refreshClaimsCommand = new RelayCommand(OnRefreshClaimsCommandExecute, CanExecuteRefreshClaimsCommand));
 
-        private bool CanExecuteRefreshAppointmentsCommand()
+        private bool CanExecuteRefreshClaimsCommand()
         {
-            return !AppService.IsLoadingAppointments && AppService.Initialized;
+            return !AppService.IsLoadingClaims && AppService.Initialized;
         }
 
-        private void OnRefreshAppointmentsCommandExecute()
+        private void OnRefreshClaimsCommandExecute()
         {
-            AppService.RefreshAppointments();
+            AppService.ReloadClaims(true);
         }
         #endregion
         

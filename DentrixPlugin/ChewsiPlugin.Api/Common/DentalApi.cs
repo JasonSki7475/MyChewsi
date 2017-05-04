@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using ChewsiPlugin.Api.Interfaces;
 using NLog;
 
 namespace ChewsiPlugin.Api.Common
@@ -10,7 +9,6 @@ namespace ChewsiPlugin.Api.Common
     public abstract class DentalApi
     {
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        protected IDialogService _dialogService;
         protected bool _initialized;
 
         //TODO

@@ -8,7 +8,7 @@ namespace ChewsiPlugin.Api.Chewsi
     {
         string RegisterPlugin(RegisterPluginRequest request);
         void UpdatePluginRegistration(UpdatePluginRegistrationRequest request);
-        void ProcessClaim(ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate);
+        void ProcessClaim(string id, ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate);
         ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider,
             ProviderAddressInformation providerAddress, SubscriberInformation subscriber);
         Request835DownloadsResponse Get835Downloads(Request835Downloads request);
@@ -16,6 +16,6 @@ namespace ChewsiPlugin.Api.Chewsi
         Stream DownloadFile(DownoadFileRequest request);
         void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword);
         bool StorePluginClientRowStatus(PluginClientRowStatus request);
-        List<PluginClientRowStatus> RetrievePluginClientRowStatuses();
+        List<PluginClientRowStatus> RetrievePluginClientRowStatuses(string tin);
     }
 }

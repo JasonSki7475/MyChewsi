@@ -37,6 +37,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private bool _isVisible;
         private IClientAppService _appService;
         private string _machineId;
+        private string _closeButtonText;
 
         public SettingsViewModel(IDialogService dialogService)
         {
@@ -57,6 +58,16 @@ namespace ChewsiPlugin.UI.ViewModels
                 ProxyAddress = proxyAddress;
                 ProxyPort = proxyPort;
             });
+        }
+
+        public string CloseButtonText
+        {
+            get { return _closeButtonText; }
+            set
+            {
+                _closeButtonText = value;
+                RaisePropertyChanged(() => CloseButtonText);
+            }
         }
 
         public bool IsServer { get; set; }
@@ -88,6 +99,8 @@ namespace ChewsiPlugin.UI.ViewModels
             _startLauncher = settings.StartLauncher;
             _machineId = settings.MachineId;
             IsServer = !settings.IsClient;
+
+            CloseButtonText = IsServer ? "Save" : "Close";
         }
 
         private void Hide()
@@ -259,7 +272,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnCloseCommandExecute()
         {
             Hide();
-            _onClose?.Invoke();
         }
         #endregion 
           
@@ -271,28 +283,31 @@ namespace ChewsiPlugin.UI.ViewModels
         
         private void OnSaveCommandExecute()
         {
-            try
+            if (IsServer)
             {
-                if (SelectedType == Settings.PMS.Types.OpenDental)
+                try
                 {
-                    if (string.IsNullOrEmpty(Path) || !Directory.Exists(Path))
+                    if (SelectedType == Settings.PMS.Types.OpenDental)
                     {
-                        _dialogService.Show("Path to OpenDental directory should be set", "Error");
-                        return;
+                        if (string.IsNullOrEmpty(Path) || !Directory.Exists(Path))
+                        {
+                            _dialogService.Show("Path to OpenDental directory should be set", "Error");
+                            return;
+                        }
                     }
-                }
 
-                _dialogService.ShowLoadingIndicator();
-                _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy, ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword, 
-                    State, StartPms, StartLauncher, _machineId, !IsServer));
+                    _dialogService.ShowLoadingIndicator();
+                    _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy,
+                        ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
+                        State, StartPms, StartLauncher, _machineId, !IsServer));
+                }
+                finally
+                {
+                    _dialogService.HideLoadingIndicator();
+                }
+                Logger.Debug("Settings were saved");
             }
-            finally
-            {
-                _dialogService.HideLoadingIndicator();
-            }
-            Logger.Debug("Settings were saved");
             Hide();
-            _onClose?.Invoke();
         }
         #endregion   
 

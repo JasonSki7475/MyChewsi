@@ -40,12 +40,7 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
 
         private void RaiseDialogResultCallback()
         {
-            if (_dialogResultCallback != null)
-            {
-                _dialogResultCallback();
-            }
+            _dialogResultCallback?.Invoke();
         }
-
-
     }
 }

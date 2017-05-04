@@ -18,13 +18,13 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _claimNumber;
         private string _patientId;
         private string _statusText;
-        private bool _isBeingSubmitted;
         private AppointmentState _state;
         private ICommand _submitCommand;
         private ICommand _deleteCommand;
         private bool _isClaimStatus;
         private string _id;
         private DateTime _pmsModifiedDate;
+        private bool _locked;
 
         public ClaimItemViewModel(IClientAppService appService)
         {
@@ -143,17 +143,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => StatusText);
             }
         }
-
-        public bool IsBeingSubmitted
-        {
-            get { return _isBeingSubmitted; }
-            set
-            {
-                _isBeingSubmitted = value;
-                RaisePropertyChanged(() => IsBeingSubmitted);
-            }
-        }
-
+        
         public bool CanResubmit
         {
             get { return !IsClaimStatus && State == AppointmentState.ValidationError; }
@@ -198,14 +188,14 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private bool CanSubmitCommandExecute()
         {
-            return _appService.Initialized && !IsBeingSubmitted;
+            return _appService.Initialized && !Locked;
         }
 
         private void OnSubmitCommandExecute()
         {
-            IsBeingSubmitted = true;
-            _appService.ValidateAndSubmitClaim(Id, Date, ProviderId, PatientId, PmsModifiedDate);
-            IsBeingSubmitted = false;
+            Lock();
+            _appService.ValidateAndSubmitClaim(Id);
+            Unlock();
         }
         #endregion
 
@@ -221,5 +211,25 @@ namespace ChewsiPlugin.UI.ViewModels
         }
         #endregion
         #endregion
+
+        public void Lock()
+        {
+            Locked = true;
+        }
+
+        public void Unlock()
+        {
+            Locked = false;
+        }
+
+        public bool Locked
+        {
+            get { return _locked; }
+            set
+            {
+                _locked = value;
+                RaisePropertyChanged(() => Locked);
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels.DialogService
 {
-    internal class DialogService : ViewModelBase, IDialogService
+    internal class DialogService : ViewModelBase, IClientDialogService
     {
         private readonly Queue<IMessage> _lightBoxes = new Queue<IMessage>();
         private bool _isLoading;
@@ -40,6 +40,11 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
                 _isLoading = value;
                 RaisePropertyChanged(() => IsLoading);
             }
+        }
+
+        public void Show(string message, string header = null, string buttonText = null)
+        {
+            Message = new Message(this, message, header, null, buttonText);
         }
 
         public void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null)

@@ -3,16 +3,14 @@ using ChewsiPlugin.Api.Dentrix;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 
-namespace ChewsiPlugin.Service
+namespace ChewsiPlugin.Service.Services
 {
     internal class DentalApiFactoryService : IDentalApiFactoryService
     {
-        private readonly IDialogService _dialogService;
         private readonly IRepository _repository;
 
-        public DentalApiFactoryService(IDialogService dialogService, IRepository repository)
+        public DentalApiFactoryService(IRepository repository)
         {
-            _dialogService = dialogService;
             _repository = repository;
         }
 
@@ -21,11 +19,11 @@ namespace ChewsiPlugin.Service
             switch (pmsType)
             {
                 case Settings.PMS.Types.Dentrix:
-                    return new DentrixApi(_dialogService);
+                    return new DentrixApi();
                 case Settings.PMS.Types.OpenDental:
                     return new OpenDentalApi.OpenDentalApi(_repository);
                 case Settings.PMS.Types.Eaglesoft:
-                    return new EaglesoftApi.EaglesoftApi(_dialogService);
+                    return new EaglesoftApi.EaglesoftApi();
                 default:
                     throw new ArgumentOutOfRangeException();
             }

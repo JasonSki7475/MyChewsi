@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type viewModels:SettingsViewModel}}">
     <StackPanel>
         <TextBlock Visibility="{Binding IsServer, Converter={StaticResource BooleanToVisibilityInverseConverter}}" 
-                   FontWeight="Bold" Margin="20,10" Text="This plugin instance is client, all settings are read-only."></TextBlock>
+                   FontWeight="Bold" Margin="20,10" Text="This plugin instance is client, settings are read-only"></TextBlock>
         <Grid IsEnabled="{Binding IsServer}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -50,10 +50,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="10"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -72,8 +68,6 @@
                         <Button Grid.Column="1" Content="Select..." Background="White" Foreground="Black" BorderBrush="LightGray"
                                 Command="{Binding SelectPathCommand}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
                     </Grid>
-                    <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartPms}" Content="Launch PMS when plugin starts" IsEnabled="{Binding CanChangeStartPms}" />
-                    <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" IsChecked="{Binding StartLauncher}" Content="Launch plugin when PMS starts" />
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Row="1" Grid.Column="2" Header="Network" Padding="10">

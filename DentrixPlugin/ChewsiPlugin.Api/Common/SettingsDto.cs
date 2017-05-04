@@ -28,48 +28,48 @@ namespace ChewsiPlugin.Api.Common
         }
 
         [DataMember]
-        public Settings.PMS.Types PmsType { get; }
+        public Settings.PMS.Types PmsType { get; set; }
 
         [DataMember]
-        public string PmsPath { get; }
+        public string PmsPath { get; set; }
 
         [DataMember]
-        public string Address1 { get; }
+        public string Address1 { get; set; }
 
         [DataMember]
-        public string Address2 { get; }
+        public string Address2 { get; set; }
 
         [DataMember]
-        public string Tin { get; }
+        public string Tin { get; set; }
 
         [DataMember]
-        public bool UseProxy { get; }
+        public bool UseProxy { get; set; }
 
         [DataMember]
-        public bool StartPms { get; }
+        public bool StartPms { get; set; }
 
         [DataMember]
-        public bool StartLauncher { get; }
+        public bool StartLauncher { get; set; }
 
         [DataMember]
-        public string ProxyAddress { get; }
+        public string ProxyAddress { get; set; }
 
         [DataMember]
-        public int ProxyPort { get; }
+        public int ProxyPort { get; set; }
 
         [DataMember]
-        public string ProxyLogin { get; }
+        public string ProxyLogin { get; set; }
 
         [DataMember]
-        public string ProxyPassword { get; }
+        public string ProxyPassword { get; set; }
 
         [DataMember]
-        public string State { get; }
+        public string State { get; set; }
 
         [DataMember]
-        public string MachineId { get; }
+        public string MachineId { get; set; }
 
         [DataMember]
-        public bool IsClient { get; }
+        public bool IsClient { get; set; }
     }
 }

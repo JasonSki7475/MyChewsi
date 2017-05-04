@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Dentrix;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
@@ -25,7 +24,6 @@ namespace ChewsiPlugin.Setup.CustomActions
                 Logger.Info("Setting current PMS. Type={0}. Folder={1}", pmsType, installFolder);
                 var repository = new Repository();
                 repository.Initialize();
-                var dialogService = new MessageBoxDialogService();
                 Settings.PMS.Types pmsTypeSetting = Settings.PMS.Types.Dentrix;
                 IDentalApi api = null;
 
@@ -48,7 +46,7 @@ namespace ChewsiPlugin.Setup.CustomActions
                     catch (Win32Exception)
                     {
                     }
-                    api = new DentrixApi(dialogService);
+                    api = new DentrixApi();
                 }
                 else if (pmsType == "OpenDental")
                 {
@@ -60,7 +58,7 @@ namespace ChewsiPlugin.Setup.CustomActions
                 else if (pmsType == "Eaglesoft")
                 {
                     pmsTypeSetting = Settings.PMS.Types.Eaglesoft;
-                    api = new EaglesoftApi.EaglesoftApi(dialogService);
+                    api = new EaglesoftApi.EaglesoftApi();
                 }
 
                 repository.SaveSetting(Settings.PMS.TypeKey, pmsTypeSetting);
