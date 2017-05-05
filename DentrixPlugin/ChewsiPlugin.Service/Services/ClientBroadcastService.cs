@@ -34,7 +34,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.Show(message, header, buttonText);
+                Utils.SafeCall(callback.Show, message, header, buttonText);
             });
         }
 
@@ -42,7 +42,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.ShowLoadingIndicator();
+                Utils.SafeCall(callback.ShowLoadingIndicator);
             });
         }
 
@@ -50,7 +50,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.ShowLoadingIndicator(message);
+                Utils.SafeCall(callback.ShowLoadingIndicator, message);
             });
         }
 
@@ -58,7 +58,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.HideLoadingIndicator();
+                Utils.SafeCall(callback.HideLoadingIndicator);
             });
         }
 
@@ -66,7 +66,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.LockClaim(id);
+                Utils.SafeCall(callback.LockClaim, id);
             });
         }
 
@@ -74,7 +74,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.UnlockClaim(id);
+                Utils.SafeCall(callback.UnlockClaim, id);
             });
         }
 
@@ -82,7 +82,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
-                callback.SetClaims(claims);
+                Utils.SafeCall(callback.SetClaims, claims);
             });
         }
     }

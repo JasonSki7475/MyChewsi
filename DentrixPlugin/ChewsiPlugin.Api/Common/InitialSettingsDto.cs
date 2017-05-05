@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using ChewsiPlugin.Api.Repository;
 
 namespace ChewsiPlugin.Api.Common
 {
@@ -16,5 +17,14 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public string State { get; set; }
+        
+        [DataMember]
+        public Settings.PMS.Types PmsType { get; set; }
+
+        [DataMember]
+        public string PmsPath { get; set; }
+
+        [DataMember]
+        public bool IsClient { get; set; }
     }
 }

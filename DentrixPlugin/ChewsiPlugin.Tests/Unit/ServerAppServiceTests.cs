@@ -47,6 +47,7 @@ namespace ChewsiPlugin.Tests.Unit
             
             _apiMock = new Mock<IChewsiApi>();
             _apiMock.Setup(m => m.RegisterPlugin(It.IsAny<RegisterPluginRequest>()));
+            _apiMock.Setup(m => m.RetrievePluginClientRowStatuses(It.IsAny<string>())).Returns(new List<PluginClientRowStatus>());
             
             _repositoryMock = new Mock<IRepository>();
             _repositoryMock.Setup(m => m.GetAppointments()).Returns(_appointmentsRepository);
@@ -275,10 +276,11 @@ namespace ChewsiPlugin.Tests.Unit
             var claim = appService.GetClaims(true).First();
 
             // Act
-            appService.ValidateAndSubmitClaim(claim.Id);
+            var result = appService.ValidateAndSubmitClaim(claim.Id);
             DispatcherHelper.WaitWithDispatcher(2000);
 
             // Assert
+            Assert.AreEqual(SubmitClaimResult.Ok, result);
             AssertLoadingIndicator();
             // skip first 1 (submitted)
             AssertClaims(appService.GetClaims(false), _appointmentsPms.Skip(1).ToList());

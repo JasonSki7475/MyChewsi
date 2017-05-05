@@ -56,7 +56,7 @@ namespace ChewsiPlugin.Api.Chewsi
         public List<PluginClientRowStatus> RetrievePluginClientRowStatuses(string tin)
         {
             var response = Get<List<PluginClientRowStatus>>(null, string.Format(RetrievePluginClientRowStatusesUri, tin), false);
-            return response;
+            return response ?? new List<PluginClientRowStatus>();
         }
 
         /// <summary>

@@ -44,12 +44,12 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
 
         public void Show(string message, string header = null, string buttonText = null)
         {
-            Message = new Message(this, message, header, null, buttonText);
+            Message = new Message(this, message, header, null, buttonText ?? "Ok");
         }
 
         public void Show(string message, string header = null, Action onDialogClosed = null, string buttonText = null)
         {
-            Message = new Message(this, message, header, onDialogClosed, buttonText);
+            Message = new Message(this, message, header, onDialogClosed, buttonText ?? "Ok");
         }
 
         public void ShowLoadingIndicator()

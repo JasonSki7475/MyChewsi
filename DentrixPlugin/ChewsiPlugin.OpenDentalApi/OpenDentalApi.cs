@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
@@ -24,10 +26,23 @@ namespace ChewsiPlugin.OpenDentalApi
         private Dictionary<long, string> _procedureCodes;
         private Proxy _proxy;
         private AppDomain _domain;
+        private readonly CancellationTokenSource _tokenSource;
 
         public OpenDentalApi(IRepository repository)
         {
             _repository = repository;
+            _tokenSource = new CancellationTokenSource();
+            Task.Factory.StartNew(RenewLeaseLoop, _tokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+        }
+
+        private void RenewLeaseLoop()
+        {
+            _tokenSource.Token.ThrowIfCancellationRequested();
+            while (true)
+            {
+                Utils.SleepWithCancellation(_tokenSource.Token, 120*1000);
+                _proxy?.RenewLease();
+            }
         }
 
         public PatientInfo GetPatientInfo(string patientId)
@@ -207,6 +222,7 @@ namespace ChewsiPlugin.OpenDentalApi
         
         public void Unload()
         {
+            _tokenSource.Cancel();
             if (_domain != null)
             {
                 AppDomain.Unload(_domain);

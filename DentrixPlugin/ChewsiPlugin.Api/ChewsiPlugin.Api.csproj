@@ -128,6 +128,7 @@
     <Compile Include="Interfaces\IMessage.cs" />
     <Compile Include="Interfaces\IServerAppService.cs" />
     <Compile Include="Common\SettingsDto.cs" />
+    <Compile Include="Interfaces\SubmitClaimResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Chewsi\ClaimProcessingStatusResponse.cs" />
     <Compile Include="Chewsi\SubscriberInformation.cs" />

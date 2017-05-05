@@ -81,7 +81,7 @@ namespace ChewsiPlugin.Tests
             var sw = Stopwatch.StartNew();
             while (sw.ElapsedMilliseconds < ms)
             {
-                DispatcherHelper.DoEvents();
+                DoEvents();
                 Thread.Sleep(100);
             }
             sw.Stop();

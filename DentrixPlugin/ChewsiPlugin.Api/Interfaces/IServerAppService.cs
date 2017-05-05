@@ -15,10 +15,10 @@ namespace ChewsiPlugin.Api.Interfaces
         void SaveSettings(SettingsDto settingsDto);
 
         [OperationContract]
-        void DeleteAppointment(string id);
+        bool DeleteAppointment(string id);
 
         [OperationContract]
-        void ValidateAndSubmitClaim(string id);
+        SubmitClaimResult ValidateAndSubmitClaim(string id);
 
         [OperationContract]
         List<ClaimDto> GetClaims(bool force);

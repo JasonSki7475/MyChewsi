@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.ServiceProcess;
@@ -41,8 +42,14 @@ namespace ChewsiPlugin.Service
             serviceDiscoveryBehavior.AnnouncementEndpoints.Add(new UdpAnnouncementEndpoint());
             _serviceHost.Description.Behaviors.Add(serviceDiscoveryBehavior);
             _serviceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
-            
-            var binding = new WSDualHttpBinding(WSDualHttpSecurityMode.Message);
+
+            var binding = new WSDualHttpBinding(WSDualHttpSecurityMode.Message)
+            {
+                OpenTimeout = new TimeSpan(0, 10, 0),
+                CloseTimeout = new TimeSpan(0, 10, 0),
+                SendTimeout = new TimeSpan(0, 10, 0),
+                ReceiveTimeout = new TimeSpan(0, 10, 0)
+            };
             ServiceEndpoint endpoint = new ServiceEndpoint(ContractDescription.GetContract(typeof (IServerAppService)), binding,
                 new EndpointAddress(Address));
             _serviceHost.AddServiceEndpoint(endpoint);

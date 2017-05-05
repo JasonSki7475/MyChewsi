@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Repository;
 using NLog;
 
@@ -98,10 +99,6 @@ namespace ChewsiPlugin.Launcher
         {
             while (true)
             {
-                if (_tokenSource.Token.IsCancellationRequested)
-                {
-                    _tokenSource.Token.ThrowIfCancellationRequested();
-                }
                 var runningProcesses = Process.GetProcessesByName(_pmsProcessName);
                 var pmsProcess = runningProcesses.FirstOrDefault(m => m.SessionId == _currentSessionId);
                 if (pmsProcess != null)
@@ -117,7 +114,7 @@ namespace ChewsiPlugin.Launcher
                 {
                     _pmsStarted = false;
                 }
-                Thread.Sleep(RefreshIntervalMs);
+                Utils.SleepWithCancellation(_tokenSource.Token, RefreshIntervalMs);
             }
         }
 

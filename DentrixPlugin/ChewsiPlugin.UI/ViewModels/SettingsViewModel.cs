@@ -8,7 +8,6 @@ using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
 using NLog;
 
 namespace ChewsiPlugin.UI.ViewModels
@@ -38,28 +37,14 @@ namespace ChewsiPlugin.UI.ViewModels
         private IClientAppService _appService;
         private string _machineId;
         private string _closeButtonText;
+        private bool _isServer;
 
         public SettingsViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
             Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.Eaglesoft, Settings.PMS.Types.OpenDental };
         }
-
-        public void Fill(string addressLine1, string addressLine2, string state, string tin, bool startLauncher, string proxyAddress, int proxyPort)
-        {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                Address1 = addressLine1;
-                Address2 = addressLine2;
-                State = state;
-                Tin = tin;
-                StartLauncher = startLauncher;
-
-                ProxyAddress = proxyAddress;
-                ProxyPort = proxyPort;
-            });
-        }
-
+        
         public string CloseButtonText
         {
             get { return _closeButtonText; }
@@ -70,7 +55,15 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public bool IsServer { get; set; }
+        public bool IsServer
+        {
+            get { return _isServer; }
+            set
+            {
+                _isServer = value;
+                RaisePropertyChanged(() => IsServer);
+            }
+        }
 
         public Settings.PMS.Types[] Types { get; private set; }
         
@@ -84,19 +77,18 @@ namespace ChewsiPlugin.UI.ViewModels
         {
             _appService = appService;
             
-            _address1 = settings.Address1;
-            _address2 = settings.Address2;
-            _tin = settings.Tin;
-            _useProxy = settings.UseProxy;
-            _proxyAddress = settings.ProxyAddress;
-            _proxyPort = settings.ProxyPort;
-            _proxyLogin = settings.ProxyLogin;
-            _proxyPassword = settings.ProxyPassword;
-            _selectedType = settings.PmsType;
-            _path = settings.PmsPath;
-            _state = settings.State;
-            _startPms = settings.StartPms;
-            _startLauncher = settings.StartLauncher;
+            Address1 = settings.Address1;
+            Address2 = settings.Address2;
+            Tin = settings.Tin;
+            UseProxy = settings.UseProxy;
+            ProxyAddress = settings.ProxyAddress;
+            ProxyPort = settings.ProxyPort;
+            ProxyPassword = settings.ProxyPassword;
+            SelectedType = settings.PmsType;
+            Path = settings.PmsPath;
+            State = settings.State;
+            StartPms = settings.StartPms;
+            StartLauncher = settings.StartLauncher;
             _machineId = settings.MachineId;
             IsServer = !settings.IsClient;
 
@@ -300,6 +292,7 @@ namespace ChewsiPlugin.UI.ViewModels
                     _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy,
                         ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
                         State, StartPms, StartLauncher, _machineId, !IsServer));
+                    CommandManager.InvalidateRequerySuggested();
                 }
                 finally
                 {

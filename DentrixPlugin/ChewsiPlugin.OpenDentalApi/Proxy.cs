@@ -92,7 +92,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return Map<TTo>(result);
         }
 
-        private void RenewLease()
+        public void RenewLease()
         {
             ILease lease = (ILease) RemotingServices.GetLifetimeService(this);
             Debug.Assert(lease.CurrentState == LeaseState.Active);

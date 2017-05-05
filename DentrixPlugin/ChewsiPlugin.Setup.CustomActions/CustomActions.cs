@@ -13,7 +13,7 @@ namespace ChewsiPlugin.Setup.CustomActions
     public static class CustomActions
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private const string MainExeFileName = "ChewsiPlugin.UI.exe";
+        private const string MainExeFileName = "ChewsiPlugin.Service.exe";
         private const string OpenDentalConfigFileName = "FreeDentalConfig.xml";
         private const string ChewsiLauncherRegistryKey = "Chewsi Launcher";
 
@@ -81,14 +81,14 @@ namespace ChewsiPlugin.Setup.CustomActions
             }
         }
 
-        public static bool SetClientFlag(int isClient)
+        public static bool SetClientFlag(string isClient)
         {
             try
             {
                 Logger.Info("Setting IsClient flag. Value={0}", isClient);
                 var repository = new Repository();
                 repository.Initialize();
-                repository.SaveSetting(Settings.IsClient, isClient == 1);
+                repository.SaveSetting(Settings.IsClient, isClient == "True");
                 return true;
             }
             catch (Exception ex)
