@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.UI.ViewModels;
 
@@ -17,7 +18,7 @@ namespace ChewsiPlugin.UI.Services
         void OpenSettings();
         void Initialize();
         void DeleteAppointment(string id);
-        void ReloadClaims(bool force);
+        Task<bool> ReloadClaims(bool force);
         void SaveSettings(SettingsDto settingsDto);
 
         #region Server callbacks

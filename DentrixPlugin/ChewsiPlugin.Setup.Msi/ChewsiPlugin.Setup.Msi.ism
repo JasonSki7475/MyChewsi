@@ -155,7 +155,6 @@
 		<col def="I4">ISAttributes</col>
 		<row><td>CostFinalize</td><td/><td>1000</td><td>CostFinalize</td><td/></row>
 		<row><td>CostInitialize</td><td/><td>800</td><td>CostInitialize</td><td/></row>
-		<row><td>DeleteServices</td><td>Installed</td><td>3975</td><td/><td/></row>
 		<row><td>FileCost</td><td/><td>900</td><td>FileCost</td><td/></row>
 		<row><td>InstallAdminPackage</td><td/><td>3900</td><td>InstallAdminPackage</td><td/></row>
 		<row><td>InstallFiles</td><td/><td>4000</td><td>InstallFiles</td><td/></row>
@@ -164,7 +163,6 @@
 		<row><td>InstallValidate</td><td/><td>1400</td><td>InstallValidate</td><td/></row>
 		<row><td>RegistryCleanup</td><td>Installed</td><td>6650</td><td/><td/></row>
 		<row><td>ScheduleReboot</td><td>ISSCHEDULEREBOOT</td><td>4010</td><td>ScheduleReboot</td><td/></row>
-		<row><td>StopServices</td><td>Installed</td><td>3950</td><td/><td/></row>
 	</table>
 
 	<table name="AdminUISequence">
@@ -188,7 +186,6 @@
 		<row><td>SetupPmsType</td><td>NOT Installed AND isClient="False"</td><td>1400</td><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>NOT Installed AND isClient="False"</td><td>1387</td><td/><td/></row>
 		<row><td>SetupProgress</td><td/><td>1020</td><td>SetupProgress</td><td/></row>
-		<row><td>StartServices</td><td>NOT Installed AND isClient="False"</td><td>1425</td><td/><td/></row>
 	</table>
 
 	<table name="AdvtExecuteSequence">
@@ -4116,7 +4113,7 @@
 		<row><td>SetAllUsersProfileNT</td><td>VersionNT = 400</td><td>970</td><td/><td/></row>
 		<row><td>SetODBCFolders</td><td/><td>1200</td><td>SetODBCFolders</td><td/></row>
 		<row><td>StartServices</td><td>VersionNT</td><td>5900</td><td>StartServices</td><td/></row>
-		<row><td>StopServices</td><td>VersionNT</td><td>1405</td><td>StopServices</td><td/></row>
+		<row><td>StopServices</td><td>VersionNT</td><td>1525</td><td>StopServices</td><td/></row>
 		<row><td>UnpublishComponents</td><td/><td>1700</td><td>UnpublishComponents</td><td/></row>
 		<row><td>UnpublishFeatures</td><td/><td>1800</td><td>UnpublishFeatures</td><td/></row>
 		<row><td>UnregisterClassInfo</td><td/><td>2700</td><td>UnregisterClassInfo</td><td/></row>
@@ -4204,7 +4201,6 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<row><td>SetupPmsTypeDialog</td><td>NOT Installed AND isClient="False"</td><td>1281</td><td/><td/></row>
 		<row><td>SetupProgress</td><td/><td>1240</td><td>SetupProgress</td><td/></row>
 		<row><td>SetupResume</td><td>Installed And (RESUME Or Preselected) And Not PATCH</td><td>1220</td><td>SetupResume</td><td/></row>
-		<row><td>StartServices</td><td>NOT Installed AND isClient="False"</td><td>1310</td><td/><td/></row>
 		<row><td>ValidateProductID</td><td/><td>700</td><td>ValidateProductID</td><td/></row>
 		<row><td>setAllUsersProfile2K</td><td>VersionNT &gt;= 500</td><td>980</td><td/><td/></row>
 		<row><td>setUserProfileNT</td><td>VersionNT</td><td>960</td><td/><td/></row>
@@ -4655,6 +4651,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">Arguments</col>
 		<col def="I2">Wait</col>
 		<col def="s72">Component_</col>
+		<row><td>NewEvent1</td><td>Chewsi Service</td><td>163</td><td/><td>1</td><td>ChewsiPlugin.Service.exe</td></row>
 	</table>
 
 	<table name="ServiceInstall">

@@ -292,7 +292,6 @@ namespace ChewsiPlugin.UI.ViewModels
                     _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy,
                         ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
                         State, StartPms, StartLauncher, _machineId, !IsServer));
-                    CommandManager.InvalidateRequerySuggested();
                 }
                 finally
                 {

@@ -8,6 +8,7 @@ using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.Service;
 using ChewsiPlugin.Service.Services;
+using ChewsiPlugin.UI.Services;
 using ChewsiPlugin.UI.ViewModels;
 using Moq;
 using NUnit.Framework;
@@ -119,8 +120,7 @@ namespace ChewsiPlugin.Tests.Unit
 
             AssertClaims(appService.GetClaims(true), _appointmentsPms);
 
-            _settingsViewModelMock.Verify(m => m.Fill(_provider.AddressLine1, _provider.AddressLine2, _provider.State, _provider.Tin, 
-                It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()), Times.Once, "Should fill settings with values from appointment");
+            _settingsViewModelMock.Verify(m => m.InjectAppServiceAndInit(It.IsAny<IClientAppService>(), It.IsAny<SettingsDto>()), Times.Once, "Should fill settings with values from appointment");
             _settingsViewModelMock.Verify(m => m.Show(It.IsAny<Action>()), Times.Once, "Should show settings popup");
         }
 
@@ -151,8 +151,7 @@ namespace ChewsiPlugin.Tests.Unit
 
             AssertClaims(appService.GetClaims(true), _appointmentsPms);
 
-            _settingsViewModelMock.Verify(m => m.Fill(_provider.AddressLine1, _provider.AddressLine2, _provider.State, _provider.Tin,
-                It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()), Times.Never, "Should not touch settings model");
+            _settingsViewModelMock.Verify(m => m.InjectAppServiceAndInit(It.IsAny<IClientAppService>(), It.IsAny<SettingsDto>()), Times.Never, "Should not touch settings model");
             _settingsViewModelMock.Verify(m => m.Show(It.IsAny<Action>()), Times.Never, "Should not show settings popup");
         }
 
@@ -207,8 +206,7 @@ namespace ChewsiPlugin.Tests.Unit
                             m.ChewsiId == claimItem.ChewsiId), "ServerAppService doesn't display all claim statuses");
             }
 
-            _settingsViewModelMock.Verify(m => m.Fill(_provider.AddressLine1, _provider.AddressLine2, _provider.State, _provider.Tin,
-                It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<int>()), Times.Never, "Should not touch settings model");
+            _settingsViewModelMock.Verify(m => m.InjectAppServiceAndInit(It.IsAny<IClientAppService>(), It.IsAny<SettingsDto>()), Times.Never, "Should not touch settings model");
             _settingsViewModelMock.Verify(m => m.Show(It.IsAny<Action>()), Times.Never, "Should not show settings popup");
         }
         

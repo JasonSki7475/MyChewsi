@@ -187,10 +187,18 @@ namespace ChewsiPlugin.Service.Services
             Logger.Error("PMS system type is not set");
             return null;
         }
+
+        public enum ClaimValidationResult
+        {
+            Success,
+            Fail,
+            ServerError,
+            ProviderNotFound,
+            PatientNotFound
+        }
         
-        private ValidateSubscriberAndProviderResponse ValidateClaim(string providerId, string patientId,
-            out ProviderInformation providerInformation, out SubscriberInformation subscriberInformation,
-            out Provider provider)
+        private ClaimValidationResult ValidateClaim(string providerId, string patientId, out ProviderInformation providerInformation, 
+            out SubscriberInformation subscriberInformation, out Provider provider, out ValidateSubscriberAndProviderResponse result)
         {
             provider = GetDentalApi().GetProvider(providerId);
             if (provider != null)
@@ -220,35 +228,24 @@ namespace ChewsiPlugin.Service.Services
                         RenderingState = provider.State,
                         RenderingZip = provider.ZipCode,
                     };
-                    var validationResponse = _chewsiApi.ValidateSubscriberAndProvider(providerInformation, providerAddress, subscriberInformation);
-                    if (validationResponse != null)
+                    result = _chewsiApi.ValidateSubscriberAndProvider(providerInformation, providerAddress, subscriberInformation);
+                    if (result != null)
                     {
-                        Logger.Debug($"Validated subscriber '{patientId}' and provider '{providerId}': '{validationResponse.ValidationPassed}'");
+                        Logger.Debug($"Validated subscriber '{patientId}' and provider '{providerId}': '{result.ValidationPassed}'");
+                        return ClaimValidationResult.Success;
                     }
-                    else
-                    {
-                        Logger.Debug($"Failed to validate subscriber '{patientId}' and provider '{providerId}': invalid server response");
-                    }
-                    return validationResponse;
+                    Logger.Debug($"Failed to validate subscriber '{patientId}' and provider '{providerId}': invalid server response");
+                    return ClaimValidationResult.ServerError;
                 }
-                else
-                {
-                    var msg = "Cannot find patient " + patientId;
-                    //TODO
-                    _dialogService.Show(msg, "Error");
-                    Logger.Error(msg);
-                }
-            }
-            else
-            {
-                var msg = "Cannot find provider " + providerId;
-                //TODO
-                _dialogService.Show(msg, "Error");
-                Logger.Error(msg);
+                providerInformation = null;
+                subscriberInformation = null;
+                result = null;
+                return ClaimValidationResult.PatientNotFound;
             }
             providerInformation = null;
             subscriberInformation = null;
-            return null;
+            result = null;
+            return ClaimValidationResult.ProviderNotFound;
         }
 
         private SubmitClaimResult SubmitClaim(string id, DateTime appointmentDate, string patientId, ProviderInformation providerInformation, SubscriberInformation subscriberInformation, DateTime pmsModifiedDate)
@@ -450,7 +447,7 @@ namespace ChewsiPlugin.Service.Services
             ProviderInformation providerInformation;
             SubscriberInformation subscriberInformation;
             Provider provider;
-            SubmitClaimResult result = SubmitClaimResult.Ok;
+            SubmitClaimResult result = SubmitClaimResult.Error;
 
             var claim = _claimItems.FirstOrDefault(m => m.Id == id);
             if (claim == null)
@@ -459,18 +456,16 @@ namespace ChewsiPlugin.Service.Services
             }
 
             SetAppointmentState(id, AppointmentState.TreatmentCompleted, StatusMessage.PaymentProcessing);
-            var validationResponse = ValidateClaim(id, claim.PatientId, out providerInformation, out subscriberInformation, out provider);
-            if (validationResponse != null)
+            ValidateSubscriberAndProviderResponse validationResponse;
+            var validationResult = ValidateClaim(id, claim.PatientId, out providerInformation, out subscriberInformation, out provider, out validationResponse);
+            switch (validationResult)
             {
-                if (validationResponse.ValidationPassed)
-                {
+                case ClaimValidationResult.Success:
                     providerInformation.Id = validationResponse.ProviderID;
                     providerInformation.OfficeNbr = validationResponse.OfficeNumber;
-
                     result = SubmitClaim(id, claim.Date, claim.PatientId, providerInformation, subscriberInformation, claim.PmsModifiedDate);
-                }
-                else
-                {
+                    break;
+                case ClaimValidationResult.Fail:
                     #region Format status
 
                     var statusText = "";
@@ -488,13 +483,19 @@ namespace ChewsiPlugin.Service.Services
                     }
 
                     #endregion
-
                     SetAppointmentState(id, AppointmentState.ValidationError, statusText);
-                }
-            }
-            else
-            {
-                SetAppointmentState(id, AppointmentState.ValidationError, StatusMessage.PaymentProcessingError);
+                    break;
+                case ClaimValidationResult.ServerError:
+                    SetAppointmentState(id, AppointmentState.ValidationError, StatusMessage.PaymentProcessingError);
+                    break;
+                case ClaimValidationResult.ProviderNotFound:
+                    SetAppointmentState(id, AppointmentState.ValidationError, "Cannot find patient in PMS");
+                    break;
+                case ClaimValidationResult.PatientNotFound:
+                    SetAppointmentState(id, AppointmentState.ValidationError, "Cannot find provider in PMS");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             RefreshAppointments(true, true, true);
             return result;
@@ -516,8 +517,7 @@ namespace ChewsiPlugin.Service.Services
             var state = _repository.GetSettingValue<string>(Settings.StateKey);
             var machineId = _repository.GetSettingValue<string>(Settings.MachineIdKey);
             var isClient = _repository.GetSettingValue<bool>(Settings.IsClient);
-            return new SettingsDto(pmsType, pmsPath, address1Old, address2Old, tin, useProxy, proxyAddress, proxyPort,
-                proxyLogin, proxyPassword, state, startPms, GetLauncherStartup(), machineId, isClient);
+            return new SettingsDto(pmsType, pmsPath, address1Old, address2Old, tin, useProxy, proxyAddress, proxyPort, proxyLogin, proxyPassword, state, startPms, GetLauncherStartup(), machineId, isClient);
         }
 
         private void StartPmsIfRequired()
@@ -578,7 +578,7 @@ namespace ChewsiPlugin.Service.Services
             }
         }
 
-        public void SaveSettings(SettingsDto settingsDto)
+        public bool SaveSettings(SettingsDto settingsDto)
         {
             try
             {
@@ -648,35 +648,30 @@ namespace ChewsiPlugin.Service.Services
                     if (registeredBefore)
                     {
                         // detect changes and call UpdatePluginRegistration
-                        if ((pmsVersion != pmsVersionOld) || pmsTypeOld != settingsDto.PmsType ||
-                            address1Old != settingsDto.Address1 || address2Old != settingsDto.Address2 ||
-                            stateOld != settingsDto.State || osOld != Utils.GetOperatingSystemInfo() ||
-                            tinOld != settingsDto.Tin || pluginVersionOld != Utils.GetPluginVersion())
+                        if ((pmsVersion != pmsVersionOld) || pmsTypeOld != settingsDto.PmsType || address1Old != settingsDto.Address1 || address2Old != settingsDto.Address2 || stateOld != settingsDto.State || osOld != Utils.GetOperatingSystemInfo() || tinOld != settingsDto.Tin || pluginVersionOld != Utils.GetPluginVersion())
                         {
                             Logger.Info("Configuration changes detected. Updating plugin registration...");
                             var machineId = _repository.GetSettingValue<string>(Settings.MachineIdKey);
-                            _chewsiApi.UpdatePluginRegistration(new UpdatePluginRegistrationRequest(machineId,
-                                settingsDto.Address1, settingsDto.Address2, settingsDto.PmsType, pmsVersion));
+                            _chewsiApi.UpdatePluginRegistration(new UpdatePluginRegistrationRequest(machineId, settingsDto.Address1, settingsDto.Address2, settingsDto.PmsType, pmsVersion));
                         }
                     }
                     else
                     {
                         Logger.Info("Registering plugin...");
-                        var machineId =
-                            _chewsiApi.RegisterPlugin(new RegisterPluginRequest(settingsDto.Tin, settingsDto.Address1,
-                                settingsDto.Address2, settingsDto.PmsType, pmsVersion));
+                        var machineId = _chewsiApi.RegisterPlugin(new RegisterPluginRequest(settingsDto.Tin, settingsDto.Address1, settingsDto.Address2, settingsDto.PmsType, pmsVersion));
                         Logger.Info("Machine Id: " + machineId);
                         _repository.SaveSetting(Settings.MachineIdKey, machineId);
                     }
                 }
 
                 Initialize();
+
+                return true;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, "Error saving settings");
-                //TODO
-                _dialogService.Show("Some settings are incorrect or empty. Please enter again.", "Error");
+                return false;
             }
         }
 
@@ -797,12 +792,7 @@ namespace ChewsiPlugin.Service.Services
                     // cached.ForEach(m => Logger.Debug($"Cached appointment: Date={m.DateTime}, ChewsiId={m.ChewsiId}"));
 
                     // load subscribers' first names (they are displayed if validation fails)
-                    var subscriberNames =
-                        pms.Select(m => m.PatientId)
-                            .Distinct()
-                            .Select(m => GetDentalApi().GetPatientInfo(m))
-                            .GroupBy(m => m.ChewsiId)
-                            .ToDictionary(m => m.Key, m => m.First().SubscriberFirstName);
+                    var subscriberNames = pms.Select(m => m.PatientId).Distinct().Select(m => GetDentalApi().GetPatientInfo(m)).GroupBy(m => m.ChewsiId).ToDictionary(m => m.Key, m => m.First().SubscriberFirstName);
 
                     bool repositoryUpdated = false;
 
@@ -816,16 +806,7 @@ namespace ChewsiPlugin.Service.Services
                             Logger.Debug($"Adding new PMS appointment in the cache Id={item.Id}");
                             _repository.AddAppointment(new Appointment
                             {
-                                Id = item.Id,
-                                DateTime = item.Date,
-                                PmsModifiedDate = item.PmsModifiedDate,
-                                State = AppointmentState.TreatmentCompleted,
-                                ChewsiId = item.ChewsiId,
-                                StatusText = StatusMessage.ReadyToSubmit,
-                                PatientId = item.PatientId,
-                                PatientName = item.PatientName,
-                                ProviderId = item.ProviderId,
-                                SubscriberFirstName = subscriberNames[item.ChewsiId]
+                                Id = item.Id, DateTime = item.Date, PmsModifiedDate = item.PmsModifiedDate, State = AppointmentState.TreatmentCompleted, ChewsiId = item.ChewsiId, StatusText = StatusMessage.ReadyToSubmit, PatientId = item.PatientId, PatientName = item.PatientName, ProviderId = item.ProviderId, SubscriberFirstName = subscriberNames[item.ChewsiId]
                             });
                             repositoryUpdated = true;
                         }
@@ -858,12 +839,7 @@ namespace ChewsiPlugin.Service.Services
                     clientRowStatuses.AddRange(_chewsiApi.RetrievePluginClientRowStatuses(GetSettings().Tin));
 
                     // find providers for submitted appointments
-                    var providerIds =
-                        cached.Where(m => m.State == AppointmentState.ValidationCompletedAndClaimSubmitted)
-                            .GroupBy(m => m.ProviderId)
-                            .Select(m => m.Key)
-                            .Distinct()
-                            .ToList();
+                    var providerIds = cached.Where(m => m.State == AppointmentState.ValidationCompletedAndClaimSubmitted).GroupBy(m => m.ProviderId).Select(m => m.Key).Distinct().ToList();
                     if (providerIds.Any())
                     {
                         var statuses = GetClaimStatuses(providerIds).SelectMany(m => m).ToList();
@@ -885,27 +861,16 @@ namespace ChewsiPlugin.Service.Services
                                 _serviceClaims.Add(new ClaimDto
                                 {
                                     //Id = item.Id,
-                                    ProviderId = item.ProviderId,
-                                    Date = item.PostedOnDate,
-                                    PatientName = item.PatientFirstName,
-                                    ChewsiId = item.ChewsiID,
-                                    State = state,
-                                    StatusText = item.MessageToDisplay,
+                                    ProviderId = item.ProviderId, Date = item.PostedOnDate, PatientName = item.PatientFirstName, ChewsiId = item.ChewsiID, State = state, StatusText = item.MessageToDisplay,
                                     //PatientId = item.PatientId,
-                                    SubscriberFirstName = item.SubscriberFirstName,
-                                    IsClaimStatus = true,
-                                    ClaimNumber = item.Claim_Nbr
+                                    SubscriberFirstName = item.SubscriberFirstName, IsClaimStatus = true, ClaimNumber = item.Claim_Nbr
                                 });
 
                                 lock (_statusWaitListLock)
                                 {
                                     if (_statusWaitList.Any())
                                     {
-                                        var waitItem =
-                                            _statusWaitList.FirstOrDefault(
-                                                m =>
-                                                    m.DateTime == item.PostedOnDate.Date && m.ChewsiId == item.ChewsiID &&
-                                                    m.ProviderId == item.ProviderId);
+                                        var waitItem = _statusWaitList.FirstOrDefault(m => m.DateTime == item.PostedOnDate.Date && m.ChewsiId == item.ChewsiID && m.ProviderId == item.ProviderId);
                                         if (waitItem != null && waitItem.ClaimNumbers.All(m => m != item.Claim_Nbr))
                                         {
                                             // new status for patient's claims has come, remove pending state to stop lookups
@@ -921,29 +886,15 @@ namespace ChewsiPlugin.Service.Services
                 #endregion
 
                 var result = (from c in cached
-                    where
-                        c.State != AppointmentState.Deleted &&
-                        c.State != AppointmentState.ValidationCompletedAndClaimSubmitted
+                    where c.State != AppointmentState.Deleted && c.State != AppointmentState.ValidationCompletedAndClaimSubmitted
                     orderby c.State == AppointmentState.TreatmentCompleted descending
                     select new ClaimDto
                     {
-                        Id = c.Id,
-                        ProviderId = c.ProviderId,
-                        Date = c.DateTime,
-                        PatientName = c.PatientName,
-                        ChewsiId = c.ChewsiId,
-                        State = c.State,
-                        StatusText = c.StatusText,
-                        PatientId = c.PatientId,
-                        SubscriberFirstName = c.SubscriberFirstName,
-                        IsClaimStatus = false,
-                        PmsModifiedDate = c.PmsModifiedDate,
+                        Id = c.Id, ProviderId = c.ProviderId, Date = c.DateTime, PatientName = c.PatientName, ChewsiId = c.ChewsiId, State = c.State, StatusText = c.StatusText, PatientId = c.PatientId, SubscriberFirstName = c.SubscriberFirstName, IsClaimStatus = false, PmsModifiedDate = c.PmsModifiedDate,
                         //ClaimNumber = c.ClaimNumber
-                    })
-                    .Concat(_serviceClaims)
+                    }).Concat(_serviceClaims)
                     // don't return deleted and submitted claims
-                    .Where(m => !clientRowStatuses.Any(n => n.PMSModifiedDate == m.PmsModifiedDate && n.PMSClaimNbr == m.Id))
-                    .ToList();
+                    .Where(m => !clientRowStatuses.Any(n => n.PMSModifiedDate == m.PmsModifiedDate && n.PMSClaimNbr == m.Id)).ToList();
                 if (Logger.IsDebugEnabled)
                 {
                     result.ForEach(m => Logger.Debug($"Loaded appointment ChewsiId={m.ChewsiId}, State={m.State}"));

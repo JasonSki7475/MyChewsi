@@ -141,7 +141,12 @@ namespace ChewsiPlugin.UI.Services
                 {
                     var dialog = new SaveFileDialog
                     {
-                        FileName = downloadReport ? $"Report_{postedDate.Replace('/', '-')}.pdf" : $"EDI_{postedDate.Replace('/', '-')}.txt", Title = downloadReport ? "Save report file" : "Save 835 file", Filter = downloadReport ? "PDF file (*.pdf)|*.pdf" : "Text file (*.txt)|*.txt"
+                        FileName =
+                            downloadReport
+                                ? $"Report_{postedDate.Replace('/', '-')}.pdf"
+                                : $"EDI_{postedDate.Replace('/', '-')}.txt",
+                        Title = downloadReport ? "Save report file" : "Save 835 file",
+                        Filter = downloadReport ? "PDF file (*.pdf)|*.pdf" : "Text file (*.txt)|*.txt"
                     };
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
@@ -191,12 +196,14 @@ namespace ChewsiPlugin.UI.Services
 
         public void OpenSettings()
         {
-            _settingsViewModel.Show(() =>
+            _settingsViewModel.Show(async () =>
             {
                 if (!_settings.IsClient)
                 {
-                    ReloadClaims(true);
+                    await ReloadClaims(true);
                 }
+                _state = ClientState.Ready;
+                RaisePropertyChanged(() => Initialized);
             });
         }
 
@@ -294,8 +301,9 @@ namespace ChewsiPlugin.UI.Services
                                 _settings = settings;
                                 _settingsViewModel.InjectAppServiceAndInit(this, settings);
                                 InitializeChewsiApi(settings);
-                                ReloadClaims(false);
-                                _state = ClientState.Ready;                                
+                                await ReloadClaims(false);
+                                _state = ClientState.Ready;
+                                RaisePropertyChanged(() => Initialized);
                             }
                             else
                             {
@@ -362,9 +370,14 @@ namespace ChewsiPlugin.UI.Services
 
         public void SaveSettings(SettingsDto settingsDto)
         {
-            if (!Utils.SafeCall(_serverAppService.SaveSettings, settingsDto))
+            bool result;
+            var called = Utils.TrySafeCall(_serverAppService.SaveSettings, settingsDto, out result);
+            if (!called)
             {
                 _dialogService.Show("Cannot save settings, communication error occured. Please try again.", "Error");
+            } else if (!result)
+            {
+                _dialogService.Show("Some settings are incorrect or empty. Please enter again.", "Error");
             }
         }
 
@@ -394,10 +407,9 @@ namespace ChewsiPlugin.UI.Services
             claim?.Unlock();
         }
 
-        public void ReloadClaims(bool force)
+        public async Task<bool> ReloadClaims(bool force)
         {
-            var worker = new BackgroundWorker();
-            worker.DoWork += (i, j) =>
+            return await Task<bool>.Factory.StartNew(() =>
             {
                 if (!IsLoadingClaims)
                 {
@@ -413,15 +425,18 @@ namespace ChewsiPlugin.UI.Services
                                 if (Utils.TrySafeCall(_serverAppService.GetClaims, force, out claims) && claims != null)
                                 {
                                     SetClaims(claims);
+                                    return true;
                                 }
                                 else
                                 {
                                     _dialogService.Show("Cannot load appoitments list.", "Error", () => ReloadClaims(force));
+                                    return false;
                                 }
                             }
                             catch (Exception ex)
                             {
                                 Logger.Error(ex, "Error loading appointments");
+                                return false;
                             }
                             finally
                             {
@@ -430,8 +445,8 @@ namespace ChewsiPlugin.UI.Services
                         }
                     }
                 }
-            };
-            worker.RunWorkerAsync();
+                return false;
+            });
         }
 
         public void SetClaims(List<ClaimDto> claims)
@@ -444,7 +459,19 @@ namespace ChewsiPlugin.UI.Services
                 {
                     ClaimItems.Add(new ClaimItemViewModel(this)
                     {
-                        Id = c.Id, ProviderId = c.ProviderId, Date = c.Date, PatientName = c.PatientName, ChewsiId = c.ChewsiId, State = c.State, StatusText = c.StatusText, PatientId = c.PatientId, SubscriberFirstName = c.SubscriberFirstName, IsClaimStatus = c.IsClaimStatus, ClaimNumber = c.ClaimNumber, Locked = false, PmsModifiedDate = c.PmsModifiedDate
+                        Id = c.Id,
+                        ProviderId = c.ProviderId,
+                        Date = c.Date,
+                        PatientName = c.PatientName,
+                        ChewsiId = c.ChewsiId,
+                        State = c.State,
+                        StatusText = c.StatusText,
+                        PatientId = c.PatientId,
+                        SubscriberFirstName = c.SubscriberFirstName,
+                        IsClaimStatus = c.IsClaimStatus,
+                        ClaimNumber = c.ClaimNumber,
+                        Locked = false,
+                        PmsModifiedDate = c.PmsModifiedDate
                     });
                 }
                 _dialogService.HideLoadingIndicator();

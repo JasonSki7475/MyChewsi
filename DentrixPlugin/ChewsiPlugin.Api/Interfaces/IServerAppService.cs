@@ -12,7 +12,7 @@ namespace ChewsiPlugin.Api.Interfaces
         SettingsDto GetSettings();
 
         [OperationContract]
-        void SaveSettings(SettingsDto settingsDto);
+        bool SaveSettings(SettingsDto settingsDto);
 
         [OperationContract]
         bool DeleteAppointment(string id);
