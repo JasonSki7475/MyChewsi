@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Dentrix;
 using NLog;
 
@@ -35,14 +37,16 @@ namespace ChewsiPlugin.Service
                 }
                 api.Unload();
             }
+#if DEBUG
             else if (Environment.UserInteractive)
             {
                 var service = new Service();
-                service.Start(new string[] {});
+                service.Start(new string[] { });
                 Console.WriteLine("Press any key to stop service...");
                 Console.ReadLine();
                 service.Stop();
             }
+#endif
             else
             {
                 var servicesToRun = new ServiceBase[]

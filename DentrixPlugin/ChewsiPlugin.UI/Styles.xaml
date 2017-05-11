@@ -9,6 +9,7 @@
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter"/>
     <converters:EnumToVisibilityInverseConverter x:Key="EnumToVisibilityInverseConverter"/>
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+    <converters:ClientServiceStatusToBooleanConverter x:Key="ClientServiceStatusToBooleanConverter"/>
 
     <Viewbox x:Key="Logo" Stretch="Uniform" x:Shared="False">
         <Canvas x:Name="svg4136" Width="540" Height="270">

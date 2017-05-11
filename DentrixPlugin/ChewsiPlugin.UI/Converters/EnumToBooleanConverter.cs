@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace ChewsiPlugin.UI.Converters
 {
-    public class EnumToBooleanConverter : IValueConverter
+    internal class EnumToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

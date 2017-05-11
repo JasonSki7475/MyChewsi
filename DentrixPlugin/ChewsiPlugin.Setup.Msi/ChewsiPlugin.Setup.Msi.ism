@@ -293,6 +293,7 @@
 		<col key="yes" def="s72">Property</col>
 		<col def="S64">Value</col>
 		<row><td>ISCHECKFORPRODUCTUPDATES</td><td>1</td></row>
+		<row><td>ISSHOWMSILOG</td><td>1</td></row>
 		<row><td>LAUNCHPROGRAM</td><td>1</td></row>
 	</table>
 
@@ -359,7 +360,7 @@
 		<row><td>ChewsiPlugin.EaglesoftApi.dll</td><td>{E5FF1670-69ED-4077-A190-117419FE8159}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.eaglesoftapi.dl</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.Launcher.exe</td><td>{F816C3EA-7C71-437C-9EF2-AE8AFB14D67D}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.launcher.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.OpenDentalApi.dll</td><td>{1B24C815-1CD0-4F2C-B764-8C9496FD5593}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.opendentalapi.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>ChewsiPlugin.Service.exe</td><td>{47DB7E7B-77D4-46FB-B949-35315770335B}</td><td>INSTALLDIR</td><td>8</td><td>isClient="False"</td><td>chewsiplugin.service.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Service.exe</td><td>{A381000A-01CA-4E46-8923-BE2B577DD5B9}</td><td>INSTALLDIR</td><td>8</td><td>isClient="False"</td><td>chewsiplugin.service.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>{7696794E-FB77-4E30-AAE2-4B71AA66A293}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.customact</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.UI.exe</td><td>{FB636077-2899-4F49-B645-9C116DADFE37}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.ui.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td>{143CB5EB-8C57-4368-B180-DDF1FEFBFA33}</td><td>INSTALLDIR</td><td>8</td><td/><td>createuser_dbna5agn.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -725,9 +726,9 @@
 		<row><td>SetupInstallationTypeDialog</td><td>Branding2</td><td>Text</td><td>3</td><td>228</td><td>50</td><td>13</td><td>65537</td><td/><td>{&amp;Tahoma8}InstallShield</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupInstallationTypeDialog</td><td>Cancel</td><td>PushButton</td><td>301</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_CANCEL##</td><td>Back</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupInstallationTypeDialog</td><td>ComboBox1</td><td>ComboBox</td><td>31</td><td>102</td><td>178</td><td>50</td><td>196611</td><td>isClient</td><td/><td>Text1</td><td/><td/><td/><td/><td/></row>
-		<row><td>SetupInstallationTypeDialog</td><td>DlgDesc</td><td>Text</td><td>21</td><td>23</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS_DIALOG_TEXT2_DESCRIPTION##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
+		<row><td>SetupInstallationTypeDialog</td><td>DlgDesc</td><td>Text</td><td>21</td><td>23</td><td>292</td><td>25</td><td>65539</td><td/><td>##ID_STRING11##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
 		<row><td>SetupInstallationTypeDialog</td><td>DlgLine</td><td>Line</td><td>48</td><td>234</td><td>326</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
-		<row><td>SetupInstallationTypeDialog</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS_DIALOG_TEXT_DESCRIPTION_INTERIOR##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
+		<row><td>SetupInstallationTypeDialog</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##ID_STRING10##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
 		<row><td>SetupInstallationTypeDialog</td><td>Next</td><td>PushButton</td><td>230</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_NEXT##</td><td>Cancel</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupInstallationTypeDialog</td><td>Text1</td><td>Text</td><td>32</td><td>74</td><td>195</td><td>18</td><td>65539</td><td>NewProperty1</td><td>##NEW_STRING1##</td><td>Next</td><td/><td/><td/><td/><td/></row>
 		<row><td>SetupInterrupted</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>1</td><td/><td>##IDS_BACK##</td><td>Finish</td><td/><td>0</td><td/><td/><td/></row>
@@ -750,9 +751,9 @@
 		<row><td>SetupPmsTypeDialog</td><td>Branding2</td><td>Text</td><td>3</td><td>228</td><td>50</td><td>13</td><td>65537</td><td/><td>{&amp;Tahoma8}InstallShield</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>Cancel</td><td>PushButton</td><td>301</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_CANCEL##</td><td>Back</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>ComboBox1</td><td>ComboBox</td><td>31</td><td>101</td><td>178</td><td>50</td><td>196611</td><td>pmsType</td><td/><td>Text1</td><td/><td/><td/><td/><td/></row>
-		<row><td>SetupPmsTypeDialog</td><td>DlgDesc</td><td>Text</td><td>21</td><td>23</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS_DIALOG_TEXT2_DESCRIPTION##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
+		<row><td>SetupPmsTypeDialog</td><td>DlgDesc</td><td>Text</td><td>21</td><td>23</td><td>292</td><td>25</td><td>65539</td><td/><td>##ID_STRING9##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>DlgLine</td><td>Line</td><td>48</td><td>234</td><td>326</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
-		<row><td>SetupPmsTypeDialog</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS_DIALOG_TEXT_DESCRIPTION_INTERIOR##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
+		<row><td>SetupPmsTypeDialog</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##ID_STRING8##</td><td/><td/><td>0</td><td>0</td><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>Next</td><td>PushButton</td><td>230</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_NEXT##</td><td>Cancel</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>Text1</td><td>Text</td><td>32</td><td>75</td><td>195</td><td>18</td><td>65539</td><td>NewProperty1</td><td>##ID_STRING7##</td><td>Next</td><td/><td/><td/><td/><td/></row>
 		<row><td>SetupProgress</td><td>ActionProgress95</td><td>ProgressBar</td><td>59</td><td>113</td><td>275</td><td>12</td><td>65537</td><td/><td>##IDS__IsProgressDlg_ProgressDone##</td><td/><td/><td>0</td><td/><td/><td/></row>
@@ -1079,6 +1080,7 @@
 		<col def="S0">Target</col>
 		<col def="I4">ExtendedType</col>
 		<col def="S255">ISComments</col>
+		<row><td>ConfigureAcl</td><td>98</td><td>SystemFolder</td><td>netsh http add urlacl url=http://+:45000/DentalApi.svc user="NETWORK SERVICE"</td><td>0</td><td/></row>
 		<row><td>ISLockPermissionsCost</td><td>1</td><td>ISLockPermissions.dll</td><td>ISLockPermissionsCostAction</td><td/><td/></row>
 		<row><td>ISLockPermissionsInstall</td><td>3073</td><td>ISLockPermissions.dll</td><td>ISLockPermissionsInstallAction</td><td/><td/></row>
 		<row><td>ISPreventDowngrade</td><td>19</td><td/><td>[IS_PREVENT_DOWNGRADE_EXIT]</td><td/><td>Exits install when a newer version of this product is found</td></row>
@@ -1094,6 +1096,7 @@
 		<row><td>SetupInstallationType</td><td>65</td><td>SetupInstallationType.clr</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions.SetClientFlag(...)</td><td>0</td><td/></row>
 		<row><td>SetupPmsType</td><td>65</td><td>SetupPmsType.clr</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions.SetCurrentPMS(...)</td><td>0</td><td/></row>
 		<row><td>ShowMsiLog</td><td>226</td><td>SystemFolder</td><td>[SystemFolder]notepad.exe "[MsiLogFileLocation]"</td><td/><td>Shows Property-driven MSI Log</td></row>
+		<row><td>StartService</td><td>98</td><td>SystemFolder</td><td>net start "Chewsi Service"</td><td>0</td><td/></row>
 		<row><td>setAllUsersProfile2K</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%ALLUSERSPROFILE]</td><td/><td/></row>
 		<row><td>setUserProfileNT</td><td>51</td><td>USERPROFILE</td><td>[%USERPROFILE]</td><td/><td/></row>
 	</table>
@@ -1882,37 +1885,37 @@
 		<col def="S255">ISComments</col>
 		<col def="S255">ISFeatureCabName</col>
 		<col def="S255">ISProFeatureName</col>
-		<row><td>basicmsi_Files</td><td/><td>##IDS_FEATURE_DISPLAY_NAME1##</td><td/><td>2</td><td>1</td><td>INSTALLDIR</td><td>0</td><td/><td/><td/><td/></row>
+		<row><td>Default</td><td/><td>##IDS_FEATURE_DISPLAY_NAME1##</td><td/><td>2</td><td>1</td><td>INSTALLDIR</td><td>0</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
-		<row><td>basicmsi_Files</td><td>AllOtherFiles</td></row>
-		<row><td>basicmsi_Files</td><td>AllOtherFiles1</td></row>
-		<row><td>basicmsi_Files</td><td>AllOtherFiles2</td></row>
-		<row><td>basicmsi_Files</td><td>AllOtherFiles3</td></row>
-		<row><td>basicmsi_Files</td><td>AllOtherFiles4</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.Api.dll</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.EaglesoftApi.dll</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.Launcher.exe</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.OpenDentalApi.dll</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.Service.exe</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.Setup.CustomActions.dll</td></row>
-		<row><td>basicmsi_Files</td><td>ChewsiPlugin.UI.exe</td></row>
-		<row><td>basicmsi_Files</td><td>CreateUser_dBNa5Agn.exe</td></row>
-		<row><td>basicmsi_Files</td><td>Dapper.dll</td></row>
-		<row><td>basicmsi_Files</td><td>GalaSoft.MvvmLight.Extras.dll</td></row>
-		<row><td>basicmsi_Files</td><td>GalaSoft.MvvmLight.dll</td></row>
-		<row><td>basicmsi_Files</td><td>Microsoft.Practices.ServiceLocation.dll</td></row>
-		<row><td>basicmsi_Files</td><td>NLog.dll</td></row>
-		<row><td>basicmsi_Files</td><td>Newtonsoft.Json.dll</td></row>
-		<row><td>basicmsi_Files</td><td>SQLite.Interop.dll</td></row>
-		<row><td>basicmsi_Files</td><td>SQLite.Interop.dll1</td></row>
-		<row><td>basicmsi_Files</td><td>System.Data.SQLite.dll</td></row>
-		<row><td>basicmsi_Files</td><td>System.Net.Http.Extensions.dll</td></row>
-		<row><td>basicmsi_Files</td><td>System.Net.Http.Primitives.dll</td></row>
-		<row><td>basicmsi_Files</td><td>System.Windows.Interactivity.dll</td></row>
+		<row><td>Default</td><td>AllOtherFiles</td></row>
+		<row><td>Default</td><td>AllOtherFiles1</td></row>
+		<row><td>Default</td><td>AllOtherFiles2</td></row>
+		<row><td>Default</td><td>AllOtherFiles3</td></row>
+		<row><td>Default</td><td>AllOtherFiles4</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Api.dll</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.EaglesoftApi.dll</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Launcher.exe</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.OpenDentalApi.dll</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Service.exe</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Setup.CustomActions.dll</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.UI.exe</td></row>
+		<row><td>Default</td><td>CreateUser_dBNa5Agn.exe</td></row>
+		<row><td>Default</td><td>Dapper.dll</td></row>
+		<row><td>Default</td><td>GalaSoft.MvvmLight.Extras.dll</td></row>
+		<row><td>Default</td><td>GalaSoft.MvvmLight.dll</td></row>
+		<row><td>Default</td><td>Microsoft.Practices.ServiceLocation.dll</td></row>
+		<row><td>Default</td><td>NLog.dll</td></row>
+		<row><td>Default</td><td>Newtonsoft.Json.dll</td></row>
+		<row><td>Default</td><td>SQLite.Interop.dll</td></row>
+		<row><td>Default</td><td>SQLite.Interop.dll1</td></row>
+		<row><td>Default</td><td>System.Data.SQLite.dll</td></row>
+		<row><td>Default</td><td>System.Net.Http.Extensions.dll</td></row>
+		<row><td>Default</td><td>System.Net.Http.Primitives.dll</td></row>
+		<row><td>Default</td><td>System.Windows.Interactivity.dll</td></row>
 	</table>
 
 	<table name="File">
@@ -2126,7 +2129,7 @@
 		<row><td>ChewsiPlugin.EaglesoftApi.dll</td><td/><td/><td>_D7169E4A_1D94_45F7_9CFF_D03FC3008C1E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Launcher.exe</td><td/><td/><td>_03636F15_1397_4B85_8D48_DAC5D95E7A07_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.OpenDentalApi.dll</td><td/><td/><td>_417C2F7D_7AF8_44B8_A21D_0A80357CC975_FILTER</td><td/><td/><td/><td/></row>
-		<row><td>ChewsiPlugin.Service.exe</td><td/><td/><td>_AD45C381_04A6_4E00_9411_A5A863ECC0C0_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Service.exe</td><td/><td/><td>_760676D3_E3D1_4EDC_B871_62AA1D5D6570_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td/><td/><td>_5863EA36_0F4E_4C39_A7BA_8A9D3315738E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.UI.exe</td><td/><td/><td>_928F9BC1_2992_4077_B683_6452BB78715E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td/><td/><td>_DB6670EC_78CD_4BA4_A693_2EA5C84D0016_FILTER</td><td/><td/><td/><td/></row>
@@ -3541,7 +3544,7 @@
 		<row><td>IDS_ERROR_97</td><td>1033</td><td>Could not register font [2].  Verify that you have sufficient permissions to install fonts, and that the system supports this font.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_ERROR_98</td><td>1033</td><td>Could not unregister font [2]. Verify that you have sufficient permissions to remove fonts.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_ERROR_99</td><td>1033</td><td>Could not create shortcut [2]. Verify that the destination folder exists and that you can access it.</td><td>0</td><td/><td>1495601858</td></row>
-		<row><td>IDS_FEATURE_DISPLAY_NAME1</td><td>1033</td><td>basicmsi_Files</td><td>0</td><td/><td>-1985632147</td></row>
+		<row><td>IDS_FEATURE_DISPLAY_NAME1</td><td>1033</td><td>Full package</td><td>0</td><td/><td>1520797422</td></row>
 		<row><td>IDS_INSTALLDIR</td><td>1033</td><td>[INSTALLDIR]</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_INSTALLSHIELD</td><td>1033</td><td>InstallShield</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_INSTALLSHIELD_FORMATTED</td><td>1033</td><td>{&amp;MSSWhiteSerif8}InstallShield</td><td>0</td><td/><td>1495601858</td></row>
@@ -3881,12 +3884,18 @@
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>ID_STRING1</td><td>1033</td><td>http://www.ChewsiDental.com</td><td>0</td><td/><td>178636240</td></row>
+		<row><td>ID_STRING10</td><td>1033</td><td>{&amp;TahomaBold8}Installation Type</td><td>0</td><td/><td>1520796750</td></row>
+		<row><td>ID_STRING11</td><td>1033</td><td>Choose the installation type.</td><td>0</td><td/><td>1520811118</td></row>
+		<row><td>ID_STRING12</td><td>1033</td><td>Enables remote access to Chewsi software</td><td>0</td><td/><td>1520806416</td></row>
+		<row><td>ID_STRING13</td><td>1033</td><td>Enables remote access to Chewsi software</td><td>0</td><td/><td>1520808464</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.UI.exe</td><td>0</td><td/><td>-1985634067</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>[ProductName] - InstallShield Wizard</td><td>0</td><td/><td>-1985649807</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1046111183</td></row>
 		<row><td>ID_STRING5</td><td>1033</td><td>Chewsi Service</td><td>0</td><td/><td>715511968</td></row>
 		<row><td>ID_STRING6</td><td>1033</td><td>Enables remote access to Chewsi software</td><td>0</td><td/><td>715456704</td></row>
 		<row><td>ID_STRING7</td><td>1033</td><td>Choose type of Practice Management System:</td><td>0</td><td/><td>715458123</td></row>
+		<row><td>ID_STRING8</td><td>1033</td><td>{&amp;TahomaBold8}Practice Management System Type</td><td>0</td><td/><td>1520790542</td></row>
+		<row><td>ID_STRING9</td><td>1033</td><td>Choose type of Practice Management System which you use.</td><td>0</td><td/><td>1520780334</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>NEW_STRING1</td><td>1033</td><td>Choose installation type:</td><td>0</td><td/><td>715474059</td></row>
 		<row><td>NEW_STRING2</td><td>1033</td><td>Dentrix</td><td>0</td><td/><td>-1985665871</td></row>
@@ -4052,6 +4061,7 @@
 		<row><td>AppSearch</td><td/><td>400</td><td>AppSearch</td><td/></row>
 		<row><td>BindImage</td><td/><td>4300</td><td>BindImage</td><td/></row>
 		<row><td>CCPSearch</td><td>CCP_TEST</td><td>500</td><td>CCPSearch</td><td/></row>
+		<row><td>ConfigureAcl</td><td>isClient="False"</td><td>5825</td><td/><td/></row>
 		<row><td>CostFinalize</td><td/><td>1000</td><td>CostFinalize</td><td/></row>
 		<row><td>CostInitialize</td><td/><td>800</td><td>CostInitialize</td><td/></row>
 		<row><td>CreateFolders</td><td/><td>3700</td><td>CreateFolders</td><td/></row>
@@ -4201,6 +4211,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<row><td>SetupPmsTypeDialog</td><td>NOT Installed AND isClient="False"</td><td>1281</td><td/><td/></row>
 		<row><td>SetupProgress</td><td/><td>1240</td><td>SetupProgress</td><td/></row>
 		<row><td>SetupResume</td><td>Installed And (RESUME Or Preselected) And Not PATCH</td><td>1220</td><td>SetupResume</td><td/></row>
+		<row><td>StartService</td><td>NOT Installed AND isClient="False"</td><td>1310</td><td/><td/></row>
 		<row><td>ValidateProductID</td><td/><td>700</td><td>ValidateProductID</td><td/></row>
 		<row><td>setAllUsersProfile2K</td><td>VersionNT &gt;= 500</td><td>980</td><td/><td/></row>
 		<row><td>setUserProfileNT</td><td>VersionNT</td><td>960</td><td/><td/></row>
@@ -4651,7 +4662,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">Arguments</col>
 		<col def="I2">Wait</col>
 		<col def="s72">Component_</col>
-		<row><td>NewEvent1</td><td>Chewsi Service</td><td>163</td><td/><td>1</td><td>ChewsiPlugin.Service.exe</td></row>
+		<row><td>NewEvent2</td><td>ChewsiService</td><td>160</td><td/><td>1</td><td>ChewsiPlugin.Service.exe</td></row>
 	</table>
 
 	<table name="ServiceInstall">
@@ -4668,7 +4679,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">Arguments</col>
 		<col def="s72">Component_</col>
 		<col def="L255">Description</col>
-		<row><td>NewServiceInstall1</td><td>Chewsi Service</td><td>##ID_STRING5##</td><td>16</td><td>2</td><td>32769</td><td/><td/><td/><td/><td/><td>ChewsiPlugin.Service.exe</td><td>##ID_STRING6##</td></row>
+		<row><td>ChewsiServiceInstall</td><td>ChewsiService</td><td>##ID_STRING5##</td><td>16</td><td>2</td><td>1</td><td/><td/><td>NT AUTHORITY\NETWORK SERVICE</td><td/><td/><td>ChewsiPlugin.Service.exe</td><td>##ID_STRING13##</td></row>
 	</table>
 
 	<table name="Shortcut">
@@ -4691,9 +4702,9 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
-		<row><td>ChewsiPlugin.Launcher.exe</td><td>chewsi_1_chewsi_plugin</td><td>##IDS_SHORTCUT_DISPLAY_NAME5##</td><td>ChewsiPlugin.Launcher.exe</td><td>basicmsi_Files</td><td/><td/><td/><td>ChewsiPlugin.Launc_2005E6EAF0CE41929C10762A3FCD21C1.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>ChewsiPlugin.UI.exe</td><td>chewsi_1_chewsi_plugin</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td>ChewsiPlugin.UI.exe</td><td>basicmsi_Files</td><td/><td/><td/><td>ChewsiPlugin.UI.ex_F7C7F9B1E7114DC3BAFE5E98758B642B.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>ChewsiPlugin.UI.exe1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td>ChewsiPlugin.UI.exe</td><td>basicmsi_Files</td><td/><td/><td/><td>ChewsiPlugin.UI.ex_EAAC5D2D19644CA7A56A7F5FB0740D21.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Launcher.exe</td><td>chewsi_1_chewsi_plugin</td><td>##IDS_SHORTCUT_DISPLAY_NAME5##</td><td>ChewsiPlugin.Launcher.exe</td><td>Default</td><td/><td/><td/><td>ChewsiPlugin.Launc_2005E6EAF0CE41929C10762A3FCD21C1.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.UI.exe</td><td>chewsi_1_chewsi_plugin</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td>ChewsiPlugin.UI.exe</td><td>Default</td><td/><td/><td/><td>ChewsiPlugin.UI.ex_F7C7F9B1E7114DC3BAFE5E98758B642B.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.UI.exe1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME3##</td><td>ChewsiPlugin.UI.exe</td><td>Default</td><td/><td/><td/><td>ChewsiPlugin.UI.ex_EAAC5D2D19644CA7A56A7F5FB0740D21.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">

@@ -133,7 +133,15 @@
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
-                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
+                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource ClientServiceStatusToBooleanConverter}">
+                                    <Binding Path="AppService.Initialized"/>
+                                    <Binding Path="AppService.IsLoadingClaims" />
+                                    <Binding Path="AppService" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
                     </Grid>
                     <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}" SelectedItem="{Binding SelectedDownloadItem}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Resources>

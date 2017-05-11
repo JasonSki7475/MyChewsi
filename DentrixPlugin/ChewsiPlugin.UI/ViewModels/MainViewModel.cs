@@ -58,12 +58,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         #region Commands       
         #region RefreshAppointmentsCommand
-        public ICommand RefreshClaimsCommand => _refreshClaimsCommand ?? (_refreshClaimsCommand = new RelayCommand(OnRefreshClaimsCommandExecute, CanExecuteRefreshClaimsCommand));
-
-        private bool CanExecuteRefreshClaimsCommand()
-        {
-            return !AppService.IsLoadingClaims && AppService.Initialized;
-        }
+        public ICommand RefreshClaimsCommand => _refreshClaimsCommand ?? (_refreshClaimsCommand = new RelayCommand(OnRefreshClaimsCommandExecute));
 
         private void OnRefreshClaimsCommandExecute()
         {

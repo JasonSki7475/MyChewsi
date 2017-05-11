@@ -10,6 +10,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
@@ -38,6 +39,7 @@ namespace ChewsiPlugin.UI.Services
         private readonly ServiceDiscovery _serviceDiscovery;
         private SettingsDto _settings;
         private ClientState _state;
+        private bool _isLoadingClaims;
 
         public ClientAppService(IClientDialogService dialogService, IChewsiApi chewsiApi, ISettingsViewModel settingsViewModel, IRepository repository)
         {
@@ -65,24 +67,27 @@ namespace ChewsiPlugin.UI.Services
             var isClient = _repository.GetSettingValue<bool>(Settings.IsClient);
             if (!isClient)
             {
-                ServiceController sc = new ServiceController
+                try
                 {
-                    ServiceName = "Chewsi Service"
-                };
-                if (sc.Status == ServiceControllerStatus.Stopped)
-                {
-                    Logger.Info("This is server installation, service is not running, starting the service");
-                    _dialogService.ShowLoadingIndicator("Starting the Chewsi service...");
-                    try
+                    ServiceController sc = new ServiceController
                     {
+                        ServiceName = "Chewsi Service"
+                    };
+                    if (sc.Status == ServiceControllerStatus.Stopped)
+                    {
+                        Logger.Info("This is server installation, service is not running, starting the service");
+                        _dialogService.ShowLoadingIndicator("Starting the Chewsi service...");
+
                         sc.Start();
                         sc.WaitForStatus(ServiceControllerStatus.Running);
                         Logger.Info("Service start complete, status: " + sc.Status);
                     }
-                    catch (InvalidOperationException)
-                    {
-                    }
-                }                
+
+                }
+                catch (InvalidOperationException e)
+                {
+                    Logger.Warn(e, "Failed to get status and start service");
+                }
             }
         }
 
@@ -192,7 +197,15 @@ namespace ChewsiPlugin.UI.Services
 
         public bool Initialized => _state == ClientState.Ready;
 
-        public bool IsLoadingClaims { get; private set; }
+        public bool IsLoadingClaims
+        {
+            get { return _isLoadingClaims; }
+            private set
+            {
+                _isLoadingClaims = value;
+                RaisePropertyChanged(() => IsLoadingClaims);
+            }
+        }
 
         public void OpenSettings()
         {
@@ -203,6 +216,14 @@ namespace ChewsiPlugin.UI.Services
                     await ReloadClaims(true);
                 }
                 _state = ClientState.Ready;
+                RaiseInitGetter();
+            });
+        }
+
+        private void RaiseInitGetter()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
                 RaisePropertyChanged(() => Initialized);
             });
         }
@@ -303,7 +324,7 @@ namespace ChewsiPlugin.UI.Services
                                 InitializeChewsiApi(settings);
                                 await ReloadClaims(false);
                                 _state = ClientState.Ready;
-                                RaisePropertyChanged(() => Initialized);
+                                RaiseInitGetter();
                             }
                             else
                             {
