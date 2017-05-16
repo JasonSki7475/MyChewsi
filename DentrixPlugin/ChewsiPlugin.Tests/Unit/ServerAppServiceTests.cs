@@ -85,7 +85,7 @@ namespace ChewsiPlugin.Tests.Unit
             _repositoryMock.Setup(m => m.Ready).Returns(false);    
                     
             // Act
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
 
             // Assert
             //AssertLoadingIndicator();
@@ -100,7 +100,7 @@ namespace ChewsiPlugin.Tests.Unit
         public void WhenFirstRun_LoadAppointmentsAndShowSettingsWithDataFromFirstAppointment()
         {
             // Arrange
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
 
             // Act
             DispatcherHelper.WaitWithDispatcher(1000);
@@ -130,7 +130,7 @@ namespace ChewsiPlugin.Tests.Unit
             // Arrange
 
             // Act
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
             DispatcherHelper.WaitWithDispatcher(1000);
 
             // Assert
@@ -174,7 +174,7 @@ namespace ChewsiPlugin.Tests.Unit
 
             _apiMock.Setup(m => m.GetClaimProcessingStatus(It.IsAny<ClaimProcessingStatusRequest>())).Returns(statusResponse);
 
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
 
             // Act
             DispatcherHelper.WaitWithDispatcher(20000);
@@ -220,7 +220,7 @@ namespace ChewsiPlugin.Tests.Unit
             _dentalApiMock.Setup(m => m.GetVersion()).Returns("v2");
 
             // Act
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
             DispatcherHelper.WaitWithDispatcher(1000);
 
             // Assert
@@ -236,7 +236,7 @@ namespace ChewsiPlugin.Tests.Unit
             _repositoryMock.Setup(m => m.GetSettingValue<string>(Settings.OsKey)).Returns(Utils.GetOperatingSystemInfo());
             _repositoryMock.Setup(m => m.GetSettingValue<string>(Settings.AppVersionKey)).Returns(Utils.GetPluginVersion());
             _dentalApiMock.Setup(m => m.GetVersion()).Returns("v1");
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
 
             // Act
             DispatcherHelper.WaitWithDispatcher(1000);
@@ -250,7 +250,7 @@ namespace ChewsiPlugin.Tests.Unit
         public void WhenSubmittingClaim_ShouldUpdateList()
         {
             // Arrange
-            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object, _dialogServiceMock.Object);
+            var appService = new ServerAppService(_repositoryMock.Object, _apiMock.Object, _dentalApiFactoryServiceMock.Object, _clientCallbackServiceMock.Object);
             var procedure = new ProcedureInfo
             {
                 Date = DateTime.Now,

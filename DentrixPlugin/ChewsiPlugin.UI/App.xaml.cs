@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using ChewsiPlugin.UI.Services;
 using ChewsiPlugin.UI.ViewModels;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Threading;
 using NLog;
 
@@ -50,6 +52,13 @@ namespace ChewsiPlugin.UI
             ViewModelLocator.InitContainer();
             var window = new MainWindow();
             window.Show();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            var vm = SimpleIoc.Default.GetInstance<IClientAppService>();
+            vm.Dispose();
         }
     }
 }

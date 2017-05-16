@@ -31,7 +31,7 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"INSERT INTO Appointments (Id, ChewsiId, DateTime, State, StatusText, PatientName, ProviderId, PatientId, SubscriberFirstName) VALUES (@Id, @ChewsiId, @DateTime, @State, @StatusText, @PatientName, @ProviderId, @PatientId, @SubscriberFirstName)", item);
+                connection.Execute(@"INSERT INTO Appointments (Id, ChewsiId, DateTime, State, StatusText, PatientName, ProviderId, PatientId, SubscriberFirstName, PmsModifiedDate) VALUES (@Id, @ChewsiId, @DateTime, @State, @StatusText, @PatientName, @ProviderId, @PatientId, @SubscriberFirstName, @PmsModifiedDate)", item);
             }
         }
 
@@ -77,7 +77,7 @@ namespace ChewsiPlugin.Api.Repository
         {
             using (var connection = GetConnection())
             {
-                connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, State = @State, StatusText = @StatusText, PatientName=@PatientName, ProviderId=@ProviderId, PatientId=@PatientId, SubscriberFirstName=@SubscriberFirstName WHERE Id = @Id", item);
+                connection.Execute(@"UPDATE Appointments SET ChewsiId = @ChewsiId, DateTime = @DateTime, State = @State, StatusText = @StatusText, PatientName=@PatientName, ProviderId=@ProviderId, PatientId=@PatientId, SubscriberFirstName=@SubscriberFirstName, PmsModifiedDate=@PmsModifiedDate WHERE Id = @Id", item);
             }
         }
 
@@ -131,6 +131,7 @@ namespace ChewsiPlugin.Api.Repository
                                      ProviderId         TEXT not null,
                                      StatusText         TEXT null,
                                      DateTime           DATETIME not null,
+                                     PmsModifiedDate    DATETIME not null,
                                      State              INTEGER not null
                                   )");
                 }

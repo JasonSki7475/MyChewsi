@@ -10,7 +10,6 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
@@ -40,6 +39,7 @@ namespace ChewsiPlugin.UI.Services
         private SettingsDto _settings;
         private ClientState _state;
         private bool _isLoadingClaims;
+        private ServiceHost _serviceHost;
 
         public ClientAppService(IClientDialogService dialogService, IChewsiApi chewsiApi, ISettingsViewModel settingsViewModel, IRepository repository)
         {
@@ -86,7 +86,7 @@ namespace ChewsiPlugin.UI.Services
                 }
                 catch (InvalidOperationException e)
                 {
-                    Logger.Warn(e, "Failed to get status and start service");
+                    Logger.Debug(e, "Failed to get status and start service");
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace ChewsiPlugin.UI.Services
                         switch (result)
                         {
                             case SubmitClaimResult.Error:
-                                _dialogService.Show("Cannot submit claim, communication error occured. Please try again.", "Error");
+                                //_dialogService.Show("Cannot submit claim, error occured. Please try again.", "Error");
                                 break;
                             case SubmitClaimResult.AlreadyDeleted:
                                 _dialogService.Show("Claim has already been deleted", "Error");
@@ -237,10 +237,10 @@ namespace ChewsiPlugin.UI.Services
             service.OfflineAnnouncementReceived += OnOfflineEvent;
 
             // Create ServiceHost for the AnnouncementService
-            ServiceHost serviceHost = new ServiceHost(service);
+            _serviceHost = new ServiceHost(service);
             // Listen for the announcements sent over UDP multicast  
-            serviceHost.AddServiceEndpoint(new UdpAnnouncementEndpoint());
-            serviceHost.Open();
+            _serviceHost.AddServiceEndpoint(new UdpAnnouncementEndpoint());
+            _serviceHost.Open();
             Logger.Info("Announcement service started");
         }
 
@@ -497,6 +497,12 @@ namespace ChewsiPlugin.UI.Services
                 }
                 _dialogService.HideLoadingIndicator();
             });
+        }
+
+        public void Dispose()
+        {
+            Logger.Info("Application is shutting down");
+            _serverAppService?.DisconnectClient();
         }
     }
 }

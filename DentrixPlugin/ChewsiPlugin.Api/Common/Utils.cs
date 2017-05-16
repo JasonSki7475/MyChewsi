@@ -45,11 +45,11 @@ namespace ChewsiPlugin.Api.Common
             }
             catch (FaultException ex)
             {
-                Logger.Warn(ex, "Exception handled on server-side");
+                Logger.Warn(ex, "Exception handled on server side");
             }
             catch (CommunicationException ex)
             {
-                Logger.Warn(ex, "Communications error");
+                Logger.Warn(ex, "Communication error");
             }
             catch (Exception ex)
             {
@@ -71,11 +71,11 @@ namespace ChewsiPlugin.Api.Common
             }
             catch (FaultException ex)
             {
-                Logger.Warn(ex, "Exception handled on server-side");
+                Logger.Warn(ex, "Exception handled on server side");
             }
             catch (CommunicationException ex)
             {
-                Logger.Warn(ex, "Communications error");
+                Logger.Warn(ex, "Communication error");
             }
             catch (Exception ex)
             {
@@ -97,11 +97,11 @@ namespace ChewsiPlugin.Api.Common
             }
             catch (FaultException ex)
             {
-                Logger.Warn(ex, "Exception handled on server-side");
+                Logger.Warn(ex, "Exception handled on server side");
             }
             catch (CommunicationException ex)
             {
-                Logger.Warn(ex, "Communications error");
+                Logger.Warn(ex, "Communication error");
             }
             catch (Exception ex)
             {
@@ -123,11 +123,11 @@ namespace ChewsiPlugin.Api.Common
             }
             catch (FaultException ex)
             {
-                Logger.Warn(ex, "Exception handled on server-side");
+                Logger.Warn(ex, "Exception handled on server side");
             }
             catch (CommunicationException ex)
             {
-                Logger.Warn(ex, "Communications error");
+                Logger.Warn(ex, "Communication error");
             }
             catch (Exception ex)
             {
@@ -150,11 +150,11 @@ namespace ChewsiPlugin.Api.Common
             }
             catch (FaultException ex)
             {
-                Logger.Warn(ex, "Exception handled on server-side");
+                Logger.Warn(ex, "Exception handled on server side");
             }
             catch (CommunicationException ex)
             {
-                Logger.Warn(ex, "Communications error");
+                Logger.Warn(ex, "Communication error");
             }
             catch (Exception ex)
             {

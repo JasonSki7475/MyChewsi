@@ -7,7 +7,7 @@ using ChewsiPlugin.UI.ViewModels;
 
 namespace ChewsiPlugin.UI.Services
 {
-    internal interface IClientAppService
+    internal interface IClientAppService : IDisposable
     {
         void ValidateAndSubmitClaim(string id);
         void DownloadFile(string documentId, string postedDate, bool downloadReport);

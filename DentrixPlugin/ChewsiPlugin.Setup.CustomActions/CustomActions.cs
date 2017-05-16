@@ -17,8 +17,12 @@ namespace ChewsiPlugin.Setup.CustomActions
         private const string OpenDentalConfigFileName = "FreeDentalConfig.xml";
         private const string ChewsiLauncherRegistryKey = "Chewsi Launcher";
 
-        public static bool SetCurrentPMS(string pmsType, string installFolder)
+        const uint ERROR_INSTALL_FAILURE = 1603;
+        const uint ERROR_SUCCESS = 0;
+
+        public static uint Setup(string pmsType, string installFolder, string isClient)
         {
+            uint result;
             try
             {
                 Logger.Info("Setting current PMS. Type={0}. Folder={1}", pmsType, installFolder);
@@ -67,35 +71,23 @@ namespace ChewsiPlugin.Setup.CustomActions
                 {
                     if (pmsType == "OpenDental")
                     {
-                        File.Copy(Path.Combine(folder, OpenDentalConfigFileName), Path.Combine(installFolder, OpenDentalConfigFileName), true);
+                        File.Copy(Path.Combine(folder, OpenDentalConfigFileName),
+                            Path.Combine(installFolder, OpenDentalConfigFileName), true);
                     }
                 }
 
                 repository.SaveSetting(Settings.PMS.PathKey, folder);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Failed to initialize settings for " + pmsType);
-                throw;
-            }
-        }
 
-        public static bool SetClientFlag(string isClient)
-        {
-            try
-            {
                 Logger.Info("Setting IsClient flag. Value={0}", isClient);
-                var repository = new Repository();
-                repository.Initialize();
                 repository.SaveSetting(Settings.IsClient, isClient == "True");
-                return true;
+                result = ERROR_SUCCESS;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Failed to set IsClient flag");
-                throw;
+                result = ERROR_INSTALL_FAILURE;
+                Logger.Error(ex, "Failed to initialize settings for " + pmsType);
             }
+            return result;
         }
 
         public static void DeleteAutoRunLauncherKeyFromRegistry()

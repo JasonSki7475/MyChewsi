@@ -161,7 +161,6 @@
 		<row><td>InstallFinalize</td><td/><td>6600</td><td>InstallFinalize</td><td/></row>
 		<row><td>InstallInitialize</td><td/><td>1500</td><td>InstallInitialize</td><td/></row>
 		<row><td>InstallValidate</td><td/><td>1400</td><td>InstallValidate</td><td/></row>
-		<row><td>RegistryCleanup</td><td>Installed</td><td>6650</td><td/><td/></row>
 		<row><td>ScheduleReboot</td><td>ISSCHEDULEREBOOT</td><td>4010</td><td>ScheduleReboot</td><td/></row>
 	</table>
 
@@ -180,10 +179,8 @@
 		<row><td>SetupCompleteError</td><td/><td>-3</td><td>SetupCompleteError</td><td/></row>
 		<row><td>SetupCompleteSuccess</td><td/><td>-1</td><td>SetupCompleteSuccess</td><td/></row>
 		<row><td>SetupInitialization</td><td/><td>50</td><td>SetupInitialization</td><td/></row>
-		<row><td>SetupInstallationType</td><td>NOT Installed</td><td>1017</td><td/><td/></row>
 		<row><td>SetupInstallationTypeDialog</td><td>NOT Installed</td><td>1015</td><td/><td/></row>
 		<row><td>SetupInterrupted</td><td/><td>-2</td><td>SetupInterrupted</td><td/></row>
-		<row><td>SetupPmsType</td><td>NOT Installed AND isClient="False"</td><td>1400</td><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>NOT Installed AND isClient="False"</td><td>1387</td><td/><td/></row>
 		<row><td>SetupProgress</td><td/><td>1020</td><td>SetupProgress</td><td/></row>
 	</table>
@@ -373,8 +370,8 @@
 		<row><td>SQLite.Interop.dll</td><td>{86A04DDA-81E1-41D0-AB69-276DAFB22E19}</td><td>X64</td><td>8</td><td/><td>sqlite.interop.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>SQLite.Interop.dll1</td><td>{42A5742C-2633-42B3-AC72-3D509A799315}</td><td>X86</td><td>8</td><td/><td>sqlite.interop.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>System.Data.SQLite.dll</td><td>{3C579223-ACDF-42B9-8B4D-01ABFC3AD633}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.data.sqlite.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>System.Net.Http.Extensions.dll</td><td>{981BD8C9-C44E-45D9-BCA2-0A775897CC4C}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.extensions.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>System.Net.Http.Primitives.dll</td><td>{3A508196-4711-4964-8FAE-58BA329EBDF7}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.net.http.primitives.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.Extensions.dll</td><td>{981BD8C9-C44E-45D9-BCA2-0A775897CC4C}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>System.Net.Http.Primitives.dll</td><td>{3A508196-4711-4964-8FAE-58BA329EBDF7}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>System.Windows.Interactivity.dll</td><td>{B79E3499-4FD3-4A8D-8AFD-51AF10AB14EF}</td><td>INSTALLDIR</td><td>8</td><td/><td>system.windows.interactivity</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -744,7 +741,7 @@
 		<row><td>SetupInterrupted</td><td>ShowMsiLogText</td><td>Text</td><td>164</td><td>172</td><td>198</td><td>10</td><td>65538</td><td/><td>##IDS__IsSetupComplete_ShowMsiLog##</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupInterrupted</td><td>TextLine1</td><td>Text</td><td>135</td><td>8</td><td>225</td><td>45</td><td>65539</td><td/><td>##IDS__IsUserExit_WizardCompleted##</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupInterrupted</td><td>TextLine2</td><td>Text</td><td>135</td><td>55</td><td>228</td><td>25</td><td>196611</td><td/><td>##IDS__IsUserExit_WizardInterrupted##</td><td/><td/><td>0</td><td/><td/><td/></row>
-		<row><td>SetupPmsTypeDialog</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>1</td><td/><td>##IDS_BACK##</td><td>ComboBox1</td><td/><td>0</td><td/><td/><td/></row>
+		<row><td>SetupPmsTypeDialog</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_BACK##</td><td>ComboBox1</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>Banner</td><td>Bitmap</td><td>0</td><td>0</td><td>374</td><td>44</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td>NewBinary1</td></row>
 		<row><td>SetupPmsTypeDialog</td><td>BannerLine</td><td>Line</td><td>0</td><td>44</td><td>374</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>SetupPmsTypeDialog</td><td>Branding1</td><td>Text</td><td>4</td><td>229</td><td>50</td><td>13</td><td>3</td><td/><td>{&amp;MSSWhiteSerif8}InstallShield</td><td/><td/><td>0</td><td/><td/><td/></row>
@@ -993,7 +990,7 @@
 		<row><td>PatchWelcome</td><td>Next</td><td>ReinstallMode</td><td>omus</td><td>PATCH And REINSTALLMODE=""</td><td>2</td></row>
 		<row><td>ReadyToInstall</td><td>Back</td><td>NewDialog</td><td>CustomSetup</td><td>Installed OR _IsSetupTypeMin = "Custom"</td><td>2</td></row>
 		<row><td>ReadyToInstall</td><td>Back</td><td>NewDialog</td><td>MaintenanceType</td><td>Installed AND _IsMaintenance = "Reinstall"</td><td>3</td></row>
-		<row><td>ReadyToInstall</td><td>Back</td><td>NewDialog</td><td>SetupInstallationTypeDialog</td><td>NOT Installed AND _IsSetupTypeMin &lt;&gt; "Custom"</td><td>1</td></row>
+		<row><td>ReadyToInstall</td><td>Back</td><td>NewDialog</td><td>SetupPmsTypeDialog</td><td>NOT Installed AND _IsSetupTypeMin &lt;&gt; "Custom"</td><td>1</td></row>
 		<row><td>ReadyToInstall</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>ReadyToInstall</td><td>InstallNow</td><td>EndDialog</td><td>Return</td><td>OutOfNoRbDiskSpace &lt;&gt; 1</td><td>0</td></row>
 		<row><td>ReadyToInstall</td><td>InstallNow</td><td>NewDialog</td><td>OutOfSpace</td><td>OutOfNoRbDiskSpace = 1</td><td>0</td></row>
@@ -1041,16 +1038,16 @@
 		<row><td>SetupInitialization</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>SetupInstallationTypeDialog</td><td>Back</td><td>NewDialog</td><td>LicenseAgreement</td><td>NOT Installed</td><td>0</td></row>
 		<row><td>SetupInstallationTypeDialog</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>1</td></row>
-		<row><td>SetupInstallationTypeDialog</td><td>Next</td><td>NewDialog</td><td>ReadyToInstall</td><td>1</td><td>0</td></row>
+		<row><td>SetupInstallationTypeDialog</td><td>Next</td><td>NewDialog</td><td>SetupPmsTypeDialog</td><td>1</td><td>0</td></row>
 		<row><td>SetupInterrupted</td><td>Back</td><td>EndDialog</td><td>Exit</td><td>1</td><td>2</td></row>
 		<row><td>SetupInterrupted</td><td>Back</td><td>[Suspend]</td><td>{}</td><td>1</td><td>1</td></row>
 		<row><td>SetupInterrupted</td><td>Cancel</td><td>EndDialog</td><td>Exit</td><td>1</td><td>2</td></row>
 		<row><td>SetupInterrupted</td><td>Cancel</td><td>[Suspend]</td><td>1</td><td>1</td><td>1</td></row>
 		<row><td>SetupInterrupted</td><td>Finish</td><td>DoAction</td><td>ShowMsiLog</td><td>MsiLogFileLocation And (ISSHOWMSILOG="1")</td><td>3</td></row>
 		<row><td>SetupInterrupted</td><td>Finish</td><td>EndDialog</td><td>Exit</td><td>1</td><td>2</td></row>
-		<row><td>SetupPmsTypeDialog</td><td>Back</td><td>EndDialog</td><td>Return</td><td>1</td><td>0</td></row>
+		<row><td>SetupPmsTypeDialog</td><td>Back</td><td>NewDialog</td><td>SetupInstallationTypeDialog</td><td>1</td><td>0</td></row>
 		<row><td>SetupPmsTypeDialog</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>1</td></row>
-		<row><td>SetupPmsTypeDialog</td><td>Next</td><td>EndDialog</td><td>Return</td><td>1</td><td>0</td></row>
+		<row><td>SetupPmsTypeDialog</td><td>Next</td><td>NewDialog</td><td>ReadyToInstall</td><td>1</td><td>0</td></row>
 		<row><td>SetupProgress</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>SetupResume</td><td>Cancel</td><td>SpawnDialog</td><td>CancelSetup</td><td>1</td><td>0</td></row>
 		<row><td>SetupResume</td><td>Next</td><td>EndDialog</td><td>Return</td><td>OutOfNoRbDiskSpace &lt;&gt; 1</td><td>0</td></row>
@@ -1069,6 +1066,8 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>CHEWSI</td><td>AllOtherFiles4</td></row>
 		<row><td>CommonAppDataFolder</td><td>AllOtherFiles3</td></row>
+		<row><td>INSTALLDIR</td><td>System.Net.Http.Extensions.dll</td></row>
+		<row><td>INSTALLDIR</td><td>System.Net.Http.Primitives.dll</td></row>
 		<row><td>X64</td><td>AllOtherFiles2</td></row>
 		<row><td>X86</td><td>AllOtherFiles1</td></row>
 	</table>
@@ -1080,7 +1079,7 @@
 		<col def="S0">Target</col>
 		<col def="I4">ExtendedType</col>
 		<col def="S255">ISComments</col>
-		<row><td>ConfigureAcl</td><td>98</td><td>SystemFolder</td><td>netsh http add urlacl url=http://+:45000/DentalApi.svc user="NETWORK SERVICE"</td><td>0</td><td/></row>
+		<row><td>ConfigureAcl</td><td>3170</td><td>SystemFolder</td><td>netsh http add urlacl url=http://+:45000/DentalApi.svc user="NETWORK SERVICE"</td><td>0</td><td/></row>
 		<row><td>ISLockPermissionsCost</td><td>1</td><td>ISLockPermissions.dll</td><td>ISLockPermissionsCostAction</td><td/><td/></row>
 		<row><td>ISLockPermissionsInstall</td><td>3073</td><td>ISLockPermissions.dll</td><td>ISLockPermissionsInstallAction</td><td/><td/></row>
 		<row><td>ISPreventDowngrade</td><td>19</td><td/><td>[IS_PREVENT_DOWNGRADE_EXIT]</td><td/><td>Exits install when a newer version of this product is found</td></row>
@@ -1089,12 +1088,12 @@
 		<row><td>ISSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFiles</td><td/><td/></row>
 		<row><td>ISSelfRegisterFinalize</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFinalize</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISUnSelfRegisterFiles</td><td/><td/></row>
-		<row><td>LaunchProgram</td><td>210</td><td>chewsiplugin.ui.exe</td><td>init</td><td>0</td><td/></row>
+		<row><td>LaunchProgram</td><td>210</td><td>chewsiplugin.ui.exe</td><td/><td>0</td><td/></row>
 		<row><td>RegistryCleanup</td><td>65</td><td>RegistryCleanup.clr</td><td/><td>0</td><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td>51</td><td>ARPINSTALLLOCATION</td><td>[INSTALLDIR]</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%SystemRoot]\Profiles\All Users</td><td/><td/></row>
-		<row><td>SetupInstallationType</td><td>65</td><td>SetupInstallationType.clr</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions.SetClientFlag(...)</td><td>0</td><td/></row>
-		<row><td>SetupPmsType</td><td>65</td><td>SetupPmsType.clr</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions.SetCurrentPMS(...)</td><td>0</td><td/></row>
+		<row><td>SetSetupParams</td><td>51</td><td>Setup</td><td>#chewsiplugin.setup.customact="[#chewsiplugin.setup.customact]" pmsType="[pmsType]" installFolder="[INSTALLDIR]" isClient="[isClient]"</td><td>0</td><td/></row>
+		<row><td>Setup</td><td>1025</td><td>Setup.clr</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions.Setup()</td><td>0</td><td/></row>
 		<row><td>ShowMsiLog</td><td>226</td><td>SystemFolder</td><td>[SystemFolder]notepad.exe "[MsiLogFileLocation]"</td><td/><td>Shows Property-driven MSI Log</td></row>
 		<row><td>StartService</td><td>98</td><td>SystemFolder</td><td>net start "Chewsi Service"</td><td>0</td><td/></row>
 		<row><td>setAllUsersProfile2K</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%ALLUSERSPROFILE]</td><td/><td/></row>
@@ -1933,28 +1932,29 @@
 		<row><td>chewsiplugin.api.dll</td><td>ChewsiPlugin.Api.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.Api.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.Api.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.eaglesoftapi.dl</td><td>ChewsiPlugin.EaglesoftApi.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.EaglesoftApi.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.EaglesoftApi\bin\Release\ChewsiPlugin.EaglesoftApi.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.launcher.exe</td><td>ChewsiPlugin.Launcher.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.Launcher.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Launcher\bin\Release\ChewsiPlugin.Launcher.exe</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.launcher.exe.co</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.Launcher.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Launcher\bin\Release\ChewsiPlugin.Launcher.exe.config</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.opendentalapi.d</td><td>ChewsiPlugin.OpenDentalApi.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.OpenDentalApi.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.OpenDentalApi.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.service.exe</td><td>ChewsiPlugin.Service.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.Service.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Service\bin\Release\ChewsiPlugin.Service.exe</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.service.exe.con</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.Service.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Service\bin\Release\ChewsiPlugin.Service.exe.config</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.setup.customact</td><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.Setup.CustomActions.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.Setup.CustomActions.dll</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.setup.customact1</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.Setup.CustomActions.dll.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.Setup.CustomActions.dll.config</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe</td><td>ChewsiPlugin.UI.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.UI.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.UI.exe</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe.config</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.UI.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.UI.exe.config</td><td>1</td><td/></row>
+		<row><td>clientlog.txt</td><td>AllOtherFiles4</td><td>CLIENT~1.TXT|ClientLog.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\ClientLog.txt</td><td>1</td><td/></row>
 		<row><td>createuser_dbna5agn.exe</td><td>CreateUser_dBNa5Agn.exe</td><td>CREATE~1.EXE|CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\CreateUser_dBNa5Agn.exe</td><td>1</td><td/></row>
 		<row><td>dapper.dll</td><td>Dapper.dll</td><td>Dapper.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\Dapper.dll</td><td>1</td><td/></row>
 		<row><td>database.sqlite</td><td>AllOtherFiles4</td><td>DATABA~1.SQL|Database.sqlite</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\Database.sqlite</td><td>1</td><td/></row>
 		<row><td>dbna5agn.dtxkey</td><td>AllOtherFiles</td><td>DBNA5A~1.DTX|dBNa5Agn.dtxkey</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\dBNa5Agn.dtxkey</td><td>1</td><td/></row>
 		<row><td>galasoft.mvvmlight.dll</td><td>GalaSoft.MvvmLight.dll</td><td>GALASO~1.DLL|GalaSoft.MvvmLight.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\GalaSoft.MvvmLight.dll</td><td>1</td><td/></row>
 		<row><td>galasoft.mvvmlight.extras.dl</td><td>GalaSoft.MvvmLight.Extras.dll</td><td>GALASO~1.DLL|GalaSoft.MvvmLight.Extras.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\GalaSoft.MvvmLight.Extras.dll</td><td>1</td><td/></row>
-		<row><td>log.txt</td><td>AllOtherFiles4</td><td>Log.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\Log.txt</td><td>1</td><td/></row>
+		<row><td>launcherlog.txt</td><td>AllOtherFiles4</td><td>LAUNCH~1.TXT|LauncherLog.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\LauncherLog.txt</td><td>1</td><td/></row>
 		<row><td>microsoft.practices.servicel</td><td>Microsoft.Practices.ServiceLocation.dll</td><td>MICROS~1.DLL|Microsoft.Practices.ServiceLocation.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\Microsoft.Practices.ServiceLocation.dll</td><td>1</td><td/></row>
 		<row><td>newtonsoft.json.dll</td><td>Newtonsoft.Json.dll</td><td>NEWTON~1.DLL|Newtonsoft.Json.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\Newtonsoft.Json.dll</td><td>1</td><td/></row>
-		<row><td>nlog.config</td><td>AllOtherFiles</td><td>NLOG~1.CON|NLog.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\NLog.config</td><td>1</td><td/></row>
 		<row><td>nlog.dll</td><td>NLog.dll</td><td>NLog.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\NLog.dll</td><td>1</td><td/></row>
+		<row><td>servicelog.txt</td><td>AllOtherFiles4</td><td>SERVIC~1.TXT|ServiceLog.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\ServiceLog.txt</td><td>1</td><td/></row>
 		<row><td>sqlite.interop.dll</td><td>SQLite.Interop.dll</td><td>SQLITE~1.DLL|SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\x64\SQLite.Interop.dll</td><td>1</td><td/></row>
 		<row><td>sqlite.interop.dll1</td><td>SQLite.Interop.dll1</td><td>SQLITE~1.DLL|SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\x86\SQLite.Interop.dll</td><td>1</td><td/></row>
 		<row><td>system.data.sqlite.dll</td><td>System.Data.SQLite.dll</td><td>SYSTEM~1.DLL|System.Data.SQLite.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Data.SQLite.dll</td><td>1</td><td/></row>
-		<row><td>system.net.http.extensions.d</td><td>System.Net.Http.Extensions.dll</td><td>SYSTEM~1.DLL|System.Net.Http.Extensions.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.Extensions.dll</td><td>1</td><td/></row>
-		<row><td>system.net.http.primitives.d</td><td>System.Net.Http.Primitives.dll</td><td>SYSTEM~1.DLL|System.Net.Http.Primitives.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Net.Http.Primitives.dll</td><td>1</td><td/></row>
 		<row><td>system.windows.interactivity</td><td>System.Windows.Interactivity.dll</td><td>SYSTEM~1.DLL|System.Windows.Interactivity.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\System.Windows.Interactivity.dll</td><td>1</td><td/></row>
 	</table>
 
@@ -1975,7 +1975,7 @@
 		<row><td>BiildInternetEnabled</td><td/></row>
 		<row><td>BiildSingleExeEnabled</td><td/></row>
 		<row><td>BiildSingleMSIEnabled</td><td/></row>
-		<row><td>PROJECT_ASSISTANT_DEFAULT_FEATURE</td><td>basicmsi_Files</td></row>
+		<row><td>PROJECT_ASSISTANT_DEFAULT_FEATURE</td><td>Default</td></row>
 		<row><td>PROJECT_ASSISTANT_FEATURES</td><td>NonSelectable</td></row>
 	</table>
 
@@ -2026,19 +2026,18 @@
 		<row><td>RegistryCleanup</td><td>Class</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions</td></row>
 		<row><td>RegistryCleanup</td><td>Method</td><td>DeleteAutoRunLauncherKeyFromRegistry</td></row>
 		<row><td>RegistryCleanup</td><td>Type</td><td>16</td></row>
-		<row><td>SetupInstallationType</td><td>Assembly</td><td>[#chewsiplugin.setup.customact]</td></row>
-		<row><td>SetupInstallationType</td><td>Class</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions</td></row>
-		<row><td>SetupInstallationType</td><td>Method</td><td>SetClientFlag</td></row>
-		<row><td>SetupInstallationType</td><td>Param1</td><td>[isClient]</td></row>
-		<row><td>SetupInstallationType</td><td>Return</td><td>-</td></row>
-		<row><td>SetupInstallationType</td><td>Type</td><td>16</td></row>
-		<row><td>SetupPmsType</td><td>Assembly</td><td>[#chewsiplugin.setup.customact]</td></row>
-		<row><td>SetupPmsType</td><td>Class</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions</td></row>
-		<row><td>SetupPmsType</td><td>Method</td><td>SetCurrentPMS</td></row>
-		<row><td>SetupPmsType</td><td>Param1</td><td>[pmsType]</td></row>
-		<row><td>SetupPmsType</td><td>Param2</td><td>[INSTALLDIR]</td></row>
-		<row><td>SetupPmsType</td><td>Return</td><td>-</td></row>
-		<row><td>SetupPmsType</td><td>Type</td><td>16</td></row>
+		<row><td>Setup</td><td>Assembly</td><td>[#chewsiplugin.setup.customact]</td></row>
+		<row><td>Setup</td><td>Class</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions</td></row>
+		<row><td>Setup</td><td>Dependency0</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.API.dll</td></row>
+		<row><td>Setup</td><td>Dependency1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.EaglesoftApi.dll</td></row>
+		<row><td>Setup</td><td>Dependency2</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.OpenDentalApi.dll</td></row>
+		<row><td>Setup</td><td>Dependency3</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\NLog.dll</td></row>
+		<row><td>Setup</td><td>Method</td><td>Setup</td></row>
+		<row><td>Setup</td><td>Param1</td><td>[pmsType]</td></row>
+		<row><td>Setup</td><td>Param2</td><td>[INSTALLDIR]</td></row>
+		<row><td>Setup</td><td>Param3</td><td>[isClient]</td></row>
+		<row><td>Setup</td><td>Return</td><td>-</td></row>
+		<row><td>Setup</td><td>Type</td><td>16</td></row>
 	</table>
 
 	<table name="ISComCatalogAttribute">
@@ -2334,8 +2333,10 @@
 		<col def="I4">Permission</col>
 		<col def="I4">Attributes</col>
 		<row><td>CHEWSI</td><td>CreateFolder</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031743</td><td>0</td></row>
+		<row><td>clientlog.txt</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
 		<row><td>database.sqlite</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
-		<row><td>log.txt</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
+		<row><td>launcherlog.txt</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
+		<row><td>servicelog.txt</td><td>File</td><td>[%USERDOMAIN]</td><td>Users</td><td>1880031679</td><td>0</td></row>
 	</table>
 
 	<table name="ISLogicalDisk">
@@ -4075,7 +4076,7 @@
 		<row><td>ISPreventDowngrade</td><td>ISFOUNDNEWERPRODUCTVERSION</td><td>450</td><td>ISPreventDowngrade</td><td/></row>
 		<row><td>ISSelfRegisterCosting</td><td/><td>2201</td><td/><td/></row>
 		<row><td>ISSelfRegisterFiles</td><td/><td>5601</td><td/><td/></row>
-		<row><td>ISSelfRegisterFinalize</td><td/><td>6601</td><td/><td/></row>
+		<row><td>ISSelfRegisterFinalize</td><td/><td>6602</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td/><td>2202</td><td/><td/></row>
 		<row><td>InstallFiles</td><td/><td>4000</td><td>InstallFiles</td><td/></row>
 		<row><td>InstallFinalize</td><td/><td>6600</td><td>InstallFinalize</td><td/></row>
@@ -4122,7 +4123,9 @@
 		<row><td>SetARPINSTALLLOCATION</td><td/><td>1100</td><td>SetARPINSTALLLOCATION</td><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>VersionNT = 400</td><td>970</td><td/><td/></row>
 		<row><td>SetODBCFolders</td><td/><td>1200</td><td>SetODBCFolders</td><td/></row>
-		<row><td>StartServices</td><td>VersionNT</td><td>5900</td><td>StartServices</td><td/></row>
+		<row><td>SetSetupParams</td><td>1</td><td>6401</td><td/><td/></row>
+		<row><td>Setup</td><td>NOT Installed</td><td>6404</td><td/><td/></row>
+		<row><td>StartServices</td><td>VersionNT</td><td>6408</td><td>StartServices</td><td/></row>
 		<row><td>StopServices</td><td>VersionNT</td><td>1525</td><td>StopServices</td><td/></row>
 		<row><td>UnpublishComponents</td><td/><td>1700</td><td>UnpublishComponents</td><td/></row>
 		<row><td>UnpublishFeatures</td><td/><td>1800</td><td>UnpublishFeatures</td><td/></row>
@@ -4205,13 +4208,9 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<row><td>SetupCompleteError</td><td/><td>-3</td><td>SetupCompleteError</td><td/></row>
 		<row><td>SetupCompleteSuccess</td><td/><td>-1</td><td>SetupCompleteSuccess</td><td/></row>
 		<row><td>SetupInitialization</td><td/><td>420</td><td>SetupInitialization</td><td/></row>
-		<row><td>SetupInstallationType</td><td>NOT Installed</td><td>1268</td><td/><td/></row>
 		<row><td>SetupInterrupted</td><td/><td>-2</td><td>SetupInterrupted</td><td/></row>
-		<row><td>SetupPmsType</td><td>NOT Installed AND isClient="False"</td><td>1285</td><td/><td/></row>
-		<row><td>SetupPmsTypeDialog</td><td>NOT Installed AND isClient="False"</td><td>1281</td><td/><td/></row>
 		<row><td>SetupProgress</td><td/><td>1240</td><td>SetupProgress</td><td/></row>
 		<row><td>SetupResume</td><td>Installed And (RESUME Or Preselected) And Not PATCH</td><td>1220</td><td>SetupResume</td><td/></row>
-		<row><td>StartService</td><td>NOT Installed AND isClient="False"</td><td>1310</td><td/><td/></row>
 		<row><td>ValidateProductID</td><td/><td>700</td><td>ValidateProductID</td><td/></row>
 		<row><td>setAllUsersProfile2K</td><td>VersionNT &gt;= 500</td><td>980</td><td/><td/></row>
 		<row><td>setUserProfileNT</td><td>VersionNT</td><td>960</td><td/><td/></row>
@@ -4510,7 +4509,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<row><td>IS_SQLSERVER_USERNAME</td><td>sa</td><td/></row>
 		<row><td>InstallChoice</td><td>AR</td><td/></row>
 		<row><td>Manufacturer</td><td>##COMPANY_NAME##</td><td/></row>
-		<row><td>NewProperty1</td><td>0</td><td/></row>
+		<row><td>MsiLogging</td><td>voicewarmup</td><td/></row>
 		<row><td>PIDTemplate</td><td>12345&lt;###-%%%%%%%&gt;@@@@@</td><td/></row>
 		<row><td>PROGMSG_IIS_CREATEAPPPOOL</td><td>##IDS_PROGMSG_IIS_CREATEAPPPOOL##</td><td/></row>
 		<row><td>PROGMSG_IIS_CREATEAPPPOOLS</td><td>##IDS_PROGMSG_IIS_CREATEAPPPOOLS##</td><td/></row>
@@ -4550,6 +4549,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<row><td>RestartManagerOption</td><td>CloseRestart</td><td/></row>
 		<row><td>SHOWLAUNCHPROGRAM</td><td>0</td><td/></row>
 		<row><td>SecureCustomProperties</td><td>ISFOUNDNEWERPRODUCTVERSION;USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;INSTALLDIR;LAUNCHPROGRAM</td><td/></row>
+		<row><td>Setup</td><td/><td/></row>
 		<row><td>SetupType</td><td>Typical</td><td/></row>
 		<row><td>UpgradeCode</td><td>{74FEA96C-7531-4243-B9DE-3917E2E6A4F6}</td><td/></row>
 		<row><td>_IsMaintenance</td><td>Change</td><td/></row>
@@ -4662,6 +4662,7 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">Arguments</col>
 		<col def="I2">Wait</col>
 		<col def="s72">Component_</col>
+		<row><td>NewEvent1</td><td>ChewsiService</td><td>1</td><td/><td>1</td><td>ChewsiPlugin.Service.exe</td></row>
 		<row><td>NewEvent2</td><td>ChewsiService</td><td>160</td><td/><td>1</td><td>ChewsiPlugin.Service.exe</td></row>
 	</table>
 
