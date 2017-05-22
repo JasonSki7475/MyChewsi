@@ -17,7 +17,6 @@ namespace ChewsiPlugin.EaglesoftApi
 
         public EaglesoftApi()
         {
-            Initialize();
         }
 
         private OdbcConnection GetConnection()
@@ -44,7 +43,7 @@ namespace ChewsiPlugin.EaglesoftApi
             if (!TestDatabaseConnection())
             {
                 Logger.Info("Starting database server");
-                StartDatabaseService();
+                _initialized = StartDatabaseService();
             }
         }
 
@@ -65,17 +64,29 @@ namespace ChewsiPlugin.EaglesoftApi
             }
         }
 
-        private void StartDatabaseService()
+        private bool StartDatabaseService()
         {
-            var serviceController = new ServiceController(DatabaseServiceName);
-            if (serviceController.Status != ServiceControllerStatus.Running)
+            try
             {
-                if (serviceController.Status != ServiceControllerStatus.StartPending && serviceController.Status != ServiceControllerStatus.ContinuePending)
+                var serviceController = new ServiceController(DatabaseServiceName);
+                if (serviceController.Status != ServiceControllerStatus.Running)
                 {
-                    serviceController.Start();
+                    if (serviceController.Status != ServiceControllerStatus.StartPending && serviceController.Status != ServiceControllerStatus.ContinuePending)
+                    {
+                        serviceController.Start();
+                    }
+                    serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMilliseconds(DatabaseServiceStartTimeoutMs));
                 }
-                serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMilliseconds(DatabaseServiceStartTimeoutMs));
+                if (serviceController.Status == ServiceControllerStatus.Running)
+                {
+                    return true;
+                }
             }
+            catch (InvalidOperationException e)
+            {
+                Logger.Debug(e, "Failed to get status and start Eaglesoft database service");
+            }
+            return false;
         }
 
         public PatientInfo GetPatientInfo(string patientId)

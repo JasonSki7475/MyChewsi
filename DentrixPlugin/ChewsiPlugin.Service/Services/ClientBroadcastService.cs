@@ -2,11 +2,13 @@
 using System.Threading.Tasks;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
+using NLog;
 
 namespace ChewsiPlugin.Service.Services
 {
     internal class ClientBroadcastService : IClientCallbackService, IDialogService
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, IClientCallback> _callbackList;
 
         public ClientBroadcastService()
@@ -66,6 +68,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
+                Logger.Debug("Lock claim {0}", id);
                 Utils.SafeCall(callback.LockClaim, id);
             });
         }
@@ -74,6 +77,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
+                Logger.Debug("Unlock claim {0}", id);
                 Utils.SafeCall(callback.UnlockClaim, id);
             });
         }
@@ -82,6 +86,7 @@ namespace ChewsiPlugin.Service.Services
         {
             Parallel.ForEach(_callbackList.Values, callback =>
             {
+                Logger.Debug("Broadcasting {0} updated claims", claims.Count);
                 Utils.SafeCall(callback.SetClaims, claims);
             });
         }

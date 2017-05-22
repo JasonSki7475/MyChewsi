@@ -43,8 +43,7 @@ namespace ChewsiPlugin.UI.Services
 
         public ClientAppService(IClientDialogService dialogService, IChewsiApi chewsiApi, ISettingsViewModel settingsViewModel, IRepository repository)
         {
-            //_settings = new SettingsDto(Settings.PMS.Types.Dentrix, "", "", "", "", false, "", 8080, "", "", "", false, false, "", false);
-            _state = ClientState.Initializing;
+            SetState(ClientState.Initializing);
             _dialogService = dialogService;
             _chewsiApi = chewsiApi;
             _settingsViewModel = settingsViewModel;
@@ -56,11 +55,13 @@ namespace ChewsiPlugin.UI.Services
         public void Initialize()
         {
             StartService();
-            _state = ClientState.Initializing;
+            SetState(ClientState.Initializing);
             _dialogService.ShowLoadingIndicator("Initializing client");
             StartAnnouncementService();
             Connect();
         }
+
+        public string Title => _settings != null ? (_settings.IsClient ? "Chewsi Client" : "Chewsi Server") : "Chewsi Application";
 
         private void StartService()
         {
@@ -71,7 +72,7 @@ namespace ChewsiPlugin.UI.Services
                 {
                     ServiceController sc = new ServiceController
                     {
-                        ServiceName = "Chewsi Service"
+                        ServiceName = "ChewsiService"
                     };
                     if (sc.Status == ServiceControllerStatus.Stopped)
                     {
@@ -82,7 +83,6 @@ namespace ChewsiPlugin.UI.Services
                         sc.WaitForStatus(ServiceControllerStatus.Running);
                         Logger.Info("Service start complete, status: " + sc.Status);
                     }
-
                 }
                 catch (InvalidOperationException e)
                 {
@@ -197,6 +197,12 @@ namespace ChewsiPlugin.UI.Services
 
         public bool Initialized => _state == ClientState.Ready;
 
+        private void SetState(ClientState state)
+        {
+            _state = state;
+            DispatcherHelper.CheckBeginInvokeOnUI(() => RaisePropertyChanged(() => Initialized));
+        }
+
         public bool IsLoadingClaims
         {
             get { return _isLoadingClaims; }
@@ -215,7 +221,7 @@ namespace ChewsiPlugin.UI.Services
                 {
                     await ReloadClaims(true);
                 }
-                _state = ClientState.Ready;
+                SetState(ClientState.Ready);
                 RaiseInitGetter();
             });
         }
@@ -255,12 +261,12 @@ namespace ChewsiPlugin.UI.Services
             }
 
             // Try to connect using cached address
-            var connected = TryCreateChannel(serverAddress);
+            var connected = CreateChannelAndConnect(serverAddress);
             if (!connected)
             {
                 // Find server by service discovery
                 var address = await _serviceDiscovery.Discover();
-                connected = TryCreateChannel(address?.Uri.ToString());
+                connected = CreateChannelAndConnect(address?.Uri.ToString());
                 if (connected)
                 {
                     _repository.SaveSetting(Settings.ServerAddress, address);
@@ -270,13 +276,14 @@ namespace ChewsiPlugin.UI.Services
             return connected;
         }
 
-        private bool TryCreateChannel(string serverAddress)
+        private bool CreateChannelAndConnect(string serverAddress)
         {
             if (!string.IsNullOrEmpty(serverAddress))
             {
                 _factory = GetFactory(new EndpointAddress(serverAddress));
                 CreateChannel();
-                return true;
+                bool response;
+                return Utils.TrySafeCall(() => _serverAppService.Ping(), out response) && response;
             }
             return false;
         }
@@ -295,15 +302,18 @@ namespace ChewsiPlugin.UI.Services
 
         private void ChannelFaulted(object sender, EventArgs e)
         {
+            _dialogService.ShowLoadingIndicator("Disconnected from the service. Reconnecting...");
             Logger.Warn("Disconnected from the service");
             var co = (ICommunicationObject) sender;
             co.Faulted -= ChannelFaulted;
             co.Abort();
             CreateChannel();
+            _dialogService.HideLoadingIndicator();
         }
 
-        private async void Connect(string serverAddress = null)
+        private async Task<bool> Connect(string serverAddress = null)
         {
+            bool result = false;
             if (await FindServerAndInitChannelAsync(serverAddress))
             {
                 ServerState serverState;
@@ -313,23 +323,26 @@ namespace ChewsiPlugin.UI.Services
                     {
                         case ServerState.Initializing:
                             _dialogService.HideLoadingIndicator();
-                            _dialogService.Show("Cannot load data from the Chewsi plugin's service. Server is not ready.", "Error");
+                            _dialogService.Show(
+                                "Cannot load data from the Chewsi plugin's service. Server is not ready.", "Error");
                             break;
                         case ServerState.Ready:
                             SettingsDto settings;
                             if (Utils.TrySafeCall(_serverAppService.GetSettings, out settings) && settings != null)
                             {
                                 _settings = settings;
+                                RaisePropertyChanged(() => Title);
                                 _settingsViewModel.InjectAppServiceAndInit(this, settings);
                                 InitializeChewsiApi(settings);
                                 await ReloadClaims(false);
-                                _state = ClientState.Ready;
+                                SetState(ClientState.Ready);
                                 RaiseInitGetter();
+                                result = true;
                             }
                             else
                             {
                                 Thread.Sleep(2000);
-                                Connect(serverAddress);
+                                await Connect(serverAddress);
                             }
                             break;
                         case ServerState.InvalidSettings:
@@ -337,18 +350,19 @@ namespace ChewsiPlugin.UI.Services
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
-                    }                    
+                    }
                 }
                 else
                 {
                     Thread.Sleep(2000);
-                    Connect(serverAddress);
+                    await Connect(serverAddress);
                 }
             }
             else
             {
                 _dialogService.Show("Failed to connect to Chewsi service.", "Error", () => Connect(), "Try Again");
             }
+            return result;
         }
 
         /// <summary>
@@ -362,6 +376,7 @@ namespace ChewsiPlugin.UI.Services
             if (Utils.TrySafeCall(_serverAppService.GetInitialSettings, out s) && s != null)
             {
                 _settings = new SettingsDto(s.PmsType, s.PmsPath, s.AddressLine1, s.AddressLine2, s.Tin, true, "localhost", 8888, "", "", s.State, false, false, "", s.IsClient);
+                RaisePropertyChanged(() => Title);
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     _settingsViewModel.InjectAppServiceAndInit(this, _settings);
@@ -402,12 +417,12 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        private void OnOnlineEvent(object sender, AnnouncementEventArgs e)
+        private async void OnOnlineEvent(object sender, AnnouncementEventArgs e)
         {
             var state = (_serverAppService as ICommunicationObject).State;
             if (state != CommunicationState.Opened && state != CommunicationState.Opening)
             {
-                Connect(e.EndpointDiscoveryMetadata.Address.Uri.ToString());
+                await Connect(e.EndpointDiscoveryMetadata.Address.Uri.ToString());
             }
         }
 

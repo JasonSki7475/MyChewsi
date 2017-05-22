@@ -3,11 +3,14 @@ using System.ServiceModel.Discovery;
 using System.Threading;
 using System.Threading.Tasks;
 using ChewsiPlugin.Api.Interfaces;
+using NLog;
 
 namespace ChewsiPlugin.Api
 {
     public class ServiceDiscovery
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly DiscoveryClient _discoveryClient;
         private bool _isRunning;
         private EndpointAddress _address;
@@ -34,6 +37,7 @@ namespace ChewsiPlugin.Api
                     Thread.Sleep(100);
                     if (!_isRunning)
                     {
+                        Logger.Debug("Service discovery returns endpoint {0}", _address);
                         return _address;
                     }
                 }
@@ -42,11 +46,13 @@ namespace ChewsiPlugin.Api
 
         private void DiscoveryClientOnFindCompleted(object sender, FindCompletedEventArgs findCompletedEventArgs)
         {
+            Logger.Debug("Service discovery completed. Found {0} endpoints", findCompletedEventArgs.Result.Endpoints.Count);
             _isRunning = false;
         }
 
         private void DiscoveryClientOnFindProgressChanged(object sender, FindProgressChangedEventArgs findProgressChangedEventArgs)
         {
+            Logger.Debug("Service discovery progress changed. Found service @ {0}", findProgressChangedEventArgs.EndpointDiscoveryMetadata.Address);
             _address = findProgressChangedEventArgs.EndpointDiscoveryMetadata.Address;
             _isRunning = false;
         }

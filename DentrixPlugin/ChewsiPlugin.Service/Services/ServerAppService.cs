@@ -32,6 +32,7 @@ namespace ChewsiPlugin.Service.Services
         private readonly object _appointmentsLockObject = new object();
         private readonly object _statusWaitListLock = new object();
         private readonly object _dentalApiInitializationLock = new object();
+        private readonly object _initLock = new object();
 
         private readonly List<ClaimDto> _serviceClaims = new List<ClaimDto>();
         private readonly List<StatusLookupWaitItem> _statusWaitList = new List<StatusLookupWaitItem>();
@@ -62,29 +63,43 @@ namespace ChewsiPlugin.Service.Services
 
         private async void Initialize()
         {
-            _state = ServerState.Initializing;
-            Logger.Info("Initializing service");
-            _repository.Initialize();
-            if (_repository.Ready)
+            if (_state != ServerState.Ready)
             {
-                Logger.Info("Repository is ready. Loading dental API");
-                _dentalApi = GetDentalApi();
-                if (_dentalApi != null)
+                _state = ServerState.Initializing;
+                Logger.Info("Initializing service");
+                _repository.Initialize();
+                if (_repository.Ready)
                 {
-                    DeleteOldAppointments();
-                    StartPmsIfRequired();
-                    InitializeChewsiApi();
-                    UpdatePluginRegistration();
-                    await RefreshAppointments(true, true, false);
-                    _state = ServerState.Ready;
-                    Task.Factory.StartNew(LoadAppointmentsLoop, _loadTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
-                    Task.Factory.StartNew(StatusLookup, _statusLookupTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                    Logger.Info("Repository is ready. Loading dental API");
+                    _dentalApi = GetDentalApi();
+                    if (_dentalApi != null)
+                    {
+                        DeleteOldAppointments();
+                        StartPmsIfRequired();
+                        InitializeChewsiApi();
+                        UpdatePluginRegistration();
+                        await RefreshAppointments(true, true, true);
+                        if (_state != ServerState.Ready)
+                        {
+                            lock (_initLock)
+                            {
+                                if (_state != ServerState.Ready)
+                                {
+                                    _state = ServerState.Ready;
+                                    Task.Factory.StartNew(LoadAppointmentsLoop, _loadTokenSource.Token,
+                                        TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                                    Task.Factory.StartNew(StatusLookup, _statusLookupTokenSource.Token,
+                                        TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-            else
-            {
-                Logger.Info("Repository is not ready. First run?");
-                _state = ServerState.InvalidSettings;
+                else
+                {
+                    Logger.Info("Repository is not ready. First run?");
+                    _state = ServerState.InvalidSettings;
+                }
             }
         }
 
@@ -100,12 +115,9 @@ namespace ChewsiPlugin.Service.Services
 
         public ServerState InitClient()
         {
-            if (_dentalApi != null)
-            {
-                var callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
-                _clientCallbackService.AddClient(OperationContext.Current.Channel.SessionId, callback);
-                OperationContext.Current.Channel.Faulted += ChannelOnFaulted;
-            }
+            var callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
+            _clientCallbackService.AddClient(OperationContext.Current.Channel.SessionId, callback);
+            OperationContext.Current.Channel.Faulted += ChannelOnFaulted;
             return _state;
         }
 
@@ -150,6 +162,11 @@ namespace ChewsiPlugin.Service.Services
             return null;
         }
 
+        public bool Ping()
+        {
+            return true;
+        }
+
         public ServerState GetState()
         {
             return _state;
@@ -189,17 +206,16 @@ namespace ChewsiPlugin.Service.Services
             return null;
         }
 
-        public enum ClaimValidationResult
+        private enum ClaimValidationCalled
         {
             Success,
-            Fail,
             ServerError,
             ProviderNotFound,
             PatientNotFound,
             ClaimNotFound
         }
 
-        private ClaimValidationResult ValidateClaim(string id, string patientId,
+        private ClaimValidationCalled ValidateClaim(string id, string patientId,
             out ProviderInformation providerInformation,
             out SubscriberInformation subscriberInformation, out Provider provider,
             out ValidateSubscriberAndProviderResponse result)
@@ -241,27 +257,27 @@ namespace ChewsiPlugin.Service.Services
                         {
                             Logger.Debug(
                                 $"Validated subscriber '{patientId}' and provider '{claim.ProviderId}': '{result.ValidationPassed}'");
-                            return ClaimValidationResult.Success;
+                            return ClaimValidationCalled.Success;
                         }
                         Logger.Debug(
                             $"Failed to validate subscriber '{patientId}' and provider '{claim.ProviderId}': invalid server response");
-                        return ClaimValidationResult.ServerError;
+                        return ClaimValidationCalled.ServerError;
                     }
                     providerInformation = null;
                     subscriberInformation = null;
                     result = null;
-                    return ClaimValidationResult.PatientNotFound;
+                    return ClaimValidationCalled.PatientNotFound;
                 }
                 providerInformation = null;
                 subscriberInformation = null;
                 result = null;
-                return ClaimValidationResult.ProviderNotFound;
+                return ClaimValidationCalled.ProviderNotFound;
             }
             providerInformation = null;
             subscriberInformation = null;
             result = null;
             provider = null;
-            return ClaimValidationResult.ClaimNotFound;
+            return ClaimValidationCalled.ClaimNotFound;
         }
 
         private SubmitClaimResult SubmitClaim(string id, DateTime appointmentDate, string patientId, ProviderInformation providerInformation, SubscriberInformation subscriberInformation, DateTime pmsModifiedDate)
@@ -393,6 +409,7 @@ namespace ChewsiPlugin.Service.Services
                             try
                             {
                                 var list = LoadAppointments(loadFromPms, loadFromService);
+                                Logger.Debug("Loaded new claims ({0}), notify clients = {1}", list.Count, notifyClients);
                                 _claimItems.Clear();
                                 _claimItems.AddRange(list);
                                 if (notifyClients)
@@ -455,7 +472,7 @@ namespace ChewsiPlugin.Service.Services
         private static class StatusMessage
         {
             public const string PaymentProcessing = "Payment processing...";
-            public const string PaymentProcessingError = "Payment processing failed";
+            public const string PaymentProcessingError = "Payment processing failed: invalid server response";
             public const string ReadyToSubmit = "Please submit this claim..";
         }
 
@@ -476,48 +493,52 @@ namespace ChewsiPlugin.Service.Services
                 ProviderInformation providerInformation;
                 SubscriberInformation subscriberInformation;
                 Provider provider;
-                var validationResult = ValidateClaim(id, claim.PatientId, out providerInformation,
+                var serverCalled = ValidateClaim(id, claim.PatientId, out providerInformation,
                     out subscriberInformation, out provider, out validationResponse);
-                switch (validationResult)
+                switch (serverCalled)
                 {
-                    case ClaimValidationResult.Success:
-                        providerInformation.Id = validationResponse.ProviderID;
-                        providerInformation.OfficeNbr = validationResponse.OfficeNumber;
-                        result = SubmitClaim(id, claim.DateTime, claim.PatientId, providerInformation, subscriberInformation,
-                            claim.PmsModifiedDate);
-                        break;
-                    case ClaimValidationResult.Fail:
-
-                        #region Format status
-
-                        var statusText = "";
-                        if (!string.IsNullOrEmpty(validationResponse.ProviderValidationMessage))
+                    case ClaimValidationCalled.Success:
+                        // got response from Chewsi API, analyze it
+                        if (validationResponse.ValidationPassed)
                         {
-                            statusText += validationResponse.ProviderValidationMessage;
+                            providerInformation.Id = validationResponse.ProviderID;
+                            providerInformation.OfficeNbr = validationResponse.OfficeNumber;
+                            result = SubmitClaim(id, claim.DateTime, claim.PatientId, providerInformation, subscriberInformation,
+                                claim.PmsModifiedDate);
                         }
-                        if (!string.IsNullOrEmpty(validationResponse.SubscriberValidationMessage))
+                        else
                         {
-                            if (!string.IsNullOrEmpty(statusText))
+                            #region Format status
+
+                            var statusText = "";
+                            if (!string.IsNullOrEmpty(validationResponse.ProviderValidationMessage))
                             {
-                                statusText += Environment.NewLine;
+                                statusText += validationResponse.ProviderValidationMessage;
                             }
-                            statusText += validationResponse.SubscriberValidationMessage;
+                            if (!string.IsNullOrEmpty(validationResponse.SubscriberValidationMessage))
+                            {
+                                if (!string.IsNullOrEmpty(statusText))
+                                {
+                                    statusText += Environment.NewLine;
+                                }
+                                statusText += validationResponse.SubscriberValidationMessage;
+                            }
+
+                            #endregion
+
+                            SetAppointmentState(id, AppointmentState.ValidationError, statusText);
                         }
-
-                        #endregion
-
-                        SetAppointmentState(id, AppointmentState.ValidationError, statusText);
                         break;
-                    case ClaimValidationResult.ServerError:
+                    case ClaimValidationCalled.ServerError:
                         SetAppointmentState(id, AppointmentState.ValidationError, StatusMessage.PaymentProcessingError);
                         break;
-                    case ClaimValidationResult.ProviderNotFound:
+                    case ClaimValidationCalled.ProviderNotFound:
                         SetAppointmentState(id, AppointmentState.ValidationError, "Cannot find patient in PMS");
                         break;
-                    case ClaimValidationResult.PatientNotFound:
+                    case ClaimValidationCalled.PatientNotFound:
                         SetAppointmentState(id, AppointmentState.ValidationError, "Cannot find provider in PMS");
                         break;
-                    case ClaimValidationResult.ClaimNotFound:
+                    case ClaimValidationCalled.ClaimNotFound:
                         SetAppointmentState(id, AppointmentState.ValidationError, "Cannot find claim");
                         break;
                     default:
@@ -838,7 +859,7 @@ namespace ChewsiPlugin.Service.Services
                     {
                         if (!_repository.AppointmentExists(item.Id))
                         {
-                            Logger.Debug($"Adding new PMS appointment in the cache Id={item.Id}");
+                            Logger.Debug($"Adding new PMS appointment into the cache Id={item.Id}");
                             _repository.AddAppointment(new Appointment
                             {
                                 Id = item.Id,
@@ -972,7 +993,7 @@ namespace ChewsiPlugin.Service.Services
                     .ToList();
                 if (Logger.IsDebugEnabled)
                 {
-                    result.ForEach(m => Logger.Debug($"Loaded appointment ChewsiId={m.ChewsiId}, State={m.State}"));
+                    result.ForEach(m => Logger.Debug($"Loaded appointment ChewsiId={m.ChewsiId}, Date={m.Date}, PMSDate={m.PmsModifiedDate}, PMS#={m.Id}, State={m.State}"));
                 }
 
                 return result;

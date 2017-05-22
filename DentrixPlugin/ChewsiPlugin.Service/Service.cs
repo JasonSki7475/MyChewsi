@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.ServiceProcess;
+using System.Threading;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
@@ -13,7 +14,7 @@ namespace ChewsiPlugin.Service
 {
     public partial class Service : ServiceBase
     {
-        private const string Address = "http://localhost:45000/DentalApi.svc";
+        private const string Address = "http://{0}:45000/DentalApi.svc";
         private ServiceHost _serviceHost;
         private ClientBroadcastService _clientBroadcastService;
         private ServerAppService _serverAppService;
@@ -52,7 +53,7 @@ namespace ChewsiPlugin.Service
                 ReceiveTimeout = new TimeSpan(0, 10, 0)
             };
             ServiceEndpoint endpoint = new ServiceEndpoint(ContractDescription.GetContract(typeof (IServerAppService)), binding,
-                new EndpointAddress(Address));
+                new EndpointAddress(string.Format(Address, System.Net.Dns.GetHostName())));
             _serviceHost.AddServiceEndpoint(endpoint);
             _serviceHost.Open();
         }

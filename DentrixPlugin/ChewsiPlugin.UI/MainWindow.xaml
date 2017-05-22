@@ -9,7 +9,7 @@
         xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
         mc:Ignorable="d" DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
-        Title="Chewsi" Height="600" Width="1050" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
+        Title="{Binding AppService.Title}" Height="600" Width="1050" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
     <Grid>
         <TabControl>
             <TabItem Header="Claims Submissions">
@@ -34,7 +34,15 @@
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
-                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshClaimsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"/>
+                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshClaimsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource ClientServiceStatusToBooleanConverter}">
+                                    <Binding Path="AppService.Initialized"/>
+                                    <Binding Path="AppService.IsLoadingClaims" />
+                                    <Binding Path="AppService" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
                     </Grid>
                     <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" SelectedItem="{Binding SelectedClaim}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Columns>

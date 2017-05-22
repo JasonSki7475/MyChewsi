@@ -35,6 +35,9 @@ namespace ChewsiPlugin.Api.Interfaces
         [OperationContract]
         InitialSettingsDto GetInitialSettings();
 
+        [OperationContract]
+        bool Ping();
+
         /// <summary>
         /// For tests, InitClient() should be used
         /// </summary>

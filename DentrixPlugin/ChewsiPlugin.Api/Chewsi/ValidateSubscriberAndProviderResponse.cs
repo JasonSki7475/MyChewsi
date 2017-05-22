@@ -20,9 +20,6 @@
 
         public string ProviderValidationMessage { get; set; }
 
-        public bool ValidationPassed
-        {
-            get { return SubscriberValidationStatus == "Valid" && ProviderValidationStatus == "Valid"; }
-        }
+        public bool ValidationPassed => SubscriberValidationStatus == "Valid" && ProviderValidationStatus == "Valid";
     }
 }

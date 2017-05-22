@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 using ChewsiPlugin.Api.Dentrix;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
@@ -20,12 +21,12 @@ namespace ChewsiPlugin.Setup.CustomActions
         const uint ERROR_INSTALL_FAILURE = 1603;
         const uint ERROR_SUCCESS = 0;
 
-        public static uint Setup(string pmsType, string installFolder, string isClient)
+        public static uint Setup(string pmsType, string installDir, string isClient)
         {
             uint result;
             try
             {
-                Logger.Info("Setting current PMS. Type={0}. Folder={1}", pmsType, installFolder);
+                Logger.Info("Setting current PMS. Type={0}. Folder={1}", pmsType, installDir);
                 var repository = new Repository();
                 repository.Initialize();
                 Settings.PMS.Types pmsTypeSetting = Settings.PMS.Types.Dentrix;
@@ -40,7 +41,7 @@ namespace ChewsiPlugin.Setup.CustomActions
                         // We can't call Dentrix API from current assembly (?) because Dentrix >= 6.2 binds assembly info to the key
                         // Start main exe file in hidden mode just to register user in Dentrix API
                         // in Dentrix >= 6.2, Dentrix's API user registration window will appear; user has to enter password
-                        var process = Process.Start(Path.Combine(installFolder, MainExeFileName), "initDentrix");
+                        var process = Process.Start(Path.Combine(installDir, MainExeFileName), "initDentrix");
                         process?.WaitForExit();
                         Logger.Info("...registration completed");
                     }
@@ -72,7 +73,7 @@ namespace ChewsiPlugin.Setup.CustomActions
                     if (pmsType == "OpenDental")
                     {
                         File.Copy(Path.Combine(folder, OpenDentalConfigFileName),
-                            Path.Combine(installFolder, OpenDentalConfigFileName), true);
+                            Path.Combine(installDir, OpenDentalConfigFileName), true);
                     }
                 }
 
