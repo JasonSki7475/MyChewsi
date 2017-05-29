@@ -71,7 +71,7 @@ namespace ChewsiPlugin.Api.Dentrix
         {
             var result =
                 ExecuteCommand(
-                    $"select pi.primary_insured_first_name, pi.primary_insured_last_name, pi.first_name, pi.last_name, ins.id_num, p.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where pi.patient_id='{patientId}'",
+                    $"select pi.primary_insured_first_name, pi.primary_insured_last_name, pi.first_name, pi.last_name, ins.id_num, vp.birth_date from admin.v_patient_insurance pi join admin.v_patient p on p.patient_id=pi.patient_id join admin.v_insured ins on pi.primary_insured_id=ins.insured_id join admin.v_patient vp on vp.patient_id=ins.ins_party_id where pi.patient_id='{patientId}'",
                     new List<string> {"first_name", "last_name", "id_num", "birth_date", "primary_insured_first_name", "primary_insured_last_name" }, false);
             return result.Select(m =>
             {
@@ -97,7 +97,7 @@ namespace ChewsiPlugin.Api.Dentrix
         {
             var beginDate = appointmentDate.Date;
             var endDate = appointmentDate.Date.AddDays(1).AddSeconds(-1);
-
+            
             // get patient_guid
             var res =
                 ExecuteCommand($"select pi.patient_guid from admin.v_patient_insurance pi where pi.patient_id='{patientId}'",

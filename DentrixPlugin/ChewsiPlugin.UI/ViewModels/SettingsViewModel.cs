@@ -38,6 +38,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _machineId;
         private string _closeButtonText;
         private bool _isServer;
+        private string _serverHost;
 
         public SettingsViewModel(IDialogService dialogService)
         {
@@ -73,7 +74,7 @@ namespace ChewsiPlugin.UI.ViewModels
             IsVisible = true;
         }
 
-        public void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings)
+        public void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings, string serverAddress)
         {
             _appService = appService;
             
@@ -91,6 +92,7 @@ namespace ChewsiPlugin.UI.ViewModels
             StartLauncher = settings.StartLauncher;
             _machineId = settings.MachineId;
             IsServer = !settings.IsClient;
+            ServerHost = Utils.GetHostFromAddress(serverAddress);
 
             CloseButtonText = IsServer ? "Save" : "Close";
         }
@@ -120,6 +122,16 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => SelectedType);
                 RaisePropertyChanged(() => NeedsPath);
                 RaisePropertyChanged(() => CanChangeStartPms);
+            }
+        }
+
+        public string ServerHost
+        {
+            get { return _serverHost; }
+            set
+            {
+                _serverHost = value;
+                RaisePropertyChanged(() => ServerHost);
             }
         }
 
@@ -173,11 +185,8 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public bool NeedsPath
-        {
-            get { return SelectedType == Settings.PMS.Types.OpenDental; }
-        }
-        
+        public bool NeedsPath => SelectedType == Settings.PMS.Types.OpenDental;
+
         public bool UseProxy
         {
             get { return _useProxy; }
@@ -291,7 +300,7 @@ namespace ChewsiPlugin.UI.ViewModels
                     _dialogService.ShowLoadingIndicator();
                     _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy,
                         ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
-                        State, StartPms, StartLauncher, _machineId, !IsServer));
+                        State, StartPms, StartLauncher, _machineId, !IsServer), Utils.GetAddressFromHost(ServerHost));
                 }
                 finally
                 {
@@ -306,12 +315,7 @@ namespace ChewsiPlugin.UI.ViewModels
         #region SelectPathCommand
         public ICommand SelectPathCommand
         {
-            get { return _selectPathCommand ?? (_selectPathCommand = new RelayCommand(OnSelectPathCommandExecute, CanSelectPathCommandExecute)); }
-        }
-
-        private bool CanSelectPathCommandExecute()
-        {
-            return NeedsPath;
+            get { return _selectPathCommand ?? (_selectPathCommand = new RelayCommand(OnSelectPathCommandExecute)); }
         }
 
         private void OnSelectPathCommandExecute()

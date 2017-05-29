@@ -13,6 +13,7 @@
             public const string TypeKey = "PMSType";
             public const string PathKey = "PMSPath";
             public const string VersionKey = "PMSVersion";
+            public const string ConnectionStringKey = "PMSConnectionString";
 
             public enum Types
             {

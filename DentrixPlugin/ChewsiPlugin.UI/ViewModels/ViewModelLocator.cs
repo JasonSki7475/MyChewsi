@@ -20,15 +20,19 @@ namespace ChewsiPlugin.UI.ViewModels
             var dialogService = SimpleIoc.Default.GetInstance<IClientDialogService>();
             SimpleIoc.Default.Register<IDialogService>(() => dialogService);
             SimpleIoc.Default.Register<IChewsiApi, ChewsiApi>();
+            SimpleIoc.Default.Register<IConnectViewModel, ConnectViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<IRepository, Repository>();
             SimpleIoc.Default.Register<IClientAppService, ClientAppService>();
             SimpleIoc.Default.Register<IClientCallback, CallbackHandler>();
             SimpleIoc.Default.Register<ISettingsViewModel, SettingsViewModel>();
+
         }
 
         public ISettingsViewModel SettingsViewModel => SimpleIoc.Default.GetInstance<ISettingsViewModel>();
 
         public MainViewModel MainViewModel => SimpleIoc.Default.GetInstance<MainViewModel>();
+
+        public IConnectViewModel ConnectViewModel => SimpleIoc.Default.GetInstance<IConnectViewModel>();
     }
 }

@@ -41,7 +41,7 @@ namespace ChewsiPlugin.Api
                         return _address;
                     }
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         private void DiscoveryClientOnFindCompleted(object sender, FindCompletedEventArgs findCompletedEventArgs)

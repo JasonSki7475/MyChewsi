@@ -9,10 +9,29 @@ namespace ChewsiPlugin.Api.Common
     public static class Utils
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private const string Address = "http://{0}:45000/DentalApi.svc";
 
         public static string GetPluginVersion()
         {
             return Assembly.GetCallingAssembly().GetName().Version.ToString();
+        }
+
+        public static string GetAddressFromHost(string serverHost)
+        {
+            if (serverHost == null)
+            {
+                return null;
+            }
+            return string.Format(Address, serverHost);
+        }
+
+        public static string GetHostFromAddress(string address)
+        {
+            if (address == null)
+            {
+                return null;
+            }
+            return new Uri(address).Host;
         }
 
         public static string GetOperatingSystemInfo()

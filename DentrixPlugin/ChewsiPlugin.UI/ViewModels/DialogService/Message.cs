@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Interfaces;
 using GalaSoft.MvvmLight;
@@ -27,10 +28,7 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
 
         public string Header { get; }
         
-        public ICommand CloseCommand
-        {
-            get { return _closeCommand ?? (_closeCommand = new RelayCommand(OnCloseCommandExecute)); }
-        }
+        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new RelayCommand(OnCloseCommandExecute));
 
         private void OnCloseCommandExecute()
         {
@@ -40,7 +38,10 @@ namespace ChewsiPlugin.UI.ViewModels.DialogService
 
         private void RaiseDialogResultCallback()
         {
-            _dialogResultCallback?.Invoke();
+            if (_dialogResultCallback != null)
+            {
+                Task.Factory.StartNew(_dialogResultCallback);
+            }
         }
     }
 }

@@ -144,14 +144,8 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
         
-        public bool CanResubmit
-        {
-            get { return !IsClaimStatus && State == AppointmentState.ValidationError; }
-        }
-        public bool ShowErrorView
-        {
-            get { return State == AppointmentState.ValidationError || State == AppointmentState.ValidationErrorNoResubmit; }
-        }
+        public bool CanResubmit => !IsClaimStatus && State == AppointmentState.ValidationError;
+        public bool ShowErrorView => State == AppointmentState.ValidationError || State == AppointmentState.ValidationErrorNoResubmit;
 
         public AppointmentState State
         {
@@ -181,10 +175,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         #region Commands
         #region SubmitCommand
-        public ICommand SubmitCommand
-        {
-            get { return _submitCommand ?? (_submitCommand = new RelayCommand(OnSubmitCommandExecute, CanSubmitCommandExecute)); }
-        }
+        public ICommand SubmitCommand => _submitCommand ?? (_submitCommand = new RelayCommand(OnSubmitCommandExecute, CanSubmitCommandExecute));
 
         private bool CanSubmitCommandExecute()
         {
@@ -200,10 +191,7 @@ namespace ChewsiPlugin.UI.ViewModels
         #endregion
 
         #region DeleteCommand
-        public ICommand DeleteCommand
-        {
-            get { return _deleteCommand ?? (_deleteCommand = new RelayCommand(OnDeleteCommandExecute)); }
-        }
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(OnDeleteCommandExecute));
 
         private void OnDeleteCommandExecute()
         {

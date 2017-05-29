@@ -19,9 +19,9 @@ namespace ChewsiPlugin.UI.Controls
         {
             InitializeComponent();
 
-            _animationTimer = new DispatcherTimer(DispatcherPriority.ContextIdle, Dispatcher)
+            _animationTimer = new DispatcherTimer(DispatcherPriority.Background, Dispatcher)
             {
-                Interval = new TimeSpan(0, 0, 0, 0, 50)
+                Interval = new TimeSpan(0, 0, 0, 0, 20)
             };
         }
         #endregion
@@ -43,7 +43,7 @@ namespace ChewsiPlugin.UI.Controls
 
         private void HandleAnimationTick(object sender, EventArgs e)
         {
-            SpinnerRotate.Angle = (SpinnerRotate.Angle + 36) % 360;
+            SpinnerRotate.Angle = (SpinnerRotate.Angle + 6) % 360;
         }
 
         private void HandleLoaded(object sender, RoutedEventArgs e)

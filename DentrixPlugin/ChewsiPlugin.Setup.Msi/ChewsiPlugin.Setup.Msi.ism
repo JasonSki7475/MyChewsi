@@ -354,9 +354,29 @@
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
 		<row><td>AllOtherFiles</td><td>{D58A4E0C-B58F-415E-8BC6-92BEF2035D5E}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>AllOtherFiles1</td><td>{48820DDC-FD3D-4BC8-ACC0-1CFBCD21C237}</td><td>X86</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles10</td><td>{9A07AF26-DFD7-43E9-9E0D-BF3C9A51550A}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles11</td><td>{33AB9484-CF84-4A89-87E4-3585ECFF1114}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles12</td><td>{99604B5A-3F29-4BB1-947D-02CB4A72F4FF}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles13</td><td>{2005E048-394E-45DF-AA74-30E1212E6CFF}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles14</td><td>{AFE048AE-3C06-44DC-92D9-914DB45A2394}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles15</td><td>{E86B6306-17AE-4413-A3D5-2EC14196876C}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles16</td><td>{F5BF3835-2305-4C84-9589-F1ED8CB89F06}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles17</td><td>{60B7832D-72E5-4ED9-B3B5-E4CD294B527C}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles18</td><td>{84DA1EBC-241B-4036-9587-FDADF9B9EDA0}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles19</td><td>{2E033C84-18C8-44DB-9087-8CFFE595EB58}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>AllOtherFiles2</td><td>{0CD11C8E-8451-43DD-ABCB-8C3464C6EE57}</td><td>X64</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles20</td><td>{32B2E299-FFDD-4671-8639-6EB30EAF9C76}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles21</td><td>{B65B2827-E03D-4B4E-9656-0A5B8123CBA6}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles22</td><td>{30A56CC4-776F-40D3-A5CE-0A347E66FAAD}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles23</td><td>{1348230F-C56E-432B-94EB-1399C90653F9}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles24</td><td>{B4A7E356-0292-455C-A23D-3E156DC7B095}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>AllOtherFiles3</td><td>{CEE5DA22-88B5-479E-9E70-0F2163E16F3A}</td><td>CommonAppDataFolder</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>AllOtherFiles4</td><td>{6469498F-C0EC-4C7C-AD1B-4B987B541EAC}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles5</td><td>{DE39AEF4-28DB-4065-A708-EC7AD7C8A4DC}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles6</td><td>{C0787CB5-470B-4404-9A3B-727B08E654FF}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles7</td><td>{07C76F50-7BAC-4ACC-A053-DF0E3DE8C0D7}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles8</td><td>{D52BDFD7-7A78-43FE-B155-A610BF19DB7F}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>AllOtherFiles9</td><td>{113BD11E-EF66-4804-8DE9-1869704BD90A}</td><td>CHEWSI</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.Api.dll</td><td>{5F362870-67A8-4443-A511-BF4DD7CE1F27}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.api.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.EaglesoftApi.dll</td><td>{E5FF1670-69ED-4077-A190-117419FE8159}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.eaglesoftapi.dl</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.Launcher.exe</td><td>{F816C3EA-7C71-437C-9EF2-AE8AFB14D67D}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.launcher.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1092,7 +1112,27 @@
 	<table name="CreateFolder">
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>CHEWSI</td><td>AllOtherFiles10</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles11</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles12</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles13</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles14</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles15</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles16</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles17</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles18</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles19</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles20</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles21</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles22</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles23</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles24</td></row>
 		<row><td>CHEWSI</td><td>AllOtherFiles4</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles5</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles6</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles7</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles8</td></row>
+		<row><td>CHEWSI</td><td>AllOtherFiles9</td></row>
 		<row><td>CommonAppDataFolder</td><td>AllOtherFiles3</td></row>
 		<row><td>INSTALLDIR</td><td>ShortcutsDesktopClient</td></row>
 		<row><td>INSTALLDIR</td><td>ShortcutsDesktopServer</td></row>
@@ -1120,11 +1160,12 @@
 		<row><td>ISSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFiles</td><td/><td/></row>
 		<row><td>ISSelfRegisterFinalize</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFinalize</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISUnSelfRegisterFiles</td><td/><td/></row>
+		<row><td>IS_LAUNCH_MY_PROGRAM_PLEASE</td><td>210</td><td>NoFileSpecified</td><td/><td/><td/></row>
 		<row><td>LaunchProgram</td><td>210</td><td>chewsiplugin.ui.exe</td><td/><td>0</td><td/></row>
 		<row><td>LaunchReadme</td><td>98</td><td>SystemFolder</td><td>notepad.exe [!readme.txt]</td><td>0</td><td/></row>
 		<row><td>RegistryCleanup</td><td>65</td><td>RegistryCleanup.clr</td><td/><td>0</td><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td>51</td><td>ARPINSTALLLOCATION</td><td>[INSTALLDIR]</td><td/><td/></row>
-		<row><td>SetARPReadme</td><td>51</td><td>ARPREADME</td><td>&lt;VSSolutionFolder&gt;\Installer\Readme.txt</td><td/><td/></row>
+		<row><td>SetARPReadme</td><td>51</td><td>ARPREADME</td><td>[INSTALLDIR]\Readme.txt</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%SystemRoot]\Profiles\All Users</td><td/><td/></row>
 		<row><td>SetSetupParams</td><td>51</td><td>Setup</td><td>#chewsiplugin.setup.customact="[#chewsiplugin.setup.customact]" PMSTYPE="[PMSTYPE]" INSTALLDIR="[INSTALLDIR]" ISCLIENT="[ISCLIENT]"</td><td>0</td><td/></row>
 		<row><td>Setup</td><td>1025</td><td>Setup.clr</td><td>ChewsiPlugin.Setup.CustomActions.CustomActions.Setup(...)</td><td>0</td><td/></row>
@@ -1925,9 +1966,29 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>Default</td><td>AllOtherFiles</td></row>
 		<row><td>Default</td><td>AllOtherFiles1</td></row>
+		<row><td>Default</td><td>AllOtherFiles10</td></row>
+		<row><td>Default</td><td>AllOtherFiles11</td></row>
+		<row><td>Default</td><td>AllOtherFiles12</td></row>
+		<row><td>Default</td><td>AllOtherFiles13</td></row>
+		<row><td>Default</td><td>AllOtherFiles14</td></row>
+		<row><td>Default</td><td>AllOtherFiles15</td></row>
+		<row><td>Default</td><td>AllOtherFiles16</td></row>
+		<row><td>Default</td><td>AllOtherFiles17</td></row>
+		<row><td>Default</td><td>AllOtherFiles18</td></row>
+		<row><td>Default</td><td>AllOtherFiles19</td></row>
 		<row><td>Default</td><td>AllOtherFiles2</td></row>
+		<row><td>Default</td><td>AllOtherFiles20</td></row>
+		<row><td>Default</td><td>AllOtherFiles21</td></row>
+		<row><td>Default</td><td>AllOtherFiles22</td></row>
+		<row><td>Default</td><td>AllOtherFiles23</td></row>
+		<row><td>Default</td><td>AllOtherFiles24</td></row>
 		<row><td>Default</td><td>AllOtherFiles3</td></row>
 		<row><td>Default</td><td>AllOtherFiles4</td></row>
+		<row><td>Default</td><td>AllOtherFiles5</td></row>
+		<row><td>Default</td><td>AllOtherFiles6</td></row>
+		<row><td>Default</td><td>AllOtherFiles7</td></row>
+		<row><td>Default</td><td>AllOtherFiles8</td></row>
+		<row><td>Default</td><td>AllOtherFiles9</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.Api.dll</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.EaglesoftApi.dll</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.Launcher.exe</td></row>
@@ -2159,9 +2220,29 @@
 		<col def="S0">Miscellaneous</col>
 		<row><td>AllOtherFiles</td><td/><td/><td>_1F456CC2_C349_4341_B32C_06D7B561B982_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>AllOtherFiles1</td><td/><td/><td>_783A0ACE_91EB_4FDA_B19F_8E9B36C70BEF_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles10</td><td/><td/><td>_E8A8E8B6_4C55_4B08_806C_A36462597FD9_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles11</td><td/><td/><td>_C3F3A612_DFE4_4B4E_90CD_71D9C99776A2_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles12</td><td/><td/><td>_73D3DADF_D671_4092_92B0_2FCCF8FFC7D9_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles13</td><td/><td/><td>_A3ACFE15_7189_4867_8695_F66BEF2462AC_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles14</td><td/><td/><td>_474F147F_748E_4224_A798_1518030A72CA_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles15</td><td/><td/><td>_6669B087_28DF_4257_AB40_9B579E5B01D1_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles16</td><td/><td/><td>_F2452128_F75D_4C32_8C38_C6DF0FCD9EC1_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles17</td><td/><td/><td>_2B114DAB_0B13_4247_BFE3_E1675FBD96BA_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles18</td><td/><td/><td>_3F2C648D_CBF0_4C79_8CBC_3A5D3BE5D376_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles19</td><td/><td/><td>_0F4F3904_7C56_4A81_B4FA_31EA1C62FF8B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>AllOtherFiles2</td><td/><td/><td>_7F99DE17_F65F_40D4_B25B_0AC0CA2FF2DC_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles20</td><td/><td/><td>_67058741_27FD_4023_A0BE_74ECFD1B4950_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles21</td><td/><td/><td>_448EC0FD_3CDB_4084_BF7F_8904608C4E14_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles22</td><td/><td/><td>_7DCCD05F_D71E_4E81_AC72_1E94BC62113A_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles23</td><td/><td/><td>_8FD0113E_9851_46A6_9672_6EF06FA19DA1_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles24</td><td/><td/><td>_9BAC3EAF_5BDA_4BBD_8AAC_998DC8158274_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>AllOtherFiles3</td><td/><td/><td>_B9570D23_29E5_471B_B610_944076CBF272_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>AllOtherFiles4</td><td/><td/><td>_34707781_B210_4916_AF6B_87F60A6B3F13_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles5</td><td/><td/><td>_4D571DE7_5C65_4D64_85FD_8AA554426709_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles6</td><td/><td/><td>_03A5825E_D902_4972_BDA9_54EB0B0FE584_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles7</td><td/><td/><td>_B0702BE6_5C91_4DA8_B94E_6A5E04666E56_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles8</td><td/><td/><td>_2DBF351F_E674_421E_99BE_C646793DDE88_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>AllOtherFiles9</td><td/><td/><td>_E65DCD37_FA52_493B_BEDC_F3B92220CCB7_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Api.dll</td><td/><td/><td>_AD339B55_DF63_4731_AC68_933A0743F529_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.EaglesoftApi.dll</td><td/><td/><td>_D7169E4A_1D94_45F7_9CFF_D03FC3008C1E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Launcher.exe</td><td/><td/><td>_03636F15_1397_4B85_8D48_DAC5D95E7A07_FILTER</td><td/><td/><td/><td/></row>
@@ -2390,6 +2471,7 @@
 		<col def="S255">Cabinet</col>
 		<col def="S32">VolumeLabel</col>
 		<col def="S32">Source</col>
+		<row><td>1</td><td>Default Configuration</td><td>Release</td><td>0</td><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="ISLogicalDiskFeatures">
@@ -2558,7 +2640,7 @@
 		<col def="S255">MsiCommandLine</col>
 		<col def="I4">ISSetupPrerequisiteLocation</col>
 		<row><td>Debug</td><td>Default Configuration</td><td>&lt;ISProjectDataFolder&gt;</td><td>PackageName</td><td>1</td><td>1033</td><td>2</td><td>2</td><td>Intel</td><td/><td>1033</td><td>0</td><td>0</td><td>0</td><td>0</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>8464397</td><td/><td/><td/><td/></row>
-		<row><td>Release</td><td>Default Configuration</td><td>&lt;ISProjectDataFolder&gt;</td><td>PackageName</td><td>1</td><td>1033</td><td>2</td><td>2</td><td>Intel</td><td/><td>1033</td><td>0</td><td>0</td><td>0</td><td>0</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>8464397</td><td/><td/><td/><td/></row>
+		<row><td>Release</td><td>Default Configuration</td><td>&lt;ISProjectDataFolder&gt;</td><td>PackageName</td><td>4</td><td>1033</td><td>2</td><td>1</td><td>Intel</td><td/><td>1033</td><td>2</td><td>0</td><td>1</td><td>0</td><td/><td>0</td><td/><td>MediaLocation</td><td/><td>http://</td><td/><td/><td/><td/><td>8986637</td><td/><td/><td/><td>1</td></row>
 	</table>
 
 	<table name="ISReleaseASPublishInfo">
@@ -2600,7 +2682,7 @@
 		<col def="S255">WinMsi30Url</col>
 		<col def="S255">CertPassword</col>
 		<row><td>Debug</td><td>Default Configuration</td><td>0</td><td>http://</td><td>0</td><td>install</td><td>install</td><td>[LocalAppDataFolder]Downloaded Installations</td><td>0</td><td>http://www.installengine.com/Msiengine20</td><td>http://www.installengine.com/Msiengine20</td><td/><td>http://www.installengine.com/cert05/isengine</td><td/><td/><td/><td/><td>3</td><td>http://www.installengine.com/cert05/dotnetfx</td><td>0</td><td>1033</td><td/><td/><td/><td/><td>16</td><td>3</td><td>16</td><td>http://www.installengine.com/Msiengine30</td><td/></row>
-		<row><td>Release</td><td>Default Configuration</td><td>0</td><td>http://</td><td>0</td><td>install</td><td>install</td><td>[LocalAppDataFolder]Downloaded Installations</td><td>0</td><td>http://www.installengine.com/Msiengine20</td><td>http://www.installengine.com/Msiengine20</td><td/><td>http://www.installengine.com/cert05/isengine</td><td/><td/><td/><td/><td>3</td><td>http://www.installengine.com/cert05/dotnetfx</td><td>0</td><td>1033</td><td/><td/><td/><td/><td>16</td><td>3</td><td>16</td><td>http://www.installengine.com/Msiengine30</td><td/></row>
+		<row><td>Release</td><td>Default Configuration</td><td>0</td><td>http://</td><td>0</td><td>install</td><td>install</td><td>[LocalAppDataFolder]Downloaded Installations</td><td>2</td><td>http://www.installengine.com/Msiengine20</td><td>http://www.installengine.com/Msiengine20</td><td/><td>http://www.installengine.com/cert05/isengine</td><td/><td/><td/><td/><td>3</td><td>http://www.installengine.com/cert05/dotnetfx</td><td>2</td><td>1033</td><td/><td/><td/><td/><td>16</td><td>3</td><td>16</td><td>http://www.installengine.com/Msiengine30</td><td/></row>
 	</table>
 
 	<table name="ISReleaseProperty">
@@ -2608,6 +2690,8 @@
 		<col key="yes" def="s72">ISProductConfiguration_</col>
 		<col key="yes" def="s72">Name</col>
 		<col def="s0">Value</col>
+		<row><td>Release</td><td>Default Configuration</td><td>CabCompressionType</td><td>1</td></row>
+		<row><td>Release</td><td>Default Configuration</td><td>SetupIcon</td><td>&lt;ISProjectFolder&gt;\icon.ico,0</td></row>
 	</table>
 
 	<table name="ISReleasePublishInfo">
@@ -2817,7 +2901,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>Chewsi Dental</td><td>0</td><td/><td>178636240</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>Chewsi Dental</td><td>0</td><td/><td>-760913746</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION40FULL</td><td>1033</td><td>Microsoft .NET Framework 4.0 Full package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>-1448768813</td></row>
@@ -3926,12 +4010,12 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>1033</td><td>The processor is not adequate for running [ProductName].</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1495601858</td></row>
-		<row><td>ID_STRING1</td><td>1033</td><td>http://www.ChewsiDental.com</td><td>0</td><td/><td>178636240</td></row>
+		<row><td>ID_STRING1</td><td>1033</td><td>http://www.ChewsiDental.com</td><td>0</td><td/><td>-760911698</td></row>
 		<row><td>ID_STRING10</td><td>1033</td><td>{&amp;TahomaBold8}Installation Type</td><td>0</td><td/><td>1520796750</td></row>
 		<row><td>ID_STRING11</td><td>1033</td><td>Choose the installation type.</td><td>0</td><td/><td>1520811118</td></row>
 		<row><td>ID_STRING12</td><td>1033</td><td>Enables remote access to Chewsi software</td><td>0</td><td/><td>1520806416</td></row>
 		<row><td>ID_STRING13</td><td>1033</td><td>Enables remote access to Chewsi software</td><td>0</td><td/><td>1520808464</td></row>
-		<row><td>ID_STRING14</td><td>1033</td><td>&lt;VSSolutionFolder&gt;\Installer\Readme.txt</td><td>0</td><td/><td>-1700452693</td></row>
+		<row><td>ID_STRING14</td><td>1033</td><td>[INSTALLDIR]\Readme.txt</td><td>0</td><td/><td>-760909618</td></row>
 		<row><td>ID_STRING15</td><td>1033</td><td>CHEWSI~1|Chewsi Client</td><td>0</td><td/><td>-1700415059</td></row>
 		<row><td>ID_STRING16</td><td>1033</td><td>CHEWSI~1|Chewsi Client</td><td>0</td><td/><td>-1700447763</td></row>
 		<row><td>ID_STRING17</td><td>1033</td><td>CHEWSI~1|Chewsi Client</td><td>0</td><td/><td>-1700455891</td></row>
@@ -3939,8 +4023,28 @@
 		<row><td>ID_STRING19</td><td>1033</td><td>CHEWSI~1|Chewsi Server</td><td>0</td><td/><td>-1700447315</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.UI.exe</td><td>0</td><td/><td>-1985634067</td></row>
 		<row><td>ID_STRING20</td><td>1033</td><td>[ProductName] - InstallShield Wizard</td><td>0</td><td/><td>-1700434544</td></row>
+		<row><td>ID_STRING21</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.0.txt</td><td>0</td><td/><td>-895126192</td></row>
+		<row><td>ID_STRING22</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.1.txt</td><td>0</td><td/><td>-895122096</td></row>
+		<row><td>ID_STRING23</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.2.txt</td><td>0</td><td/><td>-895115952</td></row>
+		<row><td>ID_STRING24</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.3.txt</td><td>0</td><td/><td>-895111856</td></row>
+		<row><td>ID_STRING25</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.4.txt</td><td>0</td><td/><td>-895109808</td></row>
+		<row><td>ID_STRING26</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.5.txt</td><td>0</td><td/><td>-895105712</td></row>
+		<row><td>ID_STRING27</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.6.txt</td><td>0</td><td/><td>-895095472</td></row>
+		<row><td>ID_STRING28</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.7.txt</td><td>0</td><td/><td>-895148688</td></row>
+		<row><td>ID_STRING29</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.8.txt</td><td>0</td><td/><td>-895142544</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>[ProductName] - InstallShield Wizard</td><td>0</td><td/><td>-1985649807</td></row>
+		<row><td>ID_STRING30</td><td>1033</td><td>CLIENT~1.TXT|ClientLog.9.txt</td><td>0</td><td/><td>-895134352</td></row>
+		<row><td>ID_STRING31</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.0.txt</td><td>0</td><td/><td>-895122064</td></row>
+		<row><td>ID_STRING32</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.1.txt</td><td>0</td><td/><td>-895115920</td></row>
+		<row><td>ID_STRING33</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.2.txt</td><td>0</td><td/><td>-895109776</td></row>
+		<row><td>ID_STRING34</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.3.txt</td><td>0</td><td/><td>-895103632</td></row>
+		<row><td>ID_STRING35</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.4.txt</td><td>0</td><td/><td>-895097488</td></row>
+		<row><td>ID_STRING36</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.5.txt</td><td>0</td><td/><td>-895152752</td></row>
+		<row><td>ID_STRING37</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.6.txt</td><td>0</td><td/><td>-895144560</td></row>
+		<row><td>ID_STRING38</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.7.txt</td><td>0</td><td/><td>-895136368</td></row>
+		<row><td>ID_STRING39</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.8.txt</td><td>0</td><td/><td>-895130224</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1046111183</td></row>
+		<row><td>ID_STRING40</td><td>1033</td><td>SERVIC~1.TXT|ServiceLog.9.txt</td><td>0</td><td/><td>-895124080</td></row>
 		<row><td>ID_STRING5</td><td>1033</td><td>Chewsi Service</td><td>0</td><td/><td>715511968</td></row>
 		<row><td>ID_STRING6</td><td>1033</td><td>Enables remote access to Chewsi software</td><td>0</td><td/><td>715456704</td></row>
 		<row><td>ID_STRING7</td><td>1033</td><td>Choose type of Practice Management System:</td><td>0</td><td/><td>715458123</td></row>
@@ -4088,7 +4192,7 @@
 		<col def="V0">Data</col>
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
-		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\icon.ico</td><td>0</td></row>
+		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProjectFolder&gt;\icon.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4688,6 +4792,26 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="i2">InstallMode</col>
 		<row><td>NewShortcut1</td><td>ShortcutsStartMenuServer</td><td/><td>chewsi_1_chewsi_dental</td><td>2</td></row>
 		<row><td>NewShortcut3</td><td>ShortcutsStartMenuClient</td><td/><td>chewsi_1_chewsi_dental</td><td>2</td></row>
+		<row><td>RemoveFile1</td><td>AllOtherFiles5</td><td>##ID_STRING21##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile10</td><td>AllOtherFiles14</td><td>##ID_STRING30##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile11</td><td>AllOtherFiles15</td><td>##ID_STRING31##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile12</td><td>AllOtherFiles16</td><td>##ID_STRING32##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile13</td><td>AllOtherFiles17</td><td>##ID_STRING33##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile14</td><td>AllOtherFiles18</td><td>##ID_STRING34##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile15</td><td>AllOtherFiles19</td><td>##ID_STRING35##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile16</td><td>AllOtherFiles20</td><td>##ID_STRING36##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile17</td><td>AllOtherFiles21</td><td>##ID_STRING37##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile18</td><td>AllOtherFiles22</td><td>##ID_STRING38##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile19</td><td>AllOtherFiles23</td><td>##ID_STRING39##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile2</td><td>AllOtherFiles6</td><td>##ID_STRING22##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile20</td><td>AllOtherFiles24</td><td>##ID_STRING40##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile3</td><td>AllOtherFiles7</td><td>##ID_STRING23##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile4</td><td>AllOtherFiles8</td><td>##ID_STRING24##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile5</td><td>AllOtherFiles9</td><td>##ID_STRING25##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile6</td><td>AllOtherFiles10</td><td>##ID_STRING26##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile7</td><td>AllOtherFiles11</td><td>##ID_STRING27##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile8</td><td>AllOtherFiles12</td><td>##ID_STRING28##</td><td>CHEWSI</td><td>2</td></row>
+		<row><td>RemoveFile9</td><td>AllOtherFiles13</td><td>##ID_STRING29##</td><td>CHEWSI</td><td>2</td></row>
 	</table>
 
 	<table name="RemoveIniFile">

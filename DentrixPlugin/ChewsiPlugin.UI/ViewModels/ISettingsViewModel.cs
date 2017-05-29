@@ -11,6 +11,6 @@ namespace ChewsiPlugin.UI.ViewModels
         bool IsVisible { get; }
         ICommand SaveCommand { get; }
         void Show(Action onClose);
-        void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings);
+        void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings, string serverAddress);
     }
 }

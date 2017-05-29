@@ -144,15 +144,8 @@
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
                         <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
-                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}">
-                            <Button.IsEnabled>
-                                <MultiBinding Converter="{StaticResource ClientServiceStatusToBooleanConverter}">
-                                    <Binding Path="AppService.Initialized"/>
-                                    <Binding Path="AppService.IsLoadingClaims" />
-                                    <Binding Path="AppService" />
-                                </MultiBinding>
-                            </Button.IsEnabled>
-                        </Button>
+                        <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"
+                                IsEnabled="{Binding AppService.Initialized}"/>
                     </Grid>
                     <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DownloadItems}" SelectedItem="{Binding SelectedDownloadItem}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Resources>
@@ -183,6 +176,7 @@
                             Command="{Binding OpenSettingsCommand}">
             <ContentControl Content="{StaticResource SettingsIcon}" />
         </Button>
+        <!-- Settings -->
         <controls1:LightBox d:IsHidden="true" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                            DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}"
                            Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -191,27 +185,33 @@
                            ButtonCommand="{Binding SaveCommand}">
             <views:SettingsView />
         </controls1:LightBox>
+        <!-- Message -->
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Header="{Binding DialogService.Message.Header}"
                             ButtonText="{Binding DialogService.Message.ButtonText}" 
                             Visibility="{Binding DialogService.Message, Converter={StaticResource NullToVisibilityConverter}}"
                             CloseCommand="{Binding DialogService.Message.CloseCommand}"
-                            ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="True">
+                            ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="true">
             <TextBlock Text="{Binding DialogService.Message.Text}" Width="500" TextWrapping="Wrap" MinHeight="65"/>
         </controls1:LightBox>
+        <!-- Connection view -->
+        <views:ConnectView DataContext="{Binding ConnectViewModel, Source={StaticResource ViewModelLocator}}" d:IsHidden="true"
+                           Visibility="{Binding Shown, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <!-- Loading indicator without message -->
         <controls1:LoadingControl d:IsHidden="true" Visibility="{Binding DialogService.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"/>
+        <!-- Loading indicator with a message -->
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Header="{Binding DialogService.Message.Header}"
                             ButtonText="{Binding DialogService.Message.ButtonText}"
                             Visibility="{Binding DialogService.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                             CloseCommand="{Binding DialogService.Message.CloseCommand}"
-                            ShowHeaderAndFooter="False"
-                            ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="False">
+                            ShowHeaderAndFooter="False" 
+                            ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="true">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="Auto" MinWidth="200"/>
-                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <controls1:LoadingControl Grid.Column="1" RenderTransformOrigin="0.5,0.5" >
                     <controls1:LoadingControl.RenderTransform>

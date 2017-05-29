@@ -27,7 +27,7 @@ namespace ChewsiPlugin.Service.Services
         private const string ChewsiLauncherRegistryKey = "Chewsi Launcher";
         private const string ChewsiLauncherExecutableName = "ChewsiPlugin.Launcher.exe";
         private const int AppointmentTtlDays = 1;
-        private const int LoadIntervalMs = 180000;
+        private const int LoadIntervalMs = 10000;
 
         private readonly object _appointmentsLockObject = new object();
         private readonly object _statusWaitListLock = new object();
@@ -78,7 +78,7 @@ namespace ChewsiPlugin.Service.Services
                         StartPmsIfRequired();
                         InitializeChewsiApi();
                         UpdatePluginRegistration();
-                        await RefreshAppointments(true, true, true);
+                        await RefreshAppointments(true, true, true).ConfigureAwait(false);
                         if (_state != ServerState.Ready)
                         {
                             lock (_initLock)
@@ -86,10 +86,8 @@ namespace ChewsiPlugin.Service.Services
                                 if (_state != ServerState.Ready)
                                 {
                                     _state = ServerState.Ready;
-                                    Task.Factory.StartNew(LoadAppointmentsLoop, _loadTokenSource.Token,
-                                        TaskCreationOptions.LongRunning, TaskScheduler.Current);
-                                    Task.Factory.StartNew(StatusLookup, _statusLookupTokenSource.Token,
-                                        TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                                    Task.Factory.StartNew(LoadAppointmentsLoop, _loadTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+                                    Task.Factory.StartNew(StatusLookup, _statusLookupTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
                                 }
                             }
                         }
@@ -107,8 +105,8 @@ namespace ChewsiPlugin.Service.Services
         {
             if (force)
             {
-                // old items are returned immediately, new items will be broadcasted soon
-                RefreshAppointments(true, true, true);
+                RefreshAppointments(true, true, false)
+                    .Wait();
             }
             return _claimItems;
         }
@@ -251,8 +249,7 @@ namespace ChewsiPlugin.Service.Services
                             RenderingState = provider.State,
                             RenderingZip = provider.ZipCode,
                         };
-                        result = _chewsiApi.ValidateSubscriberAndProvider(providerInformation, providerAddress,
-                            subscriberInformation);
+                        result = _chewsiApi.ValidateSubscriberAndProvider(providerInformation, providerAddress, subscriberInformation);
                         if (result != null)
                         {
                             Logger.Debug(
@@ -382,7 +379,7 @@ namespace ChewsiPlugin.Service.Services
                 }
                 if (pendingLookup)
                 {
-                    await RefreshAppointments(false, true, true);
+                    await RefreshAppointments(false, true, true).ConfigureAwait(false);
                 }
                 Utils.SleepWithCancellation(_statusLookupTokenSource.Token, StatusRefreshIntervalMs);
             }
@@ -425,7 +422,7 @@ namespace ChewsiPlugin.Service.Services
                     }
                 }
                 return true;
-            });
+            }).ConfigureAwait(false);
         }
 
         private async void LoadAppointmentsLoop()
@@ -438,7 +435,7 @@ namespace ChewsiPlugin.Service.Services
                 // Refresh appointments every 3 minutes
                 Utils.SleepWithCancellation(_loadTokenSource.Token, LoadIntervalMs);
 
-                await RefreshAppointments(true, true, true);
+                await RefreshAppointments(true, true, true).ConfigureAwait(false);
             }
         }
 
@@ -465,7 +462,7 @@ namespace ChewsiPlugin.Service.Services
             }
             if (updated)
             {
-                await RefreshAppointments(false, false, true);
+                await RefreshAppointments(false, false, true).ConfigureAwait(false);
             }
         }
 

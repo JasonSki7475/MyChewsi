@@ -3,7 +3,6 @@
     public enum ClientState
     {
         Initializing = 0,
-        Ready = 1,
-        InvalidSettings = 2
+        Ready = 1
     }
 }

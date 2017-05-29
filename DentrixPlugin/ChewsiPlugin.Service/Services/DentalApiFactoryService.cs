@@ -23,7 +23,7 @@ namespace ChewsiPlugin.Service.Services
                 case Settings.PMS.Types.OpenDental:
                     return new OpenDentalApi.OpenDentalApi(_repository);
                 case Settings.PMS.Types.Eaglesoft:
-                    return new EaglesoftApi.EaglesoftApi();
+                    return new EaglesoftApi.EaglesoftApi(_repository);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

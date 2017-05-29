@@ -33,7 +33,7 @@ namespace ChewsiPlugin.UI.ViewModels
         public IDialogService DialogService { get; }
 
         public IClientAppService AppService { get; }
-
+        
         public ClaimItemViewModel SelectedClaim
         {
             get { return _selectedClaim; }
@@ -67,7 +67,7 @@ namespace ChewsiPlugin.UI.ViewModels
         #endregion
         
         #region RefreshDownloadsCommand
-        public ICommand RefreshDownloadsCommand => _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute, CanExecuteRefreshDownloadsCommand));
+        public ICommand RefreshDownloadsCommand => _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute));
 
         private void OnRefreshDownloadsCommandExecute()
         {
@@ -85,11 +85,6 @@ namespace ChewsiPlugin.UI.ViewModels
                 });
             };
             worker.RunWorkerAsync();
-        }
-
-        private bool CanExecuteRefreshDownloadsCommand()
-        {
-            return AppService.Initialized;
         }
         #endregion
 

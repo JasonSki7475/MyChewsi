@@ -5,18 +5,22 @@ using System.Linq;
 using System.ServiceProcess;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
+using ChewsiPlugin.Api.Repository;
 using Dapper;
+using Appointment = ChewsiPlugin.Api.Common.Appointment;
 
 namespace ChewsiPlugin.EaglesoftApi
 {
     public class EaglesoftApi : DentalApi, IDentalApi
     {
+        private readonly IRepository _repository;
         private string _connectionString;
         private const string DatabaseServiceName = "SQLANYs_PattersonDBServer";
         private const int DatabaseServiceStartTimeoutMs = 30000;
 
-        public EaglesoftApi()
+        public EaglesoftApi(IRepository repository)
         {
+            _repository = repository;
         }
 
         private OdbcConnection GetConnection()
@@ -26,25 +30,31 @@ namespace ChewsiPlugin.EaglesoftApi
             return connection;
         }
 
+        public string GetConnectionString()
+        {
+            AppDomainSetup setup = new AppDomainSetup
+            {
+                ApplicationBase = @"C:\EagleSoft\Shared Files\"
+            };
+            var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
+            var proxy = (Proxy) domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+            var cs = proxy.GetConnectionString();
+            AppDomain.Unload(domain);
+            return cs;
+        }
+
         private void Initialize()
         {
             if (!_initialized)
             {
-                AppDomainSetup setup = new AppDomainSetup
-                {
-                    ApplicationBase = @"C:\EagleSoft\Shared Files\"
-                };
-                var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
-                var proxy = (Proxy)domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName);
-                _connectionString = proxy.GetConnectionString();
-                AppDomain.Unload(domain);
+                _connectionString = _repository.GetSettingValue<string>(Settings.PMS.ConnectionStringKey);
                 _initialized = true;
             }
             if (!TestDatabaseConnection())
             {
                 Logger.Info("Starting database server");
                 _initialized = StartDatabaseService();
-            }
+            }            
         }
 
         private bool TestDatabaseConnection()
