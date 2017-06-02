@@ -137,6 +137,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BooleanInverseConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Converters\ClientServiceStatusToBooleanConverter.cs" />
     <Compile Include="Converters\EnumToBooleanConverter.cs" />
@@ -152,6 +153,8 @@
     <Compile Include="Services\CallbackHandler.cs" />
     <Compile Include="Services\ClientAppService.cs" />
     <Compile Include="Services\IClientAppService.cs" />
+    <Compile Include="Services\ILauncherService.cs" />
+    <Compile Include="Services\LauncherService.cs" />
     <Compile Include="ViewModels\ConnectViewModel.cs" />
     <Compile Include="ViewModels\DialogService\DialogService.cs" />
     <Compile Include="ViewModels\DialogService\Message.cs" />

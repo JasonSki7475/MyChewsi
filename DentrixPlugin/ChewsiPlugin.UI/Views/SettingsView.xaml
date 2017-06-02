@@ -6,9 +6,9 @@
              xmlns:viewModels="clr-namespace:ChewsiPlugin.UI.ViewModels"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type viewModels:SettingsViewModel}}">
     <StackPanel>
-        <TextBlock Visibility="{Binding IsServer, Converter={StaticResource BooleanToVisibilityInverseConverter}}" 
+        <TextBlock Visibility="{Binding IsClient, Converter={StaticResource BooleanToVisibilityConverter}}" 
                    FontWeight="Bold" Margin="20,10" Text="This plugin instance is client, settings are read-only"/>
-        <Grid IsEnabled="{Binding IsServer}">
+        <Grid IsEnabled="{Binding IsClient, Converter={StaticResource BooleanInverseConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="10"/>
@@ -44,32 +44,6 @@
                     <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding State}"/>
                 </Grid>
             </GroupBox>
-            <!--<GroupBox Grid.Column="0" Grid.Row="0" Header="Practice Management System" Padding="10">
-                <Grid Width="300">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="15"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Type"/>
-                    <ComboBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" />
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Folder"/>
-                    <Grid Grid.Row="2" Grid.Column="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding Path}" IsEnabled="{Binding NeedsPath}" ToolTip="{Binding Path}"/>
-                        <Button Grid.Column="1" Content="Select..." IsEnabled="{Binding NeedsPath}" Background="White" Foreground="Black" BorderBrush="LightGray"
-                                Command="{Binding SelectPathCommand}" Padding="5,1" Template="{StaticResource WhiteButton}"/>
-                    </Grid>
-                </Grid>
-            </GroupBox>-->
             <GroupBox Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Header="Network" Padding="10">
                 <Grid Width="250">
                     <Grid.RowDefinitions>
@@ -82,7 +56,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="10"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -99,10 +73,12 @@
                     <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding ProxyLogin}" IsEnabled="{Binding UseProxy}"/>
                     <TextBlock Grid.Row="8" Grid.Column="0" Text="Password"/>
                     <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding ProxyPassword}" IsEnabled="{Binding UseProxy}"/>
+                    <Rectangle Height="1" Fill="DarkGray" Grid.Row="9" Grid.ColumnSpan="3" Margin="0, 10"
+                               Visibility="{Binding IsClient, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <TextBlock Grid.Row="10" Grid.Column="0" Text="PMS Server host name or IP address" TextWrapping="Wrap" Width="120"
-                               Visibility="{Binding IsServer, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                               Visibility="{Binding IsClient, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <TextBox Grid.Row="10" Grid.Column="2" Text="{Binding ServerHost}" VerticalAlignment="Center"
-                             Visibility="{Binding IsServer, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                             Visibility="{Binding IsClient, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>            
             </GroupBox>
             <GroupBox Grid.Column="0" Grid.Row="0" Header="General" Padding="10">

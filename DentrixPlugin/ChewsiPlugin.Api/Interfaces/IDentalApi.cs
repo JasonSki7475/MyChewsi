@@ -12,7 +12,7 @@ namespace ChewsiPlugin.Api.Interfaces
         Provider GetProvider(string providerId);
         string GetVersion();
         void Unload();
-        void StartPms();
+        string GetPmsExecutablePath(string pmsFolder);
         bool TryGetFolder(out string folder);
         bool IsInitialized();
     }

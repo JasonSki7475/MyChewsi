@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Windows.Forms;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
@@ -18,7 +16,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private Action _onClose;
         private readonly IDialogService _dialogService;
         private Settings.PMS.Types _selectedType;
-        private string _path;
         private ICommand _closeCommand;
         private string _address1;
         private string _address2;
@@ -29,7 +26,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _proxyLogin;
         private string _proxyPassword;
         private ICommand _saveCommand;
-        private ICommand _selectPathCommand;
         private string _state;
         private bool _startPms;
         private bool _startLauncher;
@@ -37,13 +33,12 @@ namespace ChewsiPlugin.UI.ViewModels
         private IClientAppService _appService;
         private string _machineId;
         private string _closeButtonText;
-        private bool _isServer;
+        private bool _isClient;
         private string _serverHost;
 
         public SettingsViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
-            Types = new[] {Settings.PMS.Types.Dentrix, Settings.PMS.Types.Eaglesoft, Settings.PMS.Types.OpenDental };
         }
         
         public string CloseButtonText
@@ -56,17 +51,15 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public bool IsServer
+        public bool IsClient
         {
-            get { return _isServer; }
+            get { return _isClient; }
             set
             {
-                _isServer = value;
-                RaisePropertyChanged(() => IsServer);
+                _isClient = value;
+                RaisePropertyChanged(() => IsClient);
             }
         }
-
-        public Settings.PMS.Types[] Types { get; private set; }
         
         public void Show(Action onClose)
         {
@@ -74,7 +67,7 @@ namespace ChewsiPlugin.UI.ViewModels
             IsVisible = true;
         }
 
-        public void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings, string serverAddress)
+        public void InjectAppServiceAndInit(IClientAppService appService, SettingsDto settings, string serverAddress, bool startLauncher, bool isClient)
         {
             _appService = appService;
             
@@ -86,21 +79,19 @@ namespace ChewsiPlugin.UI.ViewModels
             ProxyPort = settings.ProxyPort;
             ProxyPassword = settings.ProxyPassword;
             SelectedType = settings.PmsType;
-            Path = settings.PmsPath;
             State = settings.State;
             StartPms = settings.StartPms;
-            StartLauncher = settings.StartLauncher;
+            StartLauncher = startLauncher;
             _machineId = settings.MachineId;
-            IsServer = !settings.IsClient;
+            IsClient = isClient;
             ServerHost = Utils.GetHostFromAddress(serverAddress);
 
-            CloseButtonText = IsServer ? "Save" : "Close";
+            CloseButtonText = IsClient ? "Close" : "Save";
         }
 
         private void Hide()
         {
             IsVisible = false;
-            _onClose?.Invoke();
         }
 
         public bool IsVisible
@@ -120,7 +111,6 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _selectedType = value;
                 RaisePropertyChanged(() => SelectedType);
-                RaisePropertyChanged(() => NeedsPath);
                 RaisePropertyChanged(() => CanChangeStartPms);
             }
         }
@@ -134,17 +124,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => ServerHost);
             }
         }
-
-        public string Path
-        {
-            get { return _path; }
-            set
-            {
-                _path = value;
-                RaisePropertyChanged(() => Path);
-            }
-        }
-
+        
         public string Address1
         {
             get { return _address1; }
@@ -184,8 +164,6 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => Tin);
             }
         }
-
-        public bool NeedsPath => SelectedType == Settings.PMS.Types.OpenDental;
 
         public bool UseProxy
         {
@@ -260,10 +238,7 @@ namespace ChewsiPlugin.UI.ViewModels
         public bool CanChangeStartPms => SelectedType != Settings.PMS.Types.Eaglesoft;
 
         #region CloseCommand
-        public ICommand CloseCommand
-        {
-            get { return _closeCommand ?? (_closeCommand = new RelayCommand(OnCloseCommandExecute, CanCloseCommandExecute)); }
-        }
+        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new RelayCommand(OnCloseCommandExecute, CanCloseCommandExecute));
 
         private bool CanCloseCommandExecute()
         {
@@ -273,34 +248,24 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnCloseCommandExecute()
         {
             Hide();
+            _onClose?.Invoke();
         }
         #endregion 
           
         #region SaveCommand
-        public ICommand SaveCommand
-        {
-            get { return _saveCommand ?? (_saveCommand = new RelayCommand(OnSaveCommandExecute)); }
-        }
-        
+        public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(OnSaveCommandExecute));
+
         private void OnSaveCommandExecute()
         {
-            if (IsServer)
+            Hide();
+            if (!IsClient)
             {
                 try
                 {
-                    if (SelectedType == Settings.PMS.Types.OpenDental)
-                    {
-                        if (string.IsNullOrEmpty(Path) || !Directory.Exists(Path))
-                        {
-                            _dialogService.Show("Path to OpenDental directory should be set", "Error");
-                            return;
-                        }
-                    }
-
                     _dialogService.ShowLoadingIndicator();
-                    _appService.SaveSettings(new SettingsDto(SelectedType, Path, Address1, Address2, Tin, UseProxy,
+                    _appService.SaveSettings(new SettingsDto(SelectedType, Address1, Address2, Tin, UseProxy,
                         ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
-                        State, StartPms, StartLauncher, _machineId, !IsServer), Utils.GetAddressFromHost(ServerHost));
+                        State, StartPms, _machineId), Utils.GetAddressFromHost(ServerHost), StartLauncher);
                 }
                 finally
                 {
@@ -308,27 +273,8 @@ namespace ChewsiPlugin.UI.ViewModels
                 }
                 Logger.Debug("Settings were saved");
             }
-            Hide();
+            _onClose?.Invoke();
         }
         #endregion   
-
-        #region SelectPathCommand
-        public ICommand SelectPathCommand
-        {
-            get { return _selectPathCommand ?? (_selectPathCommand = new RelayCommand(OnSelectPathCommandExecute)); }
-        }
-
-        private void OnSelectPathCommandExecute()
-        {
-            using (var dialog = new FolderBrowserDialog())
-            {
-                DialogResult result = dialog.ShowDialog();
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-                {
-                    Path = dialog.SelectedPath;
-                }
-            }
-        }
-        #endregion 
     }
 }

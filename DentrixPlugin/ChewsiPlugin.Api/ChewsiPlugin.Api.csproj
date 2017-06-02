@@ -104,6 +104,8 @@
     <Compile Include="Chewsi\ValidateSubscriberAndProviderRequest.cs" />
     <Compile Include="Common\ClaimDto.cs" />
     <Compile Include="Common\DentalApi.cs" />
+    <Compile Include="Common\DownloadDto.cs" />
+    <Compile Include="Common\File835Dto.cs" />
     <Compile Include="Common\InitialSettingsDto.cs" />
     <Compile Include="Common\MessageBoxDialogService.cs" />
     <Compile Include="Common\ProcedureInfo.cs" />

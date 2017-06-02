@@ -26,7 +26,7 @@ namespace ChewsiPlugin.UI.ViewModels
             SimpleIoc.Default.Register<IClientAppService, ClientAppService>();
             SimpleIoc.Default.Register<IClientCallback, CallbackHandler>();
             SimpleIoc.Default.Register<ISettingsViewModel, SettingsViewModel>();
-
+            SimpleIoc.Default.Register<ILauncherService, LauncherService>();
         }
 
         public ISettingsViewModel SettingsViewModel => SimpleIoc.Default.GetInstance<ISettingsViewModel>();

@@ -20,10 +20,7 @@ namespace ChewsiPlugin.Api.Common
         
         [DataMember]
         public Settings.PMS.Types PmsType { get; set; }
-
-        [DataMember]
-        public string PmsPath { get; set; }
-
+        
         [DataMember]
         public bool IsClient { get; set; }
     }

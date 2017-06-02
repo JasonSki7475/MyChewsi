@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ChewsiPlugin.Api;
 using ChewsiPlugin.Api.Common;
+using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -11,11 +13,19 @@ namespace ChewsiPlugin.UI.ViewModels
 {
     internal class ConnectViewModel : ViewModelBase, IConnectViewModel
     {
+        private readonly IDialogService _dialogService;
         private IClientAppService _clientAppService;
         private string _host;
         private ICommand _detectCommand;
         private ICommand _connectCommand;
         private bool _shown;
+        private readonly ServiceDiscovery _serviceDiscovery;
+
+        public ConnectViewModel(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+            _serviceDiscovery = new ServiceDiscovery();
+        }
 
         public void InjectAppServiceAndInit(IClientAppService appService)
         {
@@ -51,20 +61,24 @@ namespace ChewsiPlugin.UI.ViewModels
         #region DetectCommand
         public ICommand DetectCommand => _detectCommand ?? (_detectCommand = new RelayCommand(OnDetectCommandExecute));
 
-        private void OnDetectCommandExecute()
+        private async void OnDetectCommandExecute()
         {
-            Task.Factory.StartNew(() =>
+            _dialogService.ShowLoadingIndicator("Searching for the Chewsi Server in local network...");
+            var address = await _serviceDiscovery.Discover();
+            if (address != null)
             {
-                var address = _clientAppService.FindServerAndInitChannelAsync();
-                if (address != null)
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                    {
-                        Host = Utils.GetHostFromAddress(address);
-                    });
-                }
-            });
+                    Host = Utils.GetHostFromAddress(address.Uri.ToString());
+                });
+            }
+            else
+            {
+                _dialogService.Show("Server not found", "Completed", "Ok");
+            }
+            _dialogService.HideLoadingIndicator();
         }
+
         #endregion 
 
         #region ConnectCommand

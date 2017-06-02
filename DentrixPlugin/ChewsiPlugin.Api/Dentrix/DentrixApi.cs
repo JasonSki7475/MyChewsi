@@ -141,7 +141,7 @@ namespace ChewsiPlugin.Api.Dentrix
 
             var dateRange = GetTimeRangeForToday();
 
-            var result = ExecuteCommand($"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>'{dateRange.Item1}' and appointment_date<'{dateRange.Item2}'" +
+            var result = ExecuteCommand($"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>='{dateRange.Item1}' and appointment_date<='{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
                 new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id", "appointment_id", "modified_date" },
                 false);

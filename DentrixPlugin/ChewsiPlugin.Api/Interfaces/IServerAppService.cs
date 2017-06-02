@@ -38,6 +38,15 @@ namespace ChewsiPlugin.Api.Interfaces
         [OperationContract]
         bool Ping();
 
+        [OperationContract]
+        List<DownloadDto> GetDownloads();
+
+        [OperationContract]
+        File835Dto DownloadFile(string documentType, string documentId, string postedDate);
+
+        [OperationContract]
+        string GetPmsExecutablePath();
+
         /// <summary>
         /// For tests, InitClient() should be used
         /// </summary>

@@ -6,12 +6,11 @@ namespace ChewsiPlugin.Api.Common
     [DataContract]
     public class SettingsDto
     {
-        public SettingsDto(Settings.PMS.Types pmsType, string pmsPath, string address1, string address2, string tin, bool useProxy, 
+        public SettingsDto(Settings.PMS.Types pmsType, string address1, string address2, string tin, bool useProxy, 
             string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword, string state, bool startPms, 
-            bool startLauncher, string machineId, bool isClient)
+            string machineId)
         {
             PmsType = pmsType;
-            PmsPath = pmsPath;
             Address1 = address1;
             Address2 = address2;
             Tin = tin;
@@ -22,17 +21,12 @@ namespace ChewsiPlugin.Api.Common
             ProxyPassword = proxyPassword;
             State = state;
             StartPms = startPms;
-            StartLauncher = startLauncher;
             MachineId = machineId;
-            IsClient = isClient;
         }
 
         [DataMember]
         public Settings.PMS.Types PmsType { get; set; }
-
-        [DataMember]
-        public string PmsPath { get; set; }
-
+        
         [DataMember]
         public string Address1 { get; set; }
 
@@ -47,10 +41,7 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public bool StartPms { get; set; }
-
-        [DataMember]
-        public bool StartLauncher { get; set; }
-
+        
         [DataMember]
         public string ProxyAddress { get; set; }
 
@@ -68,8 +59,5 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public string MachineId { get; set; }
-
-        [DataMember]
-        public bool IsClient { get; set; }
     }
 }

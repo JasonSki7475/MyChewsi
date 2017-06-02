@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +10,6 @@ using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
-using Microsoft.Win32;
 using NLog;
 using Appointment = ChewsiPlugin.Api.Repository.Appointment;
 
@@ -24,8 +21,6 @@ namespace ChewsiPlugin.Service.Services
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const int StatusLookupTimeoutSeconds = 60;
         private const int StatusRefreshIntervalMs = 10000;
-        private const string ChewsiLauncherRegistryKey = "Chewsi Launcher";
-        private const string ChewsiLauncherExecutableName = "ChewsiPlugin.Launcher.exe";
         private const int AppointmentTtlDays = 1;
         private const int LoadIntervalMs = 10000;
 
@@ -75,9 +70,6 @@ namespace ChewsiPlugin.Service.Services
                     if (_dentalApi != null)
                     {
                         DeleteOldAppointments();
-                        StartPmsIfRequired();
-                        InitializeChewsiApi();
-                        UpdatePluginRegistration();
                         await RefreshAppointments(true, true, true).ConfigureAwait(false);
                         if (_state != ServerState.Ready)
                         {
@@ -99,6 +91,8 @@ namespace ChewsiPlugin.Service.Services
                     _state = ServerState.InvalidSettings;
                 }
             }
+            InitializeChewsiApi();
+            UpdatePluginRegistration();
         }
 
         public List<ClaimDto> GetClaims(bool force)
@@ -153,7 +147,6 @@ namespace ChewsiPlugin.Service.Services
                     }
                 }
                 result.IsClient = _repository.GetSettingValue<bool>(Settings.IsClient);
-                result.PmsPath = _repository.GetSettingValue<string>(Settings.PMS.PathKey);
                 result.PmsType = _repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
                 return result;
             }
@@ -163,6 +156,56 @@ namespace ChewsiPlugin.Service.Services
         public bool Ping()
         {
             return true;
+        }
+
+        public List<DownloadDto> GetDownloads()
+        {
+            var tin = _repository.GetSettingValue<string>(Settings.TIN);
+            var state = _repository.GetSettingValue<string>(Settings.StateKey);
+            var address1 = _repository.GetSettingValue<string>(Settings.Address1Key);
+            var address2 = _repository.GetSettingValue<string>(Settings.Address2Key);
+            var list = _chewsiApi.Get835Downloads(new Request835Downloads
+            {
+                TIN = tin,
+                State = state,
+                Address = $"{address1} {address2}"
+            }).Select(m => new DownloadDto
+            {
+                Status = m.Status,
+                PostedDate = m.PostedDate,
+                Edi = m.EDI_835_EDI,
+                Report = m.EDI_835_Report
+            }).ToList();
+            return list;
+        }
+
+        public File835Dto DownloadFile(string documentType, string documentId, string postedDate)
+        {
+            var tin = _repository.GetSettingValue<string>(Settings.TIN);
+            var stream = _chewsiApi.DownloadFile(new DownoadFileRequest
+            {
+                DocumentType = documentType,
+                TIN = tin,
+                DocumentID = documentId,
+                PostedOnDate = postedDate
+            });
+            var response = new File835Dto();
+            if (stream != null)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    response.Content = ms.ToArray();
+                }
+                stream.Close();
+            }
+            return response;
+        }
+
+        public string GetPmsExecutablePath()
+        {
+            var api = GetDentalApi();
+            return api?.GetPmsExecutablePath(_repository.GetSettingValue<string>(Settings.PMS.PathKey));
         }
 
         public ServerState GetState()
@@ -283,10 +326,12 @@ namespace ChewsiPlugin.Service.Services
             if (procedures.Any())
             {
                 var claimStatuses = _chewsiApi.RetrievePluginClientRowStatuses(GetSettings().Tin);
-                var status = claimStatuses.FirstOrDefault(m => m.PMSClaimNbr == id && m.PMSModifiedDate == pmsModifiedDate);
+                var status = claimStatuses.FirstOrDefault(m => m.PMSClaimNbr == id 
+                && Utils.ArePMSModifiedDatesEqual(DateTime.Parse(m.PMSModifiedDate), pmsModifiedDate));
                 if (status != null)
                 {
-                    switch (status.Status)
+                    var s = (PluginClientRowStatus.Statuses)Enum.Parse(typeof (PluginClientRowStatus.Statuses), status.Status);
+                    switch (s)
                     {
                         case PluginClientRowStatus.Statuses.S:
                             return SubmitClaimResult.AlreadySubmitted;
@@ -549,7 +594,6 @@ namespace ChewsiPlugin.Service.Services
         public SettingsDto GetSettings()
         {
             var pmsType = _repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
-            var pmsPath = _repository.GetSettingValue<string>(Settings.PMS.PathKey);
             var address1Old = _repository.GetSettingValue<string>(Settings.Address1Key);
             var address2Old = _repository.GetSettingValue<string>(Settings.Address2Key);
             var tin = _repository.GetSettingValue<string>(Settings.TIN);
@@ -561,45 +605,7 @@ namespace ChewsiPlugin.Service.Services
             var proxyLogin = _repository.GetSettingValue<string>(Settings.ProxyLogin);
             var state = _repository.GetSettingValue<string>(Settings.StateKey);
             var machineId = _repository.GetSettingValue<string>(Settings.MachineIdKey);
-            var isClient = _repository.GetSettingValue<bool>(Settings.IsClient);
-            return new SettingsDto(pmsType, pmsPath, address1Old, address2Old, tin, useProxy, proxyAddress, proxyPort, proxyLogin, proxyPassword, state, startPms, GetLauncherStartup(), machineId, isClient);
-        }
-
-        private void StartPmsIfRequired()
-        {
-            var type = _repository.GetSettingValue<Settings.PMS.Types>(Settings.PMS.TypeKey);
-            var start = _repository.GetSettingValue<bool>(Settings.StartPms);
-            if (start || type == Settings.PMS.Types.Eaglesoft)
-            {
-                Logger.Info("Starting PMS");
-                GetDentalApi().StartPms();
-            }
-        }
-
-        private void SetLauncherStartup(bool enabled)
-        {
-            try
-            {
-                RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                if (key != null)
-                {
-                    if (enabled)
-                    {
-                        if (key.GetValue(ChewsiLauncherRegistryKey) == null)
-                        {
-                            key.SetValue(ChewsiLauncherRegistryKey, Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ChewsiLauncherExecutableName));
-                        }
-                    }
-                    else
-                    {
-                        key.DeleteValue(ChewsiLauncherRegistryKey, false);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn(ex, "Cannot save launcher startup settings in registry");
-            }
+            return new SettingsDto(pmsType, address1Old, address2Old, tin, useProxy, proxyAddress, proxyPort, proxyLogin, proxyPassword, state, startPms, machineId);
         }
 
         private void UpdatePluginRegistration()
@@ -652,14 +658,12 @@ namespace ChewsiPlugin.Service.Services
 
                 _repository.SaveSetting(Settings.TIN, settingsDto.Tin);
                 _repository.SaveSetting(Settings.PMS.TypeKey, settingsDto.PmsType);
-                _repository.SaveSetting(Settings.PMS.PathKey, settingsDto.PmsPath);
                 _repository.SaveSetting(Settings.Address1Key, settingsDto.Address1);
                 _repository.SaveSetting(Settings.Address2Key, settingsDto.Address2);
                 _repository.SaveSetting(Settings.StateKey, settingsDto.State);
                 _repository.SaveSetting(Settings.OsKey, Utils.GetOperatingSystemInfo());
                 _repository.SaveSetting(Settings.AppVersionKey, Utils.GetPluginVersion());
-
-                //_repository.SaveSetting(Settings.IsClient, settingsDto.IsClient);
+                
                 _repository.SaveSetting(Settings.StartPms, settingsDto.StartPms);
                 _repository.SaveSetting(Settings.UseProxy, settingsDto.UseProxy);
                 _repository.SaveSetting(Settings.ProxyAddress, settingsDto.ProxyAddress);
@@ -669,21 +673,6 @@ namespace ChewsiPlugin.Service.Services
 
                 // init DentalApi and get version
                 _repository.SaveSetting(Settings.PMS.VersionKey, GetDentalApi().GetVersion());
-
-                // start or kill launcher
-                var currentLaunchSetting = GetLauncherStartup();
-                if (currentLaunchSetting ^ settingsDto.StartLauncher)
-                {
-                    if (settingsDto.StartLauncher)
-                    {
-                        StartLauncher();
-                    }
-                    else
-                    {
-                        KillLauncher();
-                    }
-                }
-                SetLauncherStartup(settingsDto.StartLauncher);
 
                 // DB is empty, settings saved, call RegisterPlugin
                 var registeredBefore = !string.IsNullOrEmpty(_repository.GetSettingValue<string>(Settings.MachineIdKey));
@@ -720,57 +709,6 @@ namespace ChewsiPlugin.Service.Services
             }
         }
 
-        private void StartLauncher()
-        {
-            var currentSessionId = Process.GetCurrentProcess().SessionId;
-            Process[] runningProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(ChewsiLauncherExecutableName));
-            if (runningProcesses.All(m => m.SessionId != currentSessionId))
-            {
-                try
-                {
-                    Process.Start(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ChewsiLauncherExecutableName));
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Failed to start launcher");
-                }
-            }
-        }
-
-        private void KillLauncher()
-        {
-            var currentSessionId = Process.GetCurrentProcess().SessionId;
-            Process process = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(ChewsiLauncherExecutableName)).FirstOrDefault(m => m.SessionId == currentSessionId);
-            if (process != null)
-            {
-                try
-                {
-                    process.Kill();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Failed to kill launcher");
-                }
-            }
-        }
-
-        private bool GetLauncherStartup()
-        {
-            try
-            {
-                RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", false);
-                if (key != null)
-                {
-                    return key.GetValue(ChewsiLauncherRegistryKey) != null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn(ex, "Cannot load launcher startup settings from registry");
-            }
-            return false;
-        }
-
         private void DeleteOldAppointments()
         {
             lock (_appointmentsLockObject)
@@ -795,28 +733,33 @@ namespace ChewsiPlugin.Service.Services
 
         public bool DeleteAppointment(string id)
         {
+            bool deleted = false;
             lock (_appointmentsLockObject)
             {
                 var existing = _repository.GetAppointmentById(id);
                 if (existing != null)
                 {
-                    var p = GetProvider(existing.ProviderId);
+                    var provider = GetProvider(existing.ProviderId);
                     if (_chewsiApi.StorePluginClientRowStatus(new PluginClientRowStatus
                     {
-                        TIN = p.Tin,
-                        Status = PluginClientRowStatus.Statuses.D,
-                        PMSModifiedDate = existing.PmsModifiedDate,
+                        TIN = provider.Tin,
+                        Status = PluginClientRowStatus.Statuses.D.ToString(),
+                        PMSModifiedDate = existing.PmsModifiedDate.ToString("G"),
                         PMSClaimNbr = existing.Id
                     }))
                     {
                         existing.State = AppointmentState.Deleted;
                         _repository.UpdateAppointment(existing);
-                        RefreshAppointments(false, false, true);
-                        return true;
+                        deleted = true;
                     }
                 }
             }
-            return false;
+
+            if (deleted)
+            {
+                RefreshAppointments(false, false, true);
+            }
+            return deleted;
         }
 
         /// <summary>
@@ -985,8 +928,8 @@ namespace ChewsiPlugin.Service.Services
                     }).Concat(_serviceClaims)
                     // don't return deleted and submitted claims
                     .Where(
-                        m =>
-                            !clientRowStatuses.Any(n => n.PMSModifiedDate == m.PmsModifiedDate && n.PMSClaimNbr == m.Id))
+                        m => !clientRowStatuses.Any(n => Utils.ArePMSModifiedDatesEqual(DateTime.Parse(n.PMSModifiedDate), m.PmsModifiedDate)
+                                     && n.PMSClaimNbr == m.Id))
                     .ToList();
                 if (Logger.IsDebugEnabled)
                 {

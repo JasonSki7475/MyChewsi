@@ -185,6 +185,9 @@
                            ButtonCommand="{Binding SaveCommand}">
             <views:SettingsView />
         </controls1:LightBox>
+        <!-- Connection view -->
+        <views:ConnectView DataContext="{Binding ConnectViewModel, Source={StaticResource ViewModelLocator}}" d:IsHidden="true"
+                           Visibility="{Binding Shown, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <!-- Message -->
         <controls1:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Header="{Binding DialogService.Message.Header}"
                             ButtonText="{Binding DialogService.Message.ButtonText}" 
@@ -193,9 +196,6 @@
                             ButtonCommand="{Binding DialogService.Message.CloseCommand}" d:IsHidden="true">
             <TextBlock Text="{Binding DialogService.Message.Text}" Width="500" TextWrapping="Wrap" MinHeight="65"/>
         </controls1:LightBox>
-        <!-- Connection view -->
-        <views:ConnectView DataContext="{Binding ConnectViewModel, Source={StaticResource ViewModelLocator}}" d:IsHidden="true"
-                           Visibility="{Binding Shown, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <!-- Loading indicator without message -->
         <controls1:LoadingControl d:IsHidden="true" Visibility="{Binding DialogService.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"/>
         <!-- Loading indicator with a message -->

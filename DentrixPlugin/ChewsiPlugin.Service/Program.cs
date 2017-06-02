@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
-using System.Threading;
-using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Dentrix;
 using NLog;
 

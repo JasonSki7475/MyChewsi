@@ -20,6 +20,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Threading;
 using NLog;
 using IServerAppService = ChewsiPlugin.Api.Interfaces.IServerAppService;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace ChewsiPlugin.UI.Services
 {
@@ -31,26 +32,25 @@ namespace ChewsiPlugin.UI.Services
 
         private IServerAppService _serverAppService;
         private readonly IClientDialogService _dialogService;
-        private readonly IChewsiApi _chewsiApi;
         private readonly ISettingsViewModel _settingsViewModel;
         private readonly IRepository _repository;
         private readonly IConnectViewModel _connectViewModel;
+        private readonly ILauncherService _launcherService;
         private DuplexChannelFactory<IServerAppService> _factory;
-        private SettingsDto _settings;
         private ClientState _state;
         private bool _isLoadingClaims;
         private ServiceHost _announcementServiceHost;
         private readonly bool _isClient;
 
-        public ClientAppService(IClientDialogService dialogService, IChewsiApi chewsiApi, ISettingsViewModel settingsViewModel, 
-            IRepository repository, IConnectViewModel connectViewModel)
+        public ClientAppService(IClientDialogService dialogService, ISettingsViewModel settingsViewModel, 
+            IRepository repository, IConnectViewModel connectViewModel, ILauncherService launcherService)
         {
             SetState(ClientState.Initializing);
             _dialogService = dialogService;
-            _chewsiApi = chewsiApi;
             _settingsViewModel = settingsViewModel;
             _repository = repository;
             _connectViewModel = connectViewModel;
+            _launcherService = launcherService;
             _connectViewModel.InjectAppServiceAndInit(this);
             ClaimItems = new ObservableCollection<ClaimItemViewModel>();
             _isClient = _repository.GetSettingValue<bool>(Settings.IsClient);
@@ -142,11 +142,11 @@ namespace ChewsiPlugin.UI.Services
             _dialogService.ShowLoadingIndicator();
             try
             {
-                var stream = _chewsiApi.DownloadFile(new DownoadFileRequest
-                {
-                    DocumentType = downloadReport ? DownoadFileType.Pdf : DownoadFileType.Txt, TIN = _settings.Tin, DocumentID = documentId, PostedOnDate = postedDate
-                });
-                if (stream != null)
+                File835Dto response;
+                if (Utils.TrySafeCall(_serverAppService.DownloadFile,
+                    downloadReport ? DownoadFileType.Pdf : DownoadFileType.Txt,
+                    documentId, 
+                    postedDate, out response) && response != null && response.Content != null && response.Content.Length > 0)
                 {
                     var dialog = new SaveFileDialog
                     {
@@ -159,10 +159,10 @@ namespace ChewsiPlugin.UI.Services
                     };
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
+
                         using (FileStream file = new FileStream(dialog.FileName, FileMode.Create, FileAccess.Write))
                         {
-                            stream.CopyTo(file);
-                            stream.Close();
+                            file.Write(response.Content, 0, response.Content.Length);
                         }
                         _dialogService.Show("File successfully downloaded", "Information");
                     }
@@ -183,18 +183,17 @@ namespace ChewsiPlugin.UI.Services
             _dialogService.ShowLoadingIndicator();
             try
             {
-                var list = _chewsiApi.Get835Downloads(new Request835Downloads
+                List<DownloadDto> list;
+                if (Utils.TrySafeCall(() => _serverAppService.GetDownloads(), out list))
                 {
-                    TIN = _settings.Tin,
-                    State = _settings.State,
-                    Address = $"{_settings.Address1} {_settings.Address2}"
-                }).Select(m => new DownloadItemViewModel(m.EDI_835_EDI, m.EDI_835_Report, m.Status, m.PostedDate)).ToList();
-                return list;
+                    return list.Select(m => new DownloadItemViewModel(m.Edi, m.Report, m.Status, m.PostedDate)).ToList();
+                }
             }
             finally
             {
                 _dialogService.HideLoadingIndicator();
             }
+            return new List<DownloadItemViewModel>();
         }
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; }
@@ -221,7 +220,7 @@ namespace ChewsiPlugin.UI.Services
         {
             _settingsViewModel.Show(async () =>
             {
-                if (!_settings.IsClient)
+                if (!_isClient)
                 {
                     await ReloadClaims(true).ConfigureAwait(false);
                 }
@@ -253,41 +252,7 @@ namespace ChewsiPlugin.UI.Services
             _announcementServiceHost.Open();
             Logger.Info("Announcement service started");
         }
-
-        public string FindServerAndInitChannelAsync(string serverAddress = null)
-        {
-            _dialogService.ShowLoadingIndicator("Connecting...");
-
-            if (serverAddress == null)
-            {
-                // Get cached server address
-                serverAddress = _repository.GetSettingValue<string>(Settings.ServerAddress);
-            }
-
-            string validAddress = null;
-
-            // Try to connect using cached address
-            if (CreateChannelAndConnect(serverAddress))
-            {
-                validAddress = serverAddress;
-                _repository.SaveSetting(Settings.ServerAddress, validAddress);
-            }
-            _dialogService.HideLoadingIndicator();
-            return validAddress;
-        }
-
-        private bool CreateChannelAndConnect(string serverAddress)
-        {
-            if (!string.IsNullOrEmpty(serverAddress))
-            {
-                _factory = GetFactory(new EndpointAddress(serverAddress));
-                CreateChannel();
-                bool response;
-                return Utils.TrySafeCall(() => _serverAppService.Ping(), out response) && response;
-            }
-            return false;
-        }
-
+        
         private void CreateChannel()
         {
             _serverAppService = _factory.CreateChannel();
@@ -319,75 +284,105 @@ namespace ChewsiPlugin.UI.Services
 
         public async Task<bool> Connect(string serverAddress = null)
         {
+            _dialogService.ShowLoadingIndicator("Connecting...");
             bool result = false;
-            serverAddress = FindServerAndInitChannelAsync(serverAddress);
+            if (serverAddress == null)
+            {
+                // Get cached server address
+                serverAddress = _repository.GetSettingValue<string>(Settings.ServerAddress);
+            }
+            if (serverAddress == null && !_isClient)
+            {
+                serverAddress = Utils.GetAddressFromHost("localhost");
+            }
+
             if (serverAddress != null)
             {
-                ServerState serverState;
-                if (Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState))
+                _factory = GetFactory(new EndpointAddress(serverAddress));
+                CreateChannel();
+
+                // Try to connect
+                bool response;
+                if (Utils.TrySafeCall(() => _serverAppService.Ping(), out response) && response)
                 {
-                    switch (serverState)
+                    _repository.SaveSetting(Settings.ServerAddress, serverAddress);
+
+                    ServerState serverState;
+                    if (Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState))
                     {
-                        case ServerState.Initializing:
-                            // Wait 10s while service is starting
-                            var startTime = DateTime.UtcNow;
-                            _dialogService.ShowLoadingIndicator("Waiting while service is starting...");
-                            while ((DateTime.UtcNow - startTime).TotalMilliseconds < ServiceReadyTimeoutMs)
-                            {
-                                await Task.Delay(1000);
-                                if (Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState) && serverState != ServerState.Initializing)
+                        switch (serverState)
+                        {
+                            case ServerState.Initializing:
+                                // Wait 60s while service is starting
+                                var startTime = DateTime.UtcNow;
+                                _dialogService.ShowLoadingIndicator("Waiting while service is starting...");
+                                while ((DateTime.UtcNow - startTime).TotalMilliseconds < ServiceReadyTimeoutMs)
                                 {
-                                    break;
+                                    await Task.Delay(1000);
+                                    if (Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState) && serverState != ServerState.Initializing)
+                                    {
+                                        break;
+                                    }
                                 }
-                            }
-                            _dialogService.HideLoadingIndicator();
-                            if (serverState == ServerState.Initializing)
-                            {
                                 _dialogService.HideLoadingIndicator();
-                                _dialogService.Show("Cannot load data from the Chewsi plugin's service. Server is not ready.", "Error");
-                            }
-                            else
-                            {
-                                return await Connect(serverAddress).ConfigureAwait(false);
-                            }
-                            break;
-                        case ServerState.Ready:
-                            SettingsDto settings;
-                            if (Utils.TrySafeCall(_serverAppService.GetSettings, out settings) && settings != null)
-                            {
-                                _settings = settings;
-                                RaisePropertyChanged(() => Title);
-                                _settingsViewModel.InjectAppServiceAndInit(this, settings, serverAddress);
-                                InitializeChewsiApi(settings);
-                                await ReloadClaims(false).ConfigureAwait(false);
-                                SetState(ClientState.Ready);
-                                RaiseInitGetter();
-                                result = true;
-                            }
-                            else
-                            {
-                                await Task.Delay(2000);
-                                await Connect(serverAddress);
-                            }
-                            break;
-                        case ServerState.InvalidSettings:
-                            OpenSettingsForReview(serverAddress);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                                if (serverState == ServerState.Initializing)
+                                {
+                                    _dialogService.HideLoadingIndicator();
+                                    _dialogService.Show("Cannot load data from the Chewsi plugin's service. Server is not ready.", "Error");
+                                }
+                                else
+                                {
+                                    return await Connect(serverAddress).ConfigureAwait(false);
+                                }
+                                break;
+                            case ServerState.Ready:
+                                SettingsDto settings;
+                                if (Utils.TrySafeCall(_serverAppService.GetSettings, out settings) && settings != null)
+                                {
+                                    RaisePropertyChanged(() => Title);
+                                    _settingsViewModel.InjectAppServiceAndInit(this, settings, serverAddress, _launcherService.GetLauncherStartup(), _isClient);
+                                    await ReloadClaims(false).ConfigureAwait(false);
+                                    SetState(ClientState.Ready);
+                                    RaiseInitGetter();
+                                    result = true;
+
+                                    // Start PMS
+                                    if (settings.StartPms)
+                                    {
+                                        string pmsExePath;
+                                        if (Utils.TrySafeCall(_serverAppService.GetPmsExecutablePath, out pmsExePath) && pmsExePath != null)
+                                        {
+                                            Logger.Info("Starting PMS: {0}", pmsExePath);
+                                            _launcherService.StartPms(pmsExePath);
+                                        }                                        
+                                    }
+                                }
+                                else
+                                {
+                                    await Task.Delay(2000);
+                                    await Connect(serverAddress);
+                                }
+                                break;
+                            case ServerState.InvalidSettings:
+                                OpenSettingsForReview(serverAddress);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
-                }
-                else
-                {
-                    await Task.Delay(2000);
-                    await Connect(serverAddress).ConfigureAwait(false);
-                }
+                    else
+                    {
+                        await Task.Delay(2000);
+                        await Connect(serverAddress).ConfigureAwait(false);
+                    }
+                }        
             }
             else
             {
+                serverAddress = Utils.GetAddressFromHost("localhost");
                 _connectViewModel.Show(serverAddress);
-                //_dialogService.Show("Failed to connect to Chewsi service.", "Error", async () => await Connect(), "Try Again");
             }
+            _dialogService.HideLoadingIndicator();
             return result;
         }
 
@@ -401,11 +396,11 @@ namespace ChewsiPlugin.UI.Services
             InitialSettingsDto s;
             if (Utils.TrySafeCall(_serverAppService.GetInitialSettings, out s) && s != null)
             {
-                _settings = new SettingsDto(s.PmsType, s.PmsPath, s.AddressLine1, s.AddressLine2, s.Tin, true, "localhost", 8888, "", "", s.State, false, false, "", s.IsClient);
+                var settings = new SettingsDto(s.PmsType, s.AddressLine1, s.AddressLine2, s.Tin, true, "localhost", 8888, "", "", s.State, false, "");
                 RaisePropertyChanged(() => Title);
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    _settingsViewModel.InjectAppServiceAndInit(this, _settings, serverAddress);
+                    _settingsViewModel.InjectAppServiceAndInit(this, settings, serverAddress, _launcherService.GetLauncherStartup(), _isClient);
                     OpenSettings();
                 });                
             }
@@ -415,12 +410,7 @@ namespace ChewsiPlugin.UI.Services
             }
             _dialogService.HideLoadingIndicator();
         }
-
-        private void InitializeChewsiApi(SettingsDto settings)
-        {
-            _chewsiApi.Initialize(settings.MachineId, settings.UseProxy, settings.ProxyAddress, settings.ProxyPort, settings.ProxyLogin, settings.ProxyPassword);
-        }
-
+        
         public void DeleteAppointment(string id)
         {
             bool result;
@@ -430,17 +420,39 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        public async void SaveSettings(SettingsDto settingsDto, string serverAddress)
+        public async void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher)
         {
             bool result;
             var called = Utils.TrySafeCall(_serverAppService.SaveSettings, settingsDto, out result);
-            if (!called)
+            if (called)
+            {
+                if (result)
+                {
+                    // start or kill launcher
+                    var currentLaunchSetting = _launcherService.GetLauncherStartup();
+                    if (currentLaunchSetting ^ startLauncher)
+                    {
+                        if (startLauncher)
+                        {
+                            _launcherService.StartLauncher();
+                        }
+                        else
+                        {
+                            _launcherService.KillLauncher();
+                        }
+                    }
+                    _launcherService.SetLauncherStartup(startLauncher);                    
+                }
+                else
+                {
+                    _dialogService.Show("Some settings are incorrect or empty. Please enter again.", "Error");
+                }
+            }
+            else
             {
                 _dialogService.Show("Cannot save settings, communication error occured. Please try again.", "Error");
-            } else if (!result)
-            {
-                _dialogService.Show("Some settings are incorrect or empty. Please enter again.", "Error");
             }
+
             await Connect(serverAddress);
         }
 

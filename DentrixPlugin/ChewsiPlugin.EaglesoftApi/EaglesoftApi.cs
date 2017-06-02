@@ -37,7 +37,8 @@ namespace ChewsiPlugin.EaglesoftApi
                 ApplicationBase = @"C:\EagleSoft\Shared Files\"
             };
             var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
-            var proxy = (Proxy) domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+            var obj = domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+            var proxy = (Proxy) obj;
             var cs = proxy.GetConnectionString();
             AppDomain.Unload(domain);
             return cs;
@@ -132,7 +133,7 @@ namespace ChewsiPlugin.EaglesoftApi
                             FROM appointment a, patient p, insurance_company ic, employer e, appointment_provider ap
                             WHERE a.patient_id = p.patient_id AND ic.insurance_company_id = e.insurance_company_id AND (ic.name = 'Chewsi')
                             AND ap.appointment_id=a.appointment_id AND (e.employer_id = p.prim_employer_id OR e.employer_id = p.sec_employer_id)
-                            AND a.start_time > '{dateRange.Item1.ToString("O")}' AND a.start_time < '{dateRange.Item2.ToString("O")}'"));
+                            AND a.start_time >= '{dateRange.Item1.ToString("O")}' AND a.start_time <= '{dateRange.Item2.ToString("O")}'"));
             }
         }
 

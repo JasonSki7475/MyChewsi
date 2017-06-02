@@ -39,6 +39,14 @@ namespace ChewsiPlugin.Api.Common
             return Environment.OSVersion.ToString();
         }
 
+        /// <summary>
+        /// Compares two DateTimes with 1s accuracy
+        /// </summary>
+        public static bool ArePMSModifiedDatesEqual(DateTime d1, DateTime d2)
+        {
+            return Math.Abs((d1 - d2).TotalSeconds) < 1;
+        }
+
         public static void SleepWithCancellation(CancellationToken token, int sleepMs)
         {
             for (int i = 0; i < sleepMs / 100; i++)
@@ -161,6 +169,33 @@ namespace ChewsiPlugin.Api.Common
             try
             {
                 result = action.Invoke(arg);
+                return true;
+            }
+            catch (TimeoutException)
+            {
+                Logger.Warn("Service timeout");
+            }
+            catch (FaultException ex)
+            {
+                Logger.Warn(ex, "Exception handled on server side");
+            }
+            catch (CommunicationException ex)
+            {
+                Logger.Warn(ex, "Communication error");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Unexpected WCF error");
+            }
+            result = default(R);
+            return false;
+        }
+
+        public static bool TrySafeCall<T1, T2, T3, R>(Func<T1, T2, T3, R> action, T1 arg1, T2 arg2, T3 arg3, out R result)
+        {
+            try
+            {
+                result = action.Invoke(arg1, arg2, arg3);
                 return true;
             }
             catch (TimeoutException)

@@ -14,6 +14,7 @@
     <converters:EnumToVisibilityInverseConverter x:Key="EnumToVisibilityInverseConverter"/>
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
     <converters:ClientServiceStatusToBooleanConverter x:Key="ClientServiceStatusToBooleanConverter"/>
+    <converters:BooleanInverseConverter x:Key="BooleanInverseConverter"/>
     <viewModels:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True" />
 
     <Viewbox x:Key="Logo" Stretch="Uniform" x:Shared="False">
