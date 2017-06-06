@@ -59,6 +59,11 @@ namespace ChewsiPlugin.Api.Common
             }
         }
 
+        public static bool AreAmountsEqual(double d1, double d2)
+        {
+            return Math.Abs(d1 - d2) < 0.01;
+        }
+
         public static bool SafeCall<T>(Action<T> action, T arg)
         {
             try

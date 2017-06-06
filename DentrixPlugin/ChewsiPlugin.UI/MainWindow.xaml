@@ -180,7 +180,7 @@
         <controls1:LightBox d:IsHidden="true" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                            DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}"
                            Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Header="Settings" ButtonText="{Binding CloseButtonText}" ShowCloseButton="False"
+                           Header="Settings" ButtonText="Save" ShowCloseButton="False"
                            CloseCommand="{Binding CloseCommand}"
                            ButtonCommand="{Binding SaveCommand}">
             <views:SettingsView />

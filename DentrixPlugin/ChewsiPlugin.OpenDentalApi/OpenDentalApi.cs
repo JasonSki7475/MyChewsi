@@ -9,6 +9,7 @@ using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.OpenDentalApi.DTO;
+using NLog;
 using Appointment = ChewsiPlugin.Api.Common.Appointment;
 using PatientInfo = ChewsiPlugin.Api.Common.PatientInfo;
 using ProcedureInfo = ChewsiPlugin.Api.Common.ProcedureInfo;
@@ -86,6 +87,7 @@ namespace ChewsiPlugin.OpenDentalApi
                 };
                 _domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
                 _proxy = (Proxy)_domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName);
+                _proxy.SetLogger(LogManager.GetCurrentClassLogger(typeof(Proxy)));
                 Logger.Debug("Created proxy class");
                 _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
                 // Set these fields to make it load values from config file

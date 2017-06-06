@@ -32,7 +32,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private bool _isVisible;
         private IClientAppService _appService;
         private string _machineId;
-        private string _closeButtonText;
         private bool _isClient;
         private string _serverHost;
 
@@ -41,16 +40,6 @@ namespace ChewsiPlugin.UI.ViewModels
             _dialogService = dialogService;
         }
         
-        public string CloseButtonText
-        {
-            get { return _closeButtonText; }
-            set
-            {
-                _closeButtonText = value;
-                RaisePropertyChanged(() => CloseButtonText);
-            }
-        }
-
         public bool IsClient
         {
             get { return _isClient; }
@@ -85,8 +74,6 @@ namespace ChewsiPlugin.UI.ViewModels
             _machineId = settings.MachineId;
             IsClient = isClient;
             ServerHost = Utils.GetHostFromAddress(serverAddress);
-
-            CloseButtonText = IsClient ? "Close" : "Save";
         }
 
         private void Hide()
@@ -111,7 +98,6 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _selectedType = value;
                 RaisePropertyChanged(() => SelectedType);
-                RaisePropertyChanged(() => CanChangeStartPms);
             }
         }
 
@@ -235,8 +221,6 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
         
-        public bool CanChangeStartPms => SelectedType != Settings.PMS.Types.Eaglesoft;
-
         #region CloseCommand
         public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new RelayCommand(OnCloseCommandExecute, CanCloseCommandExecute));
 
@@ -258,21 +242,18 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnSaveCommandExecute()
         {
             Hide();
-            if (!IsClient)
+            try
             {
-                try
-                {
-                    _dialogService.ShowLoadingIndicator();
-                    _appService.SaveSettings(new SettingsDto(SelectedType, Address1, Address2, Tin, UseProxy,
-                        ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
-                        State, StartPms, _machineId), Utils.GetAddressFromHost(ServerHost), StartLauncher);
-                }
-                finally
-                {
-                    _dialogService.HideLoadingIndicator();
-                }
-                Logger.Debug("Settings were saved");
+                _dialogService.ShowLoadingIndicator();
+                _appService.SaveSettings(new SettingsDto(SelectedType, Address1, Address2, Tin, UseProxy,
+                    ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
+                    State, StartPms, _machineId), Utils.GetAddressFromHost(ServerHost), StartLauncher);
             }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
+            Logger.Debug("Settings were saved");
             _onClose?.Invoke();
         }
         #endregion   

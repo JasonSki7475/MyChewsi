@@ -134,6 +134,7 @@
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\Setting.cs" />
     <Compile Include="Common\Utils.cs" />
+    <Compile Include="Repository\SubmittedProcedure.cs" />
     <Compile Include="ServerState.cs" />
     <Compile Include="ServiceDiscovery.cs" />
   </ItemGroup>

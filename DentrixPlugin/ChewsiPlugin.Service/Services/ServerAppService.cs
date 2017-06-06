@@ -69,7 +69,7 @@ namespace ChewsiPlugin.Service.Services
                     _dentalApi = GetDentalApi();
                     if (_dentalApi != null)
                     {
-                        DeleteOldAppointments();
+                        DeleteOldAppointmentsAndProcedures();
                         await RefreshAppointments(true, true, true).ConfigureAwait(false);
                         if (_state != ServerState.Ready)
                         {
@@ -323,7 +323,11 @@ namespace ChewsiPlugin.Service.Services
         private SubmitClaimResult SubmitClaim(string id, DateTime appointmentDate, string patientId, ProviderInformation providerInformation, SubscriberInformation subscriberInformation, DateTime pmsModifiedDate)
         {
             var procedures = GetDentalApi().GetProcedures(patientId, id, appointmentDate);
-            if (procedures.Any())
+            var submittedProcedures = _repository.GetSubmittedProcedures(patientId, appointmentDate);
+            procedures = procedures
+                .Where(p => !submittedProcedures.Any(s => s.Date == p.Date && s.Code == p.Code && Utils.AreAmountsEqual(s.Amount, p.Amount)))
+                .ToList();
+            if (procedures.Count > 0)
             {
                 var claimStatuses = _chewsiApi.RetrievePluginClientRowStatuses(GetSettings().Tin);
                 var status = claimStatuses.FirstOrDefault(m => m.PMSClaimNbr == id 
@@ -356,9 +360,16 @@ namespace ChewsiPlugin.Service.Services
                                 .Select(m => m.ClaimNumber)
                                 .ToList()));
                     }
-                    _chewsiApi.ProcessClaim(id, providerInformation, subscriberInformation,
+                    _chewsiApi.ProcessClaim(id, providerInformation, subscriberInformation, 
                         procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList(), pmsModifiedDate);
                     SetAppointmentState(id, AppointmentState.ValidationCompletedAndClaimSubmitted);
+                    _repository.AddSubmittedProcedures(procedures.Select(m => new SubmittedProcedure
+                    {
+                        Date = m.Date,
+                        PatientId = patientId,
+                        Amount = m.Amount,
+                        Code = m.Code
+                    }));
                     RefreshAppointments(false, false, true);
                     Logger.Debug($"Processed claim, found '{procedures.Count}' procedures.");
                 }
@@ -367,7 +378,7 @@ namespace ChewsiPlugin.Service.Services
             else
             {
                 Logger.Error("Cannot find any procedures for the patient" + " " + patientId);
-                return SubmitClaimResult.AlreadyDeleted;
+                return SubmitClaimResult.NoCompletedProcedures;
             }
         }
 
@@ -709,7 +720,7 @@ namespace ChewsiPlugin.Service.Services
             }
         }
 
-        private void DeleteOldAppointments()
+        private void DeleteOldAppointmentsAndProcedures()
         {
             lock (_appointmentsLockObject)
             {
@@ -720,6 +731,14 @@ namespace ChewsiPlugin.Service.Services
                 {
                     Logger.Info("Deleting {0} old cached appointments", old.Count);
                     _repository.BulkDeleteAppointments(old);
+                }
+
+                var procedures = _repository.GetSubmittedProcedures();
+                var ids = procedures.Where(m => m.Date < date).Select(m => m.Id).ToList();
+                if (ids.Any())
+                {
+                    Logger.Info("Deleting {0} old submitted procedures", ids.Count);
+                    _repository.BulkDeleteSubmittedProcedures(ids);
                 }
             }
         }

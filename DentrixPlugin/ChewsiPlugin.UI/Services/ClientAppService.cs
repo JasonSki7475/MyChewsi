@@ -113,10 +113,13 @@ namespace ChewsiPlugin.UI.Services
                                 //_dialogService.Show("Cannot submit claim, error occured. Please try again.", "Error");
                                 break;
                             case SubmitClaimResult.AlreadyDeleted:
-                                _dialogService.Show("Claim has already been deleted", "Error");
+                                _dialogService.Show("The claim has already been deleted", "Error");
                                 break;
                             case SubmitClaimResult.AlreadySubmitted:
-                                _dialogService.Show("Claim has already been submitted", "Error");
+                                _dialogService.Show("The claim has already been submitted", "Error");
+                                break;
+                            case SubmitClaimResult.NoCompletedProcedures:
+                                _dialogService.Show("The claim has no completed procedures", "Error");
                                 break;
                             case SubmitClaimResult.Ok:
                                 break;

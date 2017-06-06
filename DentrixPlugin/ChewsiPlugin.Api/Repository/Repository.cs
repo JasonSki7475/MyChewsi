@@ -134,7 +134,51 @@ namespace ChewsiPlugin.Api.Repository
                                      PmsModifiedDate    DATETIME not null,
                                      State              INTEGER not null
                                   )");
+                    connection.Execute(
+                        @"create table SubmittedProcedures
+                                  (
+                                     Id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+                                     PatientId          TEXT not null,
+                                     Date               DATETIME not null,
+                                     Code               TEXT not null,
+                                     Amount             REAL not null
+                                  )");
                 }
+            }
+        }
+
+        public IEnumerable<SubmittedProcedure> GetSubmittedProcedures(string patientId, DateTime date)
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.Query<SubmittedProcedure>(@"SELECT * FROM SubmittedProcedures WHERE PatientId = @PatientId AND Date = @Date", new { PatientId = patientId, Date = date });
+            }
+        }
+
+        public List<SubmittedProcedure> GetSubmittedProcedures()
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.Query<SubmittedProcedure>(@"SELECT * FROM SubmittedProcedures").ToList();
+            }
+        }
+
+        public void AddSubmittedProcedures(IEnumerable<SubmittedProcedure> procedures)
+        {
+            using (var connection = GetConnection())
+            {
+                foreach (var procedure in procedures)
+                {
+                    connection.Execute(@"INSERT INTO SubmittedProcedures (PatientId, Date, Code, Amount) VALUES (@PatientId, @Date, @Code, @Amount)", procedure);
+                }
+            }
+        }
+
+        public void BulkDeleteSubmittedProcedures(List<int> ids)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Execute(@"DELETE FROM SubmittedProcedures WHERE Id IN (@Id)", ids.Select(i => new { Id = i }).ToList());
             }
         }
 

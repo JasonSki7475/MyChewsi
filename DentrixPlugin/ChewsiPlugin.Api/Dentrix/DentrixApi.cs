@@ -95,15 +95,13 @@ namespace ChewsiPlugin.Api.Dentrix
 
         public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId, DateTime appointmentDate)
         {
-            var beginDate = appointmentDate.Date;
-            var endDate = appointmentDate.Date.AddDays(1).AddSeconds(-1);
-            
             // get patient_guid
             var res =
                 ExecuteCommand($"select pi.patient_guid from admin.v_patient_insurance pi where pi.patient_id='{patientId}'",
                     new List<string> { "patient_guid" }, false).FirstOrDefault();
             if (res != null)
             {
+                var date = appointmentDate.Date.ToString("G");
                 var patientGuid = res["patient_guid"];
                 var procedures = Execute("admin.sp_getpatientprocedures",
                     new List<string> {"amt", "proc_code", "proc_date"},
@@ -111,8 +109,8 @@ namespace ChewsiPlugin.Api.Dentrix
                     new Dictionary<string, string>
                     {
                         {"patient_guid", patientGuid},
-                        {"BeginDate", beginDate.ToString("G")},
-                        {"EndDate", endDate.ToString("G")},
+                        {"BeginDate", date },
+                        {"EndDate", date },
                         {"byCreateDate", "0"}
                     });
                 if (procedures != null && procedures.Count != 0)
@@ -141,21 +139,22 @@ namespace ChewsiPlugin.Api.Dentrix
 
             var dateRange = GetTimeRangeForToday();
 
-            var result = ExecuteCommand($"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>='{dateRange.Item1}' and appointment_date<='{dateRange.Item2}'" +
+            var result = ExecuteCommand($"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id, start_hour, start_minute from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>='{dateRange.Item1}' and appointment_date<='{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
-                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id", "appointment_id", "modified_date" },
+                new List<string> { "patient_id", "patient_name", "appointment_date", "provider_id", "appointment_id", "modified_date", "start_hour", "start_minute" },
                 false);
             
             return new List<Appointment>(result.Select(m =>
             {
                 string insuranceId;
                 patientIds.TryGetValue(m["patient_id"], out insuranceId);
+                var date = DateTime.Parse(m["appointment_date"]).Date.Add(new TimeSpan(int.Parse(m["start_hour"]), int.Parse(m["start_minute"]), 0));
                 return new Appointment
                 {
                     Id = m["appointment_id"].Trim(),
                     PatientName = m["patient_name"].Trim(),
                     PatientId = m["patient_id"].Trim(),
-                    Date = DateTime.Parse(m["appointment_date"]),
+                    Date = date,
                     PmsModifiedDate = DateTime.Parse(m["modified_date"]),
                     ProviderId = m["provider_id"].Trim(),
                     ChewsiId = insuranceId

@@ -15,5 +15,9 @@ namespace ChewsiPlugin.Api.Repository
         void BulkDeleteAppointments(List<string> ids);
         bool Ready { get; }
         void Initialize();
+        IEnumerable<SubmittedProcedure> GetSubmittedProcedures(string patientId, DateTime date);
+        void AddSubmittedProcedures(IEnumerable<SubmittedProcedure> procedures);
+        void BulkDeleteSubmittedProcedures(List<int> ids);
+        List<SubmittedProcedure> GetSubmittedProcedures();
     }
 }
