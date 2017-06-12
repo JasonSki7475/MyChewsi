@@ -8,7 +8,7 @@ namespace ChewsiPlugin.Api.Common
     {
         public SettingsDto(Settings.PMS.Types pmsType, string address1, string address2, string tin, bool useProxy, 
             string proxyAddress, int proxyPort, string proxyLogin, string proxyPassword, string state, bool startPms, 
-            string machineId)
+            string machineId, string city, string zip)
         {
             PmsType = pmsType;
             Address1 = address1;
@@ -22,6 +22,8 @@ namespace ChewsiPlugin.Api.Common
             State = state;
             StartPms = startPms;
             MachineId = machineId;
+            City = city;
+            Zip = zip;
         }
 
         [DataMember]
@@ -59,5 +61,11 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public string MachineId { get; set; }
+
+        [DataMember]
+        public string City { get; set; }
+
+        [DataMember]
+        public string Zip { get; set; }
     }
 }

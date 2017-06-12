@@ -9,16 +9,7 @@ namespace ChewsiPlugin.Api.Interfaces
     public interface IClientCallback
     {
         [OperationContract]
-        void Show(string message, string header = null, string buttonText = null);
-
-        [OperationContract(Name = "ShowIndicator")]
-        void ShowLoadingIndicator();
-
-        [OperationContract]
         void ShowLoadingIndicator(string message);
-
-        [OperationContract]
-        void HideLoadingIndicator();
 
         [OperationContract]
         void LockClaim(string id);

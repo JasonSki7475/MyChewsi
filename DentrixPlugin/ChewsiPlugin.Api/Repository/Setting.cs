@@ -38,5 +38,7 @@
         public const string ProxyPassword = "ProxyPassword";
         public const string IsClient = "IsClient";
         public const string ServerAddress = "ServerAddress";
+        public const string City = "City";
+        public const string Zip = "Zip";
     }
 }

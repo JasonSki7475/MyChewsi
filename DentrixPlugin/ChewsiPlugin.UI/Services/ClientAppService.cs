@@ -225,7 +225,7 @@ namespace ChewsiPlugin.UI.Services
             {
                 if (!_isClient)
                 {
-                    await ReloadClaims(true).ConfigureAwait(false);
+                    await ReloadClaims().ConfigureAwait(false);
                 }
                 SetState(ClientState.Ready);
                 RaiseInitGetter();
@@ -270,7 +270,9 @@ namespace ChewsiPlugin.UI.Services
                 Security = new WSDualHttpSecurity
                 {
                     Mode = WSDualHttpSecurityMode.None
-                }
+                },
+                MaxReceivedMessageSize = int.MaxValue,
+                MaxBufferPoolSize = int.MaxValue
             }, address);
         }
 
@@ -344,7 +346,7 @@ namespace ChewsiPlugin.UI.Services
                                 {
                                     RaisePropertyChanged(() => Title);
                                     _settingsViewModel.InjectAppServiceAndInit(this, settings, serverAddress, _launcherService.GetLauncherStartup(), _isClient);
-                                    await ReloadClaims(false).ConfigureAwait(false);
+                                    await ReloadClaims().ConfigureAwait(false);
                                     SetState(ClientState.Ready);
                                     RaiseInitGetter();
                                     result = true;
@@ -399,7 +401,7 @@ namespace ChewsiPlugin.UI.Services
             InitialSettingsDto s;
             if (Utils.TrySafeCall(_serverAppService.GetInitialSettings, out s) && s != null)
             {
-                var settings = new SettingsDto(s.PmsType, s.AddressLine1, s.AddressLine2, s.Tin, true, "localhost", 8888, "", "", s.State, false, "");
+                var settings = new SettingsDto(s.PmsType, s.AddressLine1, s.AddressLine2, s.Tin, true, "localhost", 8888, "", "", s.State, false, "", s.City, s.Zip);
                 RaisePropertyChanged(() => Title);
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
@@ -485,8 +487,8 @@ namespace ChewsiPlugin.UI.Services
             var claim = ClaimItems.FirstOrDefault(m => id == m.Id);
             claim?.Unlock();
         }
-
-        public async Task<bool> ReloadClaims(bool force)
+        
+        public async Task<bool> ReloadClaims()
         {
             return await Task<bool>.Factory.StartNew(() =>
             {
@@ -500,15 +502,13 @@ namespace ChewsiPlugin.UI.Services
                             _dialogService.ShowLoadingIndicator("Loading...");
                             try
                             {
-                                List<ClaimDto> claims;
-                                if (Utils.TrySafeCall(_serverAppService.GetClaims, force, out claims) && claims != null)
+                                if (Utils.SafeCall(_serverAppService.ReloadClaims))
                                 {
-                                    SetClaims(claims);
                                     return true;
                                 }
                                 else
                                 {
-                                    _dialogService.Show("Cannot load appoitments list.", "Error", () => ReloadClaims(force));
+                                    _dialogService.Show("Cannot load appoitments list.", "Error", async () => await ReloadClaims());
                                     return false;
                                 }
                             }

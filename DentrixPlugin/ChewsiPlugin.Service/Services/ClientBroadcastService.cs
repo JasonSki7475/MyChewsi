@@ -6,7 +6,7 @@ using NLog;
 
 namespace ChewsiPlugin.Service.Services
 {
-    internal class ClientBroadcastService : IClientCallbackService, IDialogService
+    internal class ClientBroadcastService : IClientCallbackService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, IClientCallback> _callbackList;
@@ -32,62 +32,50 @@ namespace ChewsiPlugin.Service.Services
             }
         }
 
-        public void Show(string message, string header = null, string buttonText = null)
-        {
-            Parallel.ForEach(_callbackList.Values, callback =>
-            {
-                Utils.SafeCall(callback.Show, message, header, buttonText);
-            });
-        }
-
-        public void ShowLoadingIndicator()
-        {
-            Parallel.ForEach(_callbackList.Values, callback =>
-            {
-                Utils.SafeCall(callback.ShowLoadingIndicator);
-            });
-        }
-
         public void ShowLoadingIndicator(string message)
         {
-            Parallel.ForEach(_callbackList.Values, callback =>
+            Task.Factory.StartNew(() =>
             {
-                Utils.SafeCall(callback.ShowLoadingIndicator, message);
-            });
-        }
-
-        public void HideLoadingIndicator()
-        {
-            Parallel.ForEach(_callbackList.Values, callback =>
-            {
-                Utils.SafeCall(callback.HideLoadingIndicator);
+                Parallel.ForEach(_callbackList.Values, callback =>
+                {
+                    Utils.SafeCall(callback.ShowLoadingIndicator, message);
+                });
             });
         }
 
         public void LockClaim(string id)
         {
-            Parallel.ForEach(_callbackList.Values, callback =>
+            Task.Factory.StartNew(() =>
             {
-                Logger.Debug("Lock claim {0}", id);
-                Utils.SafeCall(callback.LockClaim, id);
+                Parallel.ForEach(_callbackList.Values, callback =>
+                {
+                    Logger.Debug("Lock claim {0}", id);
+                    Utils.SafeCall(callback.LockClaim, id);
+                });
             });
         }
 
         public void UnlockClaim(string id)
         {
-            Parallel.ForEach(_callbackList.Values, callback =>
+            Task.Factory.StartNew(() =>
             {
-                Logger.Debug("Unlock claim {0}", id);
-                Utils.SafeCall(callback.UnlockClaim, id);
+                Parallel.ForEach(_callbackList.Values, callback =>
+                {
+                    Logger.Debug("Unlock claim {0}", id);
+                    Utils.SafeCall(callback.UnlockClaim, id);
+                });
             });
         }
 
         public void SetClaims(List<ClaimDto> claims)
         {
-            Parallel.ForEach(_callbackList.Values, callback =>
+            Task.Factory.StartNew(() =>
             {
-                Logger.Debug("Broadcasting {0} updated claims", claims.Count);
-                Utils.SafeCall(callback.SetClaims, claims);
+                Parallel.ForEach(_callbackList.Values, callback =>
+                {
+                    Logger.Debug("Broadcasting {0} updated claims", claims.Count);
+                    Utils.SafeCall(callback.SetClaims, claims);
+                });
             });
         }
     }

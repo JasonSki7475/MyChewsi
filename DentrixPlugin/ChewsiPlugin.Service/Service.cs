@@ -34,7 +34,7 @@ namespace ChewsiPlugin.Service
             _repository = new Repository();
             _clientBroadcastService = new ClientBroadcastService();
             _dentalApiFactoryService = new DentalApiFactoryService(_repository);
-            _serverAppService = new ServerAppService(_repository, new ChewsiApi(_clientBroadcastService), _dentalApiFactoryService, _clientBroadcastService);
+            _serverAppService = new ServerAppService(_repository, new ChewsiApi(), _dentalApiFactoryService, _clientBroadcastService);
 
             _serviceHost = new ServiceHost(_serverAppService);
 

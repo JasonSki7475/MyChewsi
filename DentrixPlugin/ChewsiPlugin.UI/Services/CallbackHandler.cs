@@ -17,25 +17,10 @@ namespace ChewsiPlugin.UI.Services
             _dialogService = dialogService;
             _clientAppService = clientAppService;
         }
-
-        public void Show(string message, string header = null, string buttonText = null)
-        {
-            _dialogService.Show(message, header, buttonText);
-        }
-
-        public void ShowLoadingIndicator()
-        {
-            _dialogService.ShowLoadingIndicator();
-        }
-
+        
         public void ShowLoadingIndicator(string message)
         {
             _dialogService.ShowLoadingIndicator(message);
-        }
-
-        public void HideLoadingIndicator()
-        {
-            _dialogService.HideLoadingIndicator();
         }
 
         public void LockClaim(string id)

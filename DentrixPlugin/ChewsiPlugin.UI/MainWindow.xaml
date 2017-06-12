@@ -108,12 +108,14 @@
                                                         Visibility="{Binding CanResubmit, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                         Command="{Binding Path=SubmitCommand}"/>
                                             </Grid>
+                                            <Grid Grid.Column="2" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
+                                                <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
+                                                        Visibility="{Binding IsClaimStatus, Converter={StaticResource BooleanToVisibilityInverseConverter}}"
+                                                        Command="{Binding Path=DeleteCommand}"/>
+                                            </Grid>
                                             <Grid Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <ContentControl Content="{StaticResource Lock}" Grid.Column="0"/>
-                                            </Grid>                                            
-                                            <Button Grid.Column="2" Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
-                                                    Visibility="{Binding IsClaimStatus, Converter={StaticResource BooleanToVisibilityInverseConverter}}"
-                                                    Command="{Binding Path=DeleteCommand}"/>
+                                            </Grid>                                               
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

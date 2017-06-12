@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type viewModels:SettingsViewModel}}">
     <StackPanel>
         <TextBlock Visibility="{Binding IsClient, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                   FontWeight="Bold" Margin="20,10" Text="This plugin instance is client, settings are read-only"/>
+                   FontWeight="Bold" Margin="20,10" Text="This plugin instance is client, some settings are read-only"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -18,9 +18,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <GroupBox Grid.Column="0" Grid.Row="1" Header="Provider" Padding="10" IsEnabled="{Binding IsClient, Converter={StaticResource BooleanInverseConverter}}">
+            <GroupBox Grid.Column="0" Grid.Row="1" Header="Practice" Padding="10" IsEnabled="{Binding IsClient, Converter={StaticResource BooleanInverseConverter}}">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="10"/>
                         <RowDefinition Height="Auto"/>
@@ -40,13 +44,17 @@
                     <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Address2}" MaxLines="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="TIN"/>
                     <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Tin}"/>
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="State"/>
-                    <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding State}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="City"/>
+                    <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding City}"/>
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="State"/>
+                    <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding State}"/>
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="Zip code"/>
+                    <TextBox Grid.Row="10" Grid.Column="2" Text="{Binding Zip}"/>
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Header="Network" Padding="10" IsEnabled="{Binding IsClient, Converter={StaticResource BooleanInverseConverter}}">
+            <GroupBox Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Header="Network" Padding="10">
                 <StackPanel Width="250">
-                    <Grid>
+                    <Grid IsEnabled="{Binding IsClient, Converter={StaticResource BooleanInverseConverter}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="10"/>

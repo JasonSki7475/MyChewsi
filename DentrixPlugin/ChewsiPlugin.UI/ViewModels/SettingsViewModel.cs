@@ -34,6 +34,8 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _machineId;
         private bool _isClient;
         private string _serverHost;
+        private string _city;
+        private string _zip;
 
         public SettingsViewModel(IDialogService dialogService)
         {
@@ -73,6 +75,8 @@ namespace ChewsiPlugin.UI.ViewModels
             StartLauncher = startLauncher;
             _machineId = settings.MachineId;
             IsClient = isClient;
+            City = settings.City;
+            Zip = settings.Zip;
             ServerHost = Utils.GetHostFromAddress(serverAddress);
         }
 
@@ -128,6 +132,26 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _address2 = value;
                 RaisePropertyChanged(() => Address2);
+            }
+        }
+
+        public string City
+        {
+            get { return _city; }
+            set
+            {
+                _city = value;
+                RaisePropertyChanged(() => City);
+            }
+        }
+
+        public string Zip
+        {
+            get { return _zip; }
+            set
+            {
+                _zip = value;
+                RaisePropertyChanged(() => Zip);
             }
         }
 
@@ -247,7 +271,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 _dialogService.ShowLoadingIndicator();
                 _appService.SaveSettings(new SettingsDto(SelectedType, Address1, Address2, Tin, UseProxy,
                     ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
-                    State, StartPms, _machineId), Utils.GetAddressFromHost(ServerHost), StartLauncher);
+                    State, StartPms, _machineId, City, Zip), Utils.GetAddressFromHost(ServerHost), StartLauncher);
             }
             finally
             {

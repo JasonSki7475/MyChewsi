@@ -21,17 +21,14 @@ namespace ChewsiPlugin.Api.Interfaces
         SubmitClaimResult ValidateAndSubmitClaim(string id);
 
         [OperationContract]
-        List<ClaimDto> GetClaims(bool force);
+        void ReloadClaims();
         
         [OperationContract]
         ServerState InitClient();
 
         [OperationContract]
         void DisconnectClient();
-
-        [OperationContract]
-        Provider GetProvider(string providerId);
-
+        
         [OperationContract]
         InitialSettingsDto GetInitialSettings();
 

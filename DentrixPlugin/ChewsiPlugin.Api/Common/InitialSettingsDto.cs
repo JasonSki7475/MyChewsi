@@ -17,7 +17,13 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public string State { get; set; }
-        
+
+        [DataMember]
+        public string City { get; set; }
+
+        [DataMember]
+        public string Zip { get; set; }
+
         [DataMember]
         public Settings.PMS.Types PmsType { get; set; }
         

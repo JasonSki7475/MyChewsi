@@ -62,7 +62,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnRefreshClaimsCommandExecute()
         {
-            AppService.ReloadClaims(true);
+            AppService.ReloadClaims();
         }
         #endregion
         

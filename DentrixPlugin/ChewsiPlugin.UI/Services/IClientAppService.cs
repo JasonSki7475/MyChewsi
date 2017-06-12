@@ -18,7 +18,7 @@ namespace ChewsiPlugin.UI.Services
         void OpenSettings();
         void Initialize();
         void DeleteAppointment(string id);
-        Task<bool> ReloadClaims(bool force);
+        Task<bool> ReloadClaims();
         void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher);
         Task<bool> Connect(string serverAddress = null);
 

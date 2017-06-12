@@ -222,5 +222,10 @@ namespace ChewsiPlugin.Api.Common
             result = default(R);
             return false;
         }
+
+        public static string FormatForApiRequest(this DateTime value)
+        {
+            return value.ToString("MM/dd/yyyy HH:mm:ss tt");
+        }
     }
 }

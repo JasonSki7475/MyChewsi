@@ -7,6 +7,7 @@ namespace ChewsiPlugin.Api.Chewsi
         public DateTime PostedOnDate { get; set; }
         public string SubscriberFirstName { get; set; }
         public string PatientFirstName { get; set; }
+        public string PatientLastName { get; set; }
         public string Claim_Nbr { get; set; }
         public string ChewsiID { get; set; }
         public string MessageToDisplay { get; set; }
