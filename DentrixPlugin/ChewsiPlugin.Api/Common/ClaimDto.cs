@@ -42,5 +42,7 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public DateTime PmsModifiedDate { get; set; }
+
+        public bool IsCptError => IsClaimStatus && (ClaimNumber.StartsWith("Z") || ClaimNumber == "zz");
     }
 }

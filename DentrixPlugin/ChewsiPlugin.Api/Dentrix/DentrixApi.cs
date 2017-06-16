@@ -5,6 +5,7 @@ using System.Data.Odbc;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Runtime.InteropServices;
 using System.Text;
 using ChewsiPlugin.Api.Common;
@@ -14,7 +15,11 @@ using Microsoft.Win32;
 namespace ChewsiPlugin.Api.Dentrix
 {
     public class DentrixApi : DentalApi, IDentalApi
-    {      
+    {
+        private const string PatientIdChewsiIdCacheKey = "PatientIdChewsiIdCacheKey";
+        private const string ChewsiIdPatientIdCacheKey = "ChewsiIdPatientIdCacheKey";
+        private readonly object _patientIdChewsiIdCacheLock = new object();
+
         private static class ApiResult
         {
             public static int Success = 0;
@@ -58,13 +63,49 @@ namespace ChewsiPlugin.Api.Dentrix
         }
 
         /// <summary>
-        /// Gets a dictionary with patient-insurance records
+        /// Gets cached dictionary with patientId-ChewsiId records
         /// </summary>
-        private Dictionary<string, string> GetAllPatientsInsurance()
+        private void GetPatientIdChewsiIdDictionary(out Dictionary<string, string> chewsiPatient, out Dictionary<string, string> patientChewsi)
         {
-            var result = ExecuteCommand($"select pi.patient_id, ins.id_num from admin.v_patient_insurance pi join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where primary_insurance_carrier_name='{InsuranceCarrierName}' or secondary_insurance_carrier_name='{InsuranceCarrierName}'",
-                new List<string> { "patient_id", "id_num" }, false);
-            return result.ToDictionary(m => m["patient_id"].Trim(), m => m["id_num"].Trim());
+            var cache = MemoryCache.Default;
+            patientChewsi = cache.Get(PatientIdChewsiIdCacheKey) as Dictionary<string, string>;
+            chewsiPatient = cache.Get(ChewsiIdPatientIdCacheKey) as Dictionary<string, string>;
+            if (patientChewsi == null || chewsiPatient == null)
+            {
+                lock (_patientIdChewsiIdCacheLock)
+                {
+                    var result = ExecuteCommand($"select pi.patient_id, ins.id_num from admin.v_patient_insurance pi join admin.v_insured ins on pi.primary_insured_id=ins.insured_id where primary_insurance_carrier_name='{InsuranceCarrierName}' or secondary_insurance_carrier_name='{InsuranceCarrierName}'",
+                        new List<string> { "patient_id", "id_num" }, false);
+                    var list = result.Select(m => new
+                    {
+                        patientId = m["patient_id"].Trim(),
+                        chewsiId = m["id_num"].Trim()
+                    }).ToList();
+                    patientChewsi = list
+                        .Where(m => m.patientId != null)
+                        .GroupBy(m => m.patientId)
+                        .ToDictionary(m => m.Key, m => m.FirstOrDefault()?.chewsiId);
+                    chewsiPatient = list
+                        .Where(m => m.chewsiId != null)
+                        .GroupBy(m => m.chewsiId)
+                        .ToDictionary(m => m.Key, m => m.FirstOrDefault()?.patientId);
+                    CacheItemPolicy policy = new CacheItemPolicy
+                    {
+                        AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(60.0)
+                    };
+                    if (cache.Contains(PatientIdChewsiIdCacheKey))
+                    {
+                        cache.Remove(PatientIdChewsiIdCacheKey);
+                    }
+                    if (cache.Contains(ChewsiIdPatientIdCacheKey))
+                    {
+                        cache.Remove(ChewsiIdPatientIdCacheKey);
+                    }
+                    cache.Add(PatientIdChewsiIdCacheKey, patientChewsi, policy);                    
+                    cache.Add(ChewsiIdPatientIdCacheKey, chewsiPatient, policy);  
+                    Logger.Debug("Cached {0} patients, {1} chewsi Ids", patientChewsi.Count, chewsiPatient.Count);                  
+                }
+            }
         }
 
         public PatientInfo GetPatientInfo(string patientId)
@@ -119,7 +160,7 @@ namespace ChewsiPlugin.Api.Dentrix
                     new ProcedureInfo
                     {
                         Amount = double.Parse(proc["amt"]),
-                        Code = proc["proc_code"].TrimStart('D'),
+                        Code = proc["proc_code"].TrimStart('D').Trim(),
                         Date = DateTime.Parse(proc["proc_date"])
                     })
                     .ToList();
@@ -127,17 +168,18 @@ namespace ChewsiPlugin.Api.Dentrix
             }
             return new List<ProcedureInfo>();
         }
-       
-        public List<Appointment> GetAppointmentsForToday()
+
+        public override List<Appointment> GetAppointments(DateTime date)
         {
-            Dictionary<string, string> patientIds = GetAllPatientsInsurance();
+            Dictionary<string, string> patientIds, cp;
+            GetPatientIdChewsiIdDictionary(out cp, out patientIds);
             if (patientIds.Count == 0)
             {
                 Logger.Warn("No Chewsi patients found");
                 return new List<Appointment>();
             }
 
-            var dateRange = GetTimeRangeForToday();
+            var dateRange = GetTimeRangeForToday(date);
 
             var result = ExecuteCommand($"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id, start_hour, start_minute from admin.v_appt where (status_id='150' or status_id='-106') and appointment_date>='{dateRange.Item1}' and appointment_date<='{dateRange.Item2}'" +
                 (patientIds.Any() ? $" and patient_id in ({string.Join(", ", patientIds.Keys).TrimEnd(',')})":""),
@@ -146,18 +188,18 @@ namespace ChewsiPlugin.Api.Dentrix
             
             return new List<Appointment>(result.Select(m =>
             {
-                string insuranceId;
-                patientIds.TryGetValue(m["patient_id"], out insuranceId);
-                var date = DateTime.Parse(m["appointment_date"]).Date.Add(new TimeSpan(int.Parse(m["start_hour"]), int.Parse(m["start_minute"]), 0));
+                string chewsiId;
+                patientIds.TryGetValue(m["patient_id"], out chewsiId);
+                var appointmentDate = DateTime.Parse(m["appointment_date"]).Date.Add(new TimeSpan(int.Parse(m["start_hour"]), int.Parse(m["start_minute"]), 0));
                 return new Appointment
                 {
                     Id = m["appointment_id"].Trim(),
                     PatientName = m["patient_name"].Trim(),
                     PatientId = m["patient_id"].Trim(),
-                    Date = date,
+                    Date = appointmentDate,
                     PmsModifiedDate = DateTime.Parse(m["modified_date"]),
                     ProviderId = m["provider_id"].Trim(),
-                    ChewsiId = insuranceId
+                    ChewsiId = chewsiId
                 };
             }).ToList());
         }
@@ -240,7 +282,7 @@ namespace ChewsiPlugin.Api.Dentrix
             var connectionString = GetConnectionString();
             if (connectionString.Length > 0)
             {
-                Logger.Info("Got connection string");
+                //Logger.Info("Got connection string");
                 using (OdbcConnection connection = new OdbcConnection(connectionString))
                 {
                     connection.Open();
@@ -333,6 +375,10 @@ namespace ChewsiPlugin.Api.Dentrix
                         {
                             Logger.Error("Could not register user for version < 6.2");
                         }
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        Logger.Error(e, "Failed to initialize Dentrix API");
                     }
                     catch (UnauthorizedAccessException e)
                     {

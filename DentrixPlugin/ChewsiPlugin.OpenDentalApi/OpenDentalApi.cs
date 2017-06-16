@@ -9,7 +9,6 @@ using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.OpenDentalApi.DTO;
-using NLog;
 using Appointment = ChewsiPlugin.Api.Common.Appointment;
 using PatientInfo = ChewsiPlugin.Api.Common.PatientInfo;
 using ProcedureInfo = ChewsiPlugin.Api.Common.ProcedureInfo;
@@ -87,7 +86,6 @@ namespace ChewsiPlugin.OpenDentalApi
                 };
                 _domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
                 _proxy = (Proxy)_domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName);
-                _proxy.SetLogger(LogManager.GetCurrentClassLogger(typeof(Proxy)));
                 Logger.Debug("Created proxy class");
                 _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
                 // Set these fields to make it load values from config file
@@ -136,7 +134,7 @@ namespace ChewsiPlugin.OpenDentalApi
             return a.FirstOrDefault();
         }
 
-        public List<Appointment> GetAppointmentsForToday()
+        public override List<Appointment> GetAppointments(DateTime date)
         {
             Initialize();
 
@@ -147,7 +145,7 @@ namespace ChewsiPlugin.OpenDentalApi
                 var planNums = _proxy.InsPlansGetPlanNumsByCarrierNum(carrierInfo.CarrierNum);
                 
                 // Find appointments by insurance plan, dates, status
-                var dateRange = GetTimeRangeForToday();
+                var dateRange = GetTimeRangeForToday(date);
                 var appointments = _proxy.GetAppointmentsStartingWithinPeriod(dateRange.Item1, dateRange.Item2);
 
                 var filtered = appointments.Where(m => m.AptStatus == "Complete" && (planNums.Contains(m.InsPlan1) || planNums.Contains(m.InsPlan2))).ToList();

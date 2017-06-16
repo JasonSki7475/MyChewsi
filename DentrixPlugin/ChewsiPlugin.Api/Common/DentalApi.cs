@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NLog;
 
 namespace ChewsiPlugin.Api.Common
@@ -13,9 +15,8 @@ namespace ChewsiPlugin.Api.Common
             //"PRINCIPAL";// value for Dentrix G with test database (G6.1)
             "Chewsi"; // value for OpenDental
 
-        protected Tuple<DateTime, DateTime> GetTimeRangeForToday()
+        protected Tuple<DateTime, DateTime> GetTimeRangeForToday(DateTime date)
         {
-            var now = DateTime.Now;
             /*
             var dateStart = new DateTime(1993, 1, 1, 23, 59, 59);
             var dateEnd = new DateTime(1996, 6, 1, 23, 59, 59);
@@ -28,14 +29,15 @@ namespace ChewsiPlugin.Api.Common
             var dateEnd = new DateTime(2017, 7, 1, 23, 59, 59);
             */
 
-            var dateStart = now.Date;
-            var dateEnd = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
+            var dateStart = date.Date;
+            var dateEnd = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
 
             return new Tuple<DateTime, DateTime>(dateStart, dateEnd);
         }
 
         public abstract bool TryGetFolder(out string folder);
         protected abstract string PmsExeRelativePath { get; }
+        public abstract List<Appointment> GetAppointments(DateTime date);
 
         public bool IsInitialized()
         {
@@ -58,6 +60,12 @@ namespace ChewsiPlugin.Api.Common
                 return Path.Combine(folder, PmsExeRelativePath);
             }
             return null;
+        }
+
+        public string GetProviderIdByAppointmentInfo(DateTime date, string chewsiId)
+        {
+            var appts = GetAppointments(date);
+            return appts.FirstOrDefault(m => m.ChewsiId == chewsiId)?.ProviderId;
         }
     }
 }

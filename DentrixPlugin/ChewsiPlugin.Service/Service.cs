@@ -8,11 +8,13 @@ using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.Service.Services;
+using NLog;
 
 namespace ChewsiPlugin.Service
 {
     public partial class Service : ServiceBase
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private ServiceHost _serviceHost;
         private ClientBroadcastService _clientBroadcastService;
         private ServerAppService _serverAppService;
@@ -29,8 +31,20 @@ namespace ChewsiPlugin.Service
             OnStart(args);
         }
 
+        private void ApplicationDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = e.ExceptionObject as Exception;
+            Logger.Error(exception,
+                e.IsTerminating
+                    ? "Application domain unhandled exception has been thrown, application will be terminated"
+                    : "Application domain unhandled exception has been thrown");
+        }
+
         protected override void OnStart(string[] args)
         {
+            //Thread.Sleep(20000);
+            AppDomain.CurrentDomain.UnhandledException += ApplicationDomainUnhandledException;
+
             _repository = new Repository();
             _clientBroadcastService = new ClientBroadcastService();
             _dentalApiFactoryService = new DentalApiFactoryService(_repository);

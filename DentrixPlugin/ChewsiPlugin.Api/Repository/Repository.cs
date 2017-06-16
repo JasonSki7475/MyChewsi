@@ -57,11 +57,47 @@ namespace ChewsiPlugin.Api.Repository
             }
         }
 
-        public bool AppointmentExists(string id)
+        public void AddDeletedStatus(string providerId, string chewsiId, DateTime date)
         {
             using (var connection = GetConnection())
             {
-                return connection.ExecuteScalar<int>(@"SELECT 1 FROM Appointments WHERE Id = @Id", new { Id = id }) == 1;
+                connection.Execute(@"INSERT INTO DeletedStatuses (ProviderId, ChewsiId, Date) VALUES (@ProviderId, @ChewsiId, @Date)",
+                    new
+                    {
+                        ProviderId = providerId,
+                        ChewsiId = chewsiId,
+                        Date = date
+                    });
+            }
+        }
+
+        public bool DeletedStatusExists(string providerId, string chewsiId, DateTime date)
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.ExecuteScalar<int>(@"SELECT 1 FROM DeletedStatuses WHERE ProviderId = @ProviderId AND ChewsiId=@ChewsiId AND Date=@Date",
+                    new
+                    {
+                        ProviderId = providerId,
+                        ChewsiId = chewsiId,
+                        Date = date
+                    }) == 1;
+            }
+        }
+
+        public void BulkDeleteDeletedStatuses(List<string> ids)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Execute(@"DELETE FROM DeletedStatuses WHERE Id IN (@Id)", ids.Select(i => new { Id = i }).ToList());
+            }
+        }
+
+        public List<DeletedStatus> GetDeletedStatuses()
+        {
+            using (var connection = GetConnection())
+            {
+                return connection.Query<DeletedStatus>(@"SELECT * FROM DeletedStatuses").ToList();
             }
         }
 
@@ -139,19 +175,34 @@ namespace ChewsiPlugin.Api.Repository
                                   (
                                      Id                 INTEGER PRIMARY KEY AUTOINCREMENT,
                                      PatientId          TEXT not null,
+                                     ProviderId         TEXT not null,
                                      Date               DATETIME not null,
                                      Code               TEXT not null,
                                      Amount             REAL not null
+                                  )");
+                    connection.Execute(
+                        @"create table DeletedStatuses
+                                  (
+                                     Id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+                                     ProviderId         TEXT not null,
+                                     ChewsiId           TEXT not null,
+                                     Date               DATETIME not null
                                   )");
                 }
             }
         }
 
-        public IEnumerable<SubmittedProcedure> GetSubmittedProcedures(string patientId, DateTime date)
+        public IEnumerable<SubmittedProcedure> GetSubmittedProcedures(string patientId, string providerId, DateTime date)
         {
             using (var connection = GetConnection())
             {
-                return connection.Query<SubmittedProcedure>(@"SELECT * FROM SubmittedProcedures WHERE PatientId = @PatientId AND Date = @Date", new { PatientId = patientId, Date = date });
+                return connection.Query<SubmittedProcedure>(@"SELECT * FROM SubmittedProcedures WHERE PatientId = @PatientId AND Date = @Date AND ProviderId=@ProviderId", 
+                    new
+                    {
+                        PatientId = patientId,
+                        Date = date,
+                        ProviderId = providerId
+                    });
             }
         }
 
@@ -169,7 +220,7 @@ namespace ChewsiPlugin.Api.Repository
             {
                 foreach (var procedure in procedures)
                 {
-                    connection.Execute(@"INSERT INTO SubmittedProcedures (PatientId, Date, Code, Amount) VALUES (@PatientId, @Date, @Code, @Amount)", procedure);
+                    connection.Execute(@"INSERT INTO SubmittedProcedures (PatientId, Date, Code, Amount, ProviderId) VALUES (@PatientId, @Date, @Code, @Amount, @ProviderId)", procedure);
                 }
             }
         }

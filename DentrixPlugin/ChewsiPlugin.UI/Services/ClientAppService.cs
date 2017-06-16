@@ -423,6 +423,15 @@ namespace ChewsiPlugin.UI.Services
             {
                 _dialogService.Show("Cannot delete claim, error occured. Please try again.", "Error");
             }
+        }   
+             
+        public void DeleteClaimStatus(string providerId, string chewsiId, DateTime date)
+        {
+            bool result;
+            if (!Utils.TrySafeCall(status => _serverAppService.DeleteClaimStatus(providerId, chewsiId, date), providerId, out result) || !result)
+            {
+                _dialogService.Show("Cannot delete claim status, error occured. Please try again.", "Error");
+            }
         }
 
         public async void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher)
@@ -548,6 +557,7 @@ namespace ChewsiPlugin.UI.Services
                         PatientId = c.PatientId,
                         SubscriberFirstName = c.SubscriberFirstName,
                         IsClaimStatus = c.IsClaimStatus,
+                        IsCptError = c.IsCptError,
                         ClaimNumber = c.ClaimNumber,
                         Locked = false,
                         PmsModifiedDate = c.PmsModifiedDate

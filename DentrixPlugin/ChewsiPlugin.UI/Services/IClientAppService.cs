@@ -21,6 +21,7 @@ namespace ChewsiPlugin.UI.Services
         Task<bool> ReloadClaims();
         void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher);
         Task<bool> Connect(string serverAddress = null);
+        void DeleteClaimStatus(string providerId, string chewsiId, DateTime date);
 
         #region Server callbacks
         void LockClaim(string id);

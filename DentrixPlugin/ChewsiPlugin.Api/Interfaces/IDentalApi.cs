@@ -8,7 +8,8 @@ namespace ChewsiPlugin.Api.Interfaces
     {
         PatientInfo GetPatientInfo(string patientId);
         List<ProcedureInfo> GetProcedures(string patientId, string appointmentId, DateTime appointmentDate);
-        List<Appointment> GetAppointmentsForToday();
+        string GetProviderIdByAppointmentInfo(DateTime date, string chewsiId);
+        List<Appointment> GetAppointments(DateTime date);
         Provider GetProvider(string providerId);
         string GetVersion();
         void Unload();

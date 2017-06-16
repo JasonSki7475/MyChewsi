@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
@@ -25,6 +26,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _id;
         private DateTime _pmsModifiedDate;
         private bool _locked;
+        private bool _isCptError;
 
         public ClaimItemViewModel(IClientAppService appService)
         {
@@ -43,6 +45,21 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => IsClaimStatus);
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is a claim status with invalid (or obsolete, unsupported) Procedure Code
+        /// </summary>
+        public bool IsCptError
+        {
+            get { return _isCptError; }
+            set
+            {
+                _isCptError = value;
+                RaisePropertyChanged(() => IsCptError);
+            }
+        }
+        
+        public bool CanDelete => !IsClaimStatus || IsCptError;
 
         public string Id
         {
@@ -195,7 +212,18 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnDeleteCommandExecute()
         {
-            _appService.DeleteAppointment(Id);
+            if (IsCptError)
+            {
+                // ProviderId can be empty for old statuses, user needs to refresh the list
+                if (!string.IsNullOrEmpty(ProviderId))
+                {
+                    _appService.DeleteClaimStatus(ProviderId, ChewsiId, Date);
+                }
+            }
+            else
+            {
+                _appService.DeleteAppointment(Id);
+            }
         }
         #endregion
         #endregion

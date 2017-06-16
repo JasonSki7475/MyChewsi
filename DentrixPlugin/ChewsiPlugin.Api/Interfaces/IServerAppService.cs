@@ -44,8 +44,11 @@ namespace ChewsiPlugin.Api.Interfaces
         [OperationContract]
         string GetPmsExecutablePath();
 
+        [OperationContract]
+        bool DeleteClaimStatus(string providerId, string chewsiId, DateTime date);
+
         /// <summary>
-        /// For tests, InitClient() should be used
+        /// For tests, InitClient() should be used by clients
         /// </summary>
         ServerState GetState();
     }

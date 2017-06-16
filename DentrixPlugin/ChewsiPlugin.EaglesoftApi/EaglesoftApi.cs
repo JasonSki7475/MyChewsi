@@ -120,20 +120,25 @@ namespace ChewsiPlugin.EaglesoftApi
             }
         }
 
-        public List<Appointment> GetAppointmentsForToday()
+        public override List<Appointment> GetAppointments(DateTime date)
         {
             Initialize();
 
             using (var connection = GetConnection())
             {
-                var dateRange = GetTimeRangeForToday();
+                var dateRange = GetTimeRangeForToday(date);
 
                 return new List<Appointment>(connection.Query<Appointment>(
-                        $@"SELECT a.appointment_id as Id, a.start_time as ""Date"", a.patient_id as PatientId, p.prim_member_id as ChewsiId, (p.last_name+', '+p.first_name) as PatientName, ap.provider_id as ProviderId, a.date_appointed as PmsModifiedDate
-                            FROM appointment a, patient p, insurance_company ic, employer e, appointment_provider ap
-                            WHERE a.patient_id = p.patient_id AND ic.insurance_company_id = e.insurance_company_id AND (ic.name = 'Chewsi')
-                            AND ap.appointment_id=a.appointment_id AND (e.employer_id = p.prim_employer_id OR e.employer_id = p.sec_employer_id)
-                            AND a.start_time >= '{dateRange.Item1.ToString("O")}' AND a.start_time <= '{dateRange.Item2.ToString("O")}'"));
+                    $@"SELECT a.appointment_id as Id, a.start_time as ""Date"", a.patient_id as PatientId, p.prim_member_id as ChewsiId, (p.last_name+', '+p.first_name) as PatientName, ap.provider_id as ProviderId, a.date_appointed as PmsModifiedDate
+                            FROM appointment a
+                            JOIN appointment_provider ap ON ap.appointment_id=a.appointment_id 
+                            JOIN patient p ON a.patient_id = p.patient_id 
+                            JOIN employer e ON (e.employer_id = p.prim_employer_id OR e.employer_id = p.sec_employer_id)
+                            JOIN insurance_company ic ON ic.insurance_company_id = e.insurance_company_id 
+                            WHERE a.walkout_time IS NOT NULL
+                            AND ic.name = 'Chewsi'
+                            AND a.start_time >= '{dateRange.Item1.ToString("O")}' 
+                            AND a.start_time <= '{dateRange.Item2.ToString("O")}'"));
             }
         }
 
