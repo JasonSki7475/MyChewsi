@@ -18,8 +18,11 @@ namespace ChewsiPlugin.UI.ViewModels
         {
 
         }
-        #endregion   
+        #endregion
 
-        public void Init(CalculatedOrthoPaymentsResponse)
+        public void Init()
+        {
+            
+        }
     }
 }

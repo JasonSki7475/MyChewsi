@@ -24,6 +24,8 @@ namespace ChewsiPlugin.UI.ViewModels
         private ICommand _deleteCommand;
         private bool _isClaimStatus;
         private string _id;
+        private string _numberOfPayments;
+        private double _downPayment;
         private DateTime _pmsModifiedDate;
         private bool _locked;
         private bool _isCptError;
@@ -68,6 +70,26 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _id = value;
                 RaisePropertyChanged(() => Id);
+            }
+        }
+
+        public string NumberOfPayments
+        {
+            get { return _numberOfPayments; }
+            set
+            {
+                _numberOfPayments = value;
+                RaisePropertyChanged(() => NumberOfPayments);
+            }
+        }
+
+        public double DownPayment
+        {
+            get { return _downPayment; }
+            set
+            {
+                _downPayment = value;
+                RaisePropertyChanged(() => DownPayment);
             }
         }
 

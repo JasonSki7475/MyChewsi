@@ -9,9 +9,10 @@
         xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
+        xmlns:services="clr-namespace:ChewsiPlugin.UI.Services"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
         mc:Ignorable="d" DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
-        Title="{Binding AppService.Title}" Height="600" Width="1050" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
+        Title="{Binding AppService.Title}" Height="600" Width="1250" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
     <Grid>
         <TabControl>
             <i:Interaction.Triggers>
@@ -51,13 +52,64 @@
                             </Button.IsEnabled>
                         </Button>
                     </Grid>
-                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" SelectedItem="{Binding SelectedClaim}" ScrollViewer.CanContentScroll="False">
+                    <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}"
+                              SelectedItem="{Binding SelectedClaim}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding Date, StringFormat='d'}" Width="110" />
                             <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*" />
                             <DataGridTextColumn Header="Patient" IsReadOnly="True" Binding="{Binding PatientName}" Width="*" />
                             <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding ProviderId}" Width="*" />
                             <DataGridTemplateColumn Header="Status" Width="3*" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="10"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" Text="{Binding StatusText}" TextWrapping="Wrap" ToolTip="{Binding StatusText}" />
+                                            <Grid Grid.Row="2" Visibility="{Binding ShowErrorView, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="10"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid Grid.Column="0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="10"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Text="Chewsi Subscriber ID"/>
+                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding ChewsiId}"/>
+                                                </Grid>
+                                                <Grid Grid.Column="2">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="10"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Text="Subscriber First Name"/>
+                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding SubscriberFirstName}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridComboBoxColumn Header="Number Of Payments" IsReadOnly="False" SelectedItemBinding="{Binding NumberOfPayments}"
+                                                    ItemsSource="{Binding Source={x:Static services:ClientAppService.NumberOfPayments}}" Width="*"/>
+                            <DataGridTextColumn Header="Down Payment" IsReadOnly="False" Binding="{Binding DownPayment}" Width="*" />
+                            <DataGridTemplateColumn MinWidth="140" Width="*">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <TextBlock Text="First Monthly Payment Date" Margin="0,0,5,0" FontWeight="Bold" TextWrapping="Wrap" />
+                                            <ContentControl Content="{StaticResource InfoIcon}" ToolTip="This is the date you expect the first of the reoccuring monthly payments to begin." />
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>                                
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -122,14 +174,11 @@
                                             </Grid>
                                             <Grid Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <ContentControl Content="{StaticResource Lock}" Grid.Column="0"/>
-                                            </Grid>                                               
+                                            </Grid>
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridComboBoxColumn Header="Number Of Payments" IsReadOnly="False">
-                                <DataGridComboBoxColumn.ItemsSource></DataGridComboBoxColumn.ItemsSource>
-                            </DataGridComboBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
