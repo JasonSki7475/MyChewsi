@@ -77,7 +77,7 @@ namespace ChewsiPlugin.UI.ViewModels
             IsClient = isClient;
             City = settings.City;
             Zip = settings.Zip;
-            ServerHost = Utils.GetHostFromAddress(serverAddress);
+            ServerHost = Api.Common.Utils.GetHostFromAddress(serverAddress);
         }
 
         private void Hide()
@@ -271,7 +271,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 _dialogService.ShowLoadingIndicator();
                 _appService.SaveSettings(new SettingsDto(SelectedType, Address1, Address2, Tin, UseProxy,
                     ProxyAddress, ProxyPort, ProxyLogin, ProxyPassword,
-                    State, StartPms, _machineId, City, Zip), Utils.GetAddressFromHost(ServerHost), StartLauncher);
+                    State, StartPms, _machineId, City, Zip), Api.Common.Utils.GetAddressFromHost(ServerHost), StartLauncher);
             }
             finally
             {

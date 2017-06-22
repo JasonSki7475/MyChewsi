@@ -11,6 +11,7 @@ using System.Text;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ChewsiPlugin.Api.Dentrix
 {
@@ -234,7 +235,50 @@ namespace ChewsiPlugin.Api.Dentrix
         {
             return GetDentrixFolder(out folder);
         }
-        
+
+        public Appointment GetAppointmentById(string id)
+        {
+            Dictionary<string, string> patientIds, cp;
+            GetPatientIdChewsiIdDictionary(out cp, out patientIds);
+
+            var result =
+                ExecuteCommand(
+                    $"select modified_date, appointment_id, patient_id, patient_name, appointment_date, provider_id, start_hour, start_minute from admin.v_appt where appointment_id='{id}'",
+                    new List<string>
+                    {
+                        "patient_id",
+                        "patient_name",
+                        "appointment_date",
+                        "provider_id",
+                        "appointment_id",
+                        "modified_date",
+                        "start_hour",
+                        "start_minute"
+                    },
+                    false);
+
+            if (result.Count != 0)
+            {
+                var m = result[0];
+                string chewsiId;
+                patientIds.TryGetValue(m["patient_id"], out chewsiId);
+                var appointmentDate =
+                    DateTime.Parse(m["appointment_date"])
+                        .Date.Add(new TimeSpan(int.Parse(m["start_hour"]), int.Parse(m["start_minute"]), 0));
+                return new Appointment
+                {
+                    Id = m["appointment_id"].Trim(),
+                    PatientName = m["patient_name"].Trim(),
+                    PatientId = m["patient_id"].Trim(),
+                    Date = appointmentDate,
+                    PmsModifiedDate = DateTime.Parse(m["modified_date"]),
+                    ProviderId = m["provider_id"].Trim(),
+                    ChewsiId = chewsiId
+                };
+            }
+            return null;
+        }
+
         protected override string PmsExeRelativePath => "Office.exe";
 
         public void Unload()

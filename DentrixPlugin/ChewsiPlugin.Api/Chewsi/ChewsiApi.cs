@@ -21,7 +21,9 @@ namespace ChewsiPlugin.Api.Chewsi
         private int _proxyPort;
         private string _proxyUserName;
         private string _proxyPassword;
-        private const string Url = "http://chewsi-stage-txapi.azurewebsites.net";
+        //TODO use staging
+        private const string Url = //"http://chewsi-stage-txapi.azurewebsites.net";
+                                   "http://chewsi-dev-txapi.azurewebsites.net";
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";
@@ -31,6 +33,8 @@ namespace ChewsiPlugin.Api.Chewsi
         private const string RequestClaimProcessingStatusUri = "RequestClaimProcessingStatus";
         private const string DownloadFileUri = "DownloadFile";
         private const string UpdatePluginRegistrationUri = "UpdatePluginRegistration";
+        private const string CalculatedOrthoPaymentsUri = "RetrieveCalculatedOrthoPayments";
+        private const string GetOrthoPaymentPlanHistoryUri = "GetOrthoPaymentPlanHistory";
 
         /// <summary>
         /// The RetrievePluginClientRowStatuses() call should be made before 
@@ -132,6 +136,19 @@ namespace ChewsiPlugin.Api.Chewsi
         public Stream DownloadFile(DownoadFileRequest request)
         {
             return GetStream(request, DownloadFileUri, HttpMethod.Post);
+        }
+
+        public CalculatedOrthoPaymentsResponse GetCalculatedOrthoPayments(CalculatedOrthoPaymentsRequest request)
+        {
+            return Post<CalculatedOrthoPaymentsResponse>(request, CalculatedOrthoPaymentsUri);
+        }
+
+        public List<OrthoPaymentPlanHistoryResponse> GetOrthoPaymentPlanHistory(string tin)
+        {
+            return Post<List<OrthoPaymentPlanHistoryResponse>>(new OrthoPaymentPlanHistoryRequest
+            {
+                TIN = tin
+            }, GetOrthoPaymentPlanHistoryUri);
         }
 
         public void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword)

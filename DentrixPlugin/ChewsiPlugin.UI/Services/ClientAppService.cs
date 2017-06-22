@@ -26,6 +26,7 @@ namespace ChewsiPlugin.UI.Services
 {
     internal class ClientAppService : ViewModelBase, IClientAppService
     {
+        public static string[] NumberOfPayments = {"Pay In Full", "1", "12", "18", "24", "30", "36"};
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly object _appointmentsLockObject = new object();
         private const int ServiceReadyTimeoutMs = 60000;
@@ -105,7 +106,7 @@ namespace ChewsiPlugin.UI.Services
                     LockClaim(id);
                     _dialogService.ShowLoadingIndicator("Submitting...");
                     SubmitClaimResult result;
-                    if (Utils.TrySafeCall(_serverAppService.ValidateAndSubmitClaim, id, out result))
+                    if (Api.Common.Utils.TrySafeCall(_serverAppService.ValidateAndSubmitClaim, id, out result))
                     {
                         switch (result)
                         {
@@ -146,7 +147,7 @@ namespace ChewsiPlugin.UI.Services
             try
             {
                 File835Dto response;
-                if (Utils.TrySafeCall(_serverAppService.DownloadFile,
+                if (Api.Common.Utils.TrySafeCall(_serverAppService.DownloadFile,
                     downloadReport ? DownoadFileType.Pdf : DownoadFileType.Txt,
                     documentId, 
                     postedDate, out response) && response != null && response.Content != null && response.Content.Length > 0)
@@ -187,7 +188,7 @@ namespace ChewsiPlugin.UI.Services
             try
             {
                 List<DownloadDto> list;
-                if (Utils.TrySafeCall(() => _serverAppService.GetDownloads(), out list))
+                if (Api.Common.Utils.TrySafeCall(() => _serverAppService.GetDownloads(), out list))
                 {
                     return list.Select(m => new DownloadItemViewModel(m.Edi, m.Report, m.Status, m.PostedDate)).ToList();
                 }
@@ -197,6 +198,25 @@ namespace ChewsiPlugin.UI.Services
                 _dialogService.HideLoadingIndicator();
             }
             return new List<DownloadItemViewModel>();
+        }
+
+        public List<PaymentPlanHistoryViewModel> GetPayments()
+        {
+            _dialogService.ShowLoadingIndicator();
+            try
+            {
+                List<PaymentPlanHistoryDto> list;
+                if (Api.Common.Utils.TrySafeCall(() => _serverAppService.GetPayments(), out list))
+                {
+                    return list.Select(m => new PaymentPlanHistoryViewModel(m.ChewsiId, m.Items, m.LastPaymentOn, 
+                        m.PatientFirstName, m.PaymentSchedule, m.PostedOn, m.Provider, m.BalanceRemaining, m.NextPaymentOn)).ToList();
+                }
+            }
+            finally
+            {
+                _dialogService.HideLoadingIndicator();
+            }
+            return new List<PaymentPlanHistoryViewModel>();            
         }
 
         public ObservableCollection<ClaimItemViewModel> ClaimItems { get; }
@@ -298,7 +318,7 @@ namespace ChewsiPlugin.UI.Services
             }
             if (serverAddress == null && !_isClient)
             {
-                serverAddress = Utils.GetAddressFromHost("localhost");
+                serverAddress = Api.Common.Utils.GetAddressFromHost("localhost");
             }
 
             if (serverAddress != null)
@@ -308,12 +328,12 @@ namespace ChewsiPlugin.UI.Services
 
                 // Try to connect
                 bool response;
-                if (Utils.TrySafeCall(() => _serverAppService.Ping(), out response) && response)
+                if (Api.Common.Utils.TrySafeCall(() => _serverAppService.Ping(), out response) && response)
                 {
                     _repository.SaveSetting(Settings.ServerAddress, serverAddress);
 
                     ServerState serverState;
-                    if (Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState))
+                    if (Api.Common.Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState))
                     {
                         switch (serverState)
                         {
@@ -324,7 +344,7 @@ namespace ChewsiPlugin.UI.Services
                                 while ((DateTime.UtcNow - startTime).TotalMilliseconds < ServiceReadyTimeoutMs)
                                 {
                                     await Task.Delay(1000);
-                                    if (Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState) && serverState != ServerState.Initializing)
+                                    if (Api.Common.Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState) && serverState != ServerState.Initializing)
                                     {
                                         break;
                                     }
@@ -342,7 +362,7 @@ namespace ChewsiPlugin.UI.Services
                                 break;
                             case ServerState.Ready:
                                 SettingsDto settings;
-                                if (Utils.TrySafeCall(_serverAppService.GetSettings, out settings) && settings != null)
+                                if (Api.Common.Utils.TrySafeCall(_serverAppService.GetSettings, out settings) && settings != null)
                                 {
                                     RaisePropertyChanged(() => Title);
                                     _settingsViewModel.InjectAppServiceAndInit(this, settings, serverAddress, _launcherService.GetLauncherStartup(), _isClient);
@@ -355,7 +375,7 @@ namespace ChewsiPlugin.UI.Services
                                     if (settings.StartPms)
                                     {
                                         string pmsExePath;
-                                        if (Utils.TrySafeCall(_serverAppService.GetPmsExecutablePath, out pmsExePath) && pmsExePath != null)
+                                        if (Api.Common.Utils.TrySafeCall(_serverAppService.GetPmsExecutablePath, out pmsExePath) && pmsExePath != null)
                                         {
                                             Logger.Info("Starting PMS: {0}", pmsExePath);
                                             _launcherService.StartPms(pmsExePath);
@@ -384,7 +404,7 @@ namespace ChewsiPlugin.UI.Services
             }
             else
             {
-                serverAddress = Utils.GetAddressFromHost("localhost");
+                serverAddress = Api.Common.Utils.GetAddressFromHost("localhost");
                 _connectViewModel.Show(serverAddress);
             }
             _dialogService.HideLoadingIndicator();
@@ -399,7 +419,7 @@ namespace ChewsiPlugin.UI.Services
             Logger.Info("App first run: setup settings");
             _dialogService.ShowLoadingIndicator("Loading settings...");
             InitialSettingsDto s;
-            if (Utils.TrySafeCall(_serverAppService.GetInitialSettings, out s) && s != null)
+            if (Api.Common.Utils.TrySafeCall(_serverAppService.GetInitialSettings, out s) && s != null)
             {
                 var settings = new SettingsDto(s.PmsType, s.AddressLine1, s.AddressLine2, s.Tin, true, "localhost", 8888, "", "", s.State, false, "", s.City, s.Zip);
                 RaisePropertyChanged(() => Title);
@@ -419,7 +439,7 @@ namespace ChewsiPlugin.UI.Services
         public void DeleteAppointment(string id)
         {
             bool result;
-            if (!Utils.TrySafeCall(_serverAppService.DeleteAppointment, id, out result) || !result)
+            if (!Api.Common.Utils.TrySafeCall(_serverAppService.DeleteAppointment, id, out result) || !result)
             {
                 _dialogService.Show("Cannot delete claim, error occured. Please try again.", "Error");
             }
@@ -428,7 +448,7 @@ namespace ChewsiPlugin.UI.Services
         public void DeleteClaimStatus(string providerId, string chewsiId, DateTime date)
         {
             bool result;
-            if (!Utils.TrySafeCall(status => _serverAppService.DeleteClaimStatus(providerId, chewsiId, date), providerId, out result) || !result)
+            if (!Api.Common.Utils.TrySafeCall(status => _serverAppService.DeleteClaimStatus(providerId, chewsiId, date), providerId, out result) || !result)
             {
                 _dialogService.Show("Cannot delete claim status, error occured. Please try again.", "Error");
             }
@@ -437,7 +457,7 @@ namespace ChewsiPlugin.UI.Services
         public async void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher)
         {
             bool result;
-            var called = Utils.TrySafeCall(_serverAppService.SaveSettings, settingsDto, out result);
+            var called = Api.Common.Utils.TrySafeCall(_serverAppService.SaveSettings, settingsDto, out result);
             if (called)
             {
                 if (result)
@@ -511,7 +531,7 @@ namespace ChewsiPlugin.UI.Services
                             _dialogService.ShowLoadingIndicator("Loading...");
                             try
                             {
-                                if (Utils.SafeCall(_serverAppService.ReloadClaims))
+                                if (Api.Common.Utils.SafeCall(_serverAppService.ReloadClaims))
                                 {
                                     return true;
                                 }

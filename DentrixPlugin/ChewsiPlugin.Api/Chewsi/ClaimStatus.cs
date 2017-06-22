@@ -29,6 +29,9 @@ namespace ChewsiPlugin.Api.Chewsi
 
         [DataMember]
         public string Status { get; set; }
+        
+        [DataMember]
+        public string PMS_ID { get; set; }
 
         /// <summary>
         /// Set by the plugin

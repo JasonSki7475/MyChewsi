@@ -161,7 +161,7 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
         
-        public bool CanResubmit => !IsClaimStatus && State == AppointmentState.ValidationError;
+        public bool CanResubmit => State == AppointmentState.ValidationError;
         public bool ShowErrorView => State == AppointmentState.ValidationError || State == AppointmentState.ValidationErrorNoResubmit;
 
         public AppointmentState State

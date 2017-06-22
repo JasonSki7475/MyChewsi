@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using ChewsiPlugin.Api;
-using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
@@ -35,7 +33,7 @@ namespace ChewsiPlugin.UI.ViewModels
         public void Show(string address)
         {
             Shown = true;
-            Host = Utils.GetHostFromAddress(address);
+            Host = Api.Common.Utils.GetHostFromAddress(address);
         }
 
         public bool Shown
@@ -69,7 +67,7 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    Host = Utils.GetHostFromAddress(address.Uri.ToString());
+                    Host = Api.Common.Utils.GetHostFromAddress(address.Uri.ToString());
                 });
             }
             else
@@ -86,7 +84,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnConnectCommandExecute()
         {
-            Task.Factory.StartNew(() => _clientAppService.Connect(Utils.GetAddressFromHost(Host)));
+            Task.Factory.StartNew(() => _clientAppService.Connect(Api.Common.Utils.GetAddressFromHost(Host)));
             Shown = false;
         }
         #endregion

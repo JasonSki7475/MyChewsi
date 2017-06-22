@@ -175,6 +175,33 @@ namespace ChewsiPlugin.Service.Services
             return list;
         }
 
+        public List<PaymentPlanHistoryDto> GetPayments()
+        {
+            Logger.Info("Client '{0}' loaded payments list", GetChannelId());
+            var tin = _repository.GetSettingValue<string>(Settings.TIN);
+            var m1 = _chewsiApi.GetOrthoPaymentPlanHistory(tin);
+            return m1.Select(m => new PaymentPlanHistoryDto
+            {
+                PaymentSchedule = m.PaymentSchedule,
+                ChewsiId = m.ChewsiID,
+                //TODO Provider
+                //Provider = ,
+                PatientFirstName = m.PatientFirstName,
+                LastPaymentOn = m.LastPaymentOn,
+                PostedOn = DateTime.Parse(m.PostedOn),
+                BalanceRemaining = m.BalanceRemaining,
+                NextPaymentOn = m.NextPaymentOn,
+                Items = m.Items?.Select(i => new PaymentPlanHistoryItemDto
+                {
+                    ChewsiFeeAmount = i.ChewsiFeeAmount,
+                    PaymentSchedule = i.PaymentSchedule,
+                    PatientPaymentOf = i.PatientPaymentOf,
+                    PaymentMadeOn = i.PaymentMadeOn,
+                    ProviderReceives = i.ProviderReceives
+                }).ToList() ?? new List<PaymentPlanHistoryItemDto>()
+            }).ToList();
+        }
+
         public File835Dto DownloadFile(string documentType, string documentId, string postedDate)
         {
             Logger.Info("Client '{0}' downloaded file {1}", GetChannelId(), documentId);
@@ -395,17 +422,11 @@ namespace ChewsiPlugin.Service.Services
             var statuses = _chewsiApi.GetClaimProcessingStatus(request);
             if (statuses != null)
             {
-                // TODO get ProviderId from the response
-
                 // set provider id
                 statuses.ForEach(m =>
                 {
-                    var p = _dentalApi.GetProviderIdByAppointmentInfo(m.PostedOnDate.Date, m.ChewsiID);
-                    if (string.IsNullOrEmpty(p))
-                    {
-                        Logger.Warn("Cannot find provider for the status ({0}, {1})", m.PostedOnDate.Date, m.ChewsiID);
-                    }
-                    m.ProviderId = p;
+                    var appt = _dentalApi.GetAppointmentById(m.PMS_ID);
+                    m.ProviderId = appt?.ProviderId;
                 });
                 return statuses;
             }

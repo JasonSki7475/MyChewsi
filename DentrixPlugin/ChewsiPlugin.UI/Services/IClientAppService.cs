@@ -12,6 +12,7 @@ namespace ChewsiPlugin.UI.Services
         void ValidateAndSubmitClaim(string id);
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         List<DownloadItemViewModel> GetDownloads();
+        List<PaymentPlanHistoryViewModel> GetPayments();
         ObservableCollection<ClaimItemViewModel> ClaimItems { get; }
         bool Initialized { get; }
         bool IsLoadingClaims { get; }

@@ -171,7 +171,25 @@ namespace ChewsiPlugin.EaglesoftApi
             folder = @"C:\EagleSoft\Shared Files\";
             return true;
         }
-        
+
+        public Appointment GetAppointmentById(string id)
+        {
+            Initialize();
+
+            using (var connection = GetConnection())
+            {
+                return
+                    connection.QueryFirstOrDefault<Appointment>(
+                        $@"SELECT a.appointment_id as Id, a.start_time as ""Date"", a.patient_id as PatientId, p.prim_member_id as ChewsiId, (p.last_name+', '+p.first_name) as PatientName, ap.provider_id as ProviderId, a.date_appointed as PmsModifiedDate
+                            FROM appointment a
+                            JOIN appointment_provider ap ON ap.appointment_id=a.appointment_id 
+                            JOIN patient p ON a.patient_id = p.patient_id 
+                            JOIN employer e ON (e.employer_id = p.prim_employer_id OR e.employer_id = p.sec_employer_id)
+                            JOIN insurance_company ic ON ic.insurance_company_id = e.insurance_company_id 
+                            WHERE a.appointment_id='{id}'");
+            }
+        }
+
         protected override string PmsExeRelativePath => "Eaglesoft.exe";
     }
 }

@@ -219,7 +219,29 @@ namespace ChewsiPlugin.OpenDentalApi
             folder = null;
             return false;
         }
-        
+
+        public Appointment GetAppointmentById(string id)
+        {
+            Initialize();
+
+            var m = _proxy.GetAppointmentById(long.Parse(id));
+            if (m != null)
+            {
+                var patient = GetPatientInfo(m.PatNum);
+                return new Appointment
+                        {
+                            Id = m.AptNum.ToString(),
+                            PmsModifiedDate = m.DateTStamp,
+                            Date = m.AptDateTime,
+                            ChewsiId = patient.ChewsiId,
+                            PatientId = m.PatNum.ToString(),
+                            PatientName = $"{patient.PatientLastName}, {patient.PatientFirstName}",
+                            ProviderId = m.ProvNum.ToString()
+                        };
+            }
+            return null;
+        }
+
         public void Unload()
         {
             _tokenSource.Cancel();

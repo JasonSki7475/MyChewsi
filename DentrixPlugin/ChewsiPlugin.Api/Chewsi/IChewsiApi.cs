@@ -17,5 +17,7 @@ namespace ChewsiPlugin.Api.Chewsi
         void Initialize(string token, bool useProxy, string proxyAddress, int proxyPort, string proxyUserName, string proxyPassword);
         bool StorePluginClientRowStatus(PluginClientRowStatus request);
         List<PluginClientRowStatus> RetrievePluginClientRowStatuses(string tin);
+        CalculatedOrthoPaymentsResponse GetCalculatedOrthoPayments(CalculatedOrthoPaymentsRequest request);
+        List<OrthoPaymentPlanHistoryResponse> GetOrthoPaymentPlanHistory(string tin);
     }
 }

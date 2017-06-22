@@ -22,5 +22,9 @@ namespace ChewsiPlugin.Api.Chewsi
         public string PIN { get; set; }
         public List<ClaimLine> ClaimLines { get; set; }
         public string PMSModifiedDate { get; set; }
+
+        //TODO set ortho fields
+        public string OrthoDownPayment { get; set; }
+        public List<string> OrthoNumberOfPayments { get; set; }
     }
 }

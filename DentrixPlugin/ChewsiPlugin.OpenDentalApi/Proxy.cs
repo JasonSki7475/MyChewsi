@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -191,6 +192,28 @@ namespace ChewsiPlugin.OpenDentalApi
         public List<AppointmentInfo> GetAppointmentsStartingWithinPeriod(DateTime from, DateTime to)
         {
             return InvokeStaticMethodForList<List<AppointmentInfo>, AppointmentInfo>(_openDentBusinessDllPath, "OpenDentBusiness.Appointments", "GetAppointmentsStartingWithinPeriod", new object[] { from, to });
+        }
+
+        public AppointmentInfo GetAppointmentById(long id)
+        {
+            var dt1 = InvokeStaticMethodWithoutMapping(_openDentBusinessDllPath, "OpenDentBusiness.Appointments", "GetApptTable", new object[] { id });
+            var dt = dt1 as DataTable;
+            if (dt.Rows.Count > 0)
+            {
+                var row = dt.Rows[0];
+                return new AppointmentInfo
+                {
+                    AptStatus = row["AptStatus"].ToString(),
+                    PatNum = (long) row["PatNum"],
+                    InsPlan1 = (long) row["InsPlan1"],
+                    DateTStamp = (DateTime) row["DateTStamp"],
+                    AptDateTime = (DateTime) row["AptDateTime"],
+                    AptNum = (long) row["AptNum"],
+                    ProvNum = (long) row["ProvNum"],
+                    InsPlan2 = (long) row["InsPlan2"]
+                };
+            }
+            return null;
         }
     }
 }

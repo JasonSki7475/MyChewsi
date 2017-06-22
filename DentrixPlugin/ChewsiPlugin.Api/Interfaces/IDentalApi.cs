@@ -15,6 +15,8 @@ namespace ChewsiPlugin.Api.Interfaces
         void Unload();
         string GetPmsExecutablePath(string pmsFolder);
         bool TryGetFolder(out string folder);
+        Appointment GetAppointmentById(string id);
+
         bool IsInitialized();
     }
 }

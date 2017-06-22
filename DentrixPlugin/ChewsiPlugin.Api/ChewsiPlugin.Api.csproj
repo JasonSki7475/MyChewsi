@@ -90,9 +90,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chewsi\CalculatedOrthoPaymentsRequest.cs" />
+    <Compile Include="Chewsi\CalculatedOrthoPaymentsResponse.cs" />
     <Compile Include="Chewsi\ChewsiApi.cs" />
     <Compile Include="Chewsi\DownoadFileRequest.cs" />
     <Compile Include="Chewsi\IChewsiApi.cs" />
+    <Compile Include="Chewsi\OrthoPaymentPlanHistoryRequest.cs" />
+    <Compile Include="Chewsi\OrthoPaymentPlanHistoryResponse.cs" />
     <Compile Include="Chewsi\PluginClientRowStatus.cs" />
     <Compile Include="Chewsi\ProcessClaimRequest.cs" />
     <Compile Include="Chewsi\ProviderAddressInformation.cs" />
@@ -109,6 +113,7 @@
     <Compile Include="Common\File835Dto.cs" />
     <Compile Include="Common\InitialSettingsDto.cs" />
     <Compile Include="Common\MessageBoxDialogService.cs" />
+    <Compile Include="Common\PaymentPlanHistoryDto.cs" />
     <Compile Include="Common\ProcedureInfo.cs" />
     <Compile Include="Chewsi\ClaimStatus.cs" />
     <Compile Include="Common\Appointment.cs" />

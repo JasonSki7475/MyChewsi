@@ -137,6 +137,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\InvalidDateTextEventArgs.cs" />
+    <Compile Include="Controls\MaskedDateTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Converters\BooleanInverseConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Converters\ClientServiceStatusToBooleanConverter.cs" />
@@ -148,6 +152,8 @@
     <Compile Include="Controls\LoadingControl.xaml.cs">
       <DependentUpon>LoadingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\HighlightPaymentDateInFlowDocumentConverter.cs" />
+    <Compile Include="Converters\HighlightCalculatedPaymentsToFlowDocumentConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Models\ClientState.cs" />
     <Compile Include="Services\CallbackHandler.cs" />
@@ -155,6 +161,7 @@
     <Compile Include="Services\IClientAppService.cs" />
     <Compile Include="Services\ILauncherService.cs" />
     <Compile Include="Services\LauncherService.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="ViewModels\ConnectViewModel.cs" />
     <Compile Include="ViewModels\DialogService\DialogService.cs" />
     <Compile Include="ViewModels\DialogService\Message.cs" />
@@ -163,10 +170,15 @@
     <Compile Include="ViewModels\IConnectViewModel.cs" />
     <Compile Include="ViewModels\ISettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\PaymentPlanHistoryViewModel.cs" />
+    <Compile Include="ViewModels\PaymentsCalculationViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\ConnectView.xaml.cs">
       <DependentUpon>ConnectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PaymentsCalculationView.xaml.cs">
+      <DependentUpon>PaymentsCalculationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -197,6 +209,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConnectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PaymentsCalculationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

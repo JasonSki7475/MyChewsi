@@ -39,6 +39,9 @@ namespace ChewsiPlugin.Api.Interfaces
         List<DownloadDto> GetDownloads();
 
         [OperationContract]
+        List<PaymentPlanHistoryDto> GetPayments();
+
+        [OperationContract]
         File835Dto DownloadFile(string documentType, string documentId, string postedDate);
 
         [OperationContract]
