@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using NLog;
 
 namespace ChewsiPlugin.Api.Common
@@ -10,7 +9,9 @@ namespace ChewsiPlugin.Api.Common
     {
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected bool _initialized;
-        
+
+        protected const char ProcedureCodeFirstCharToTrim = 'D';
+
         protected const string InsuranceCarrierName =
             //"PRINCIPAL";// value for Dentrix G with test database (G6.1)
             "Chewsi"; // value for OpenDental
@@ -60,12 +61,6 @@ namespace ChewsiPlugin.Api.Common
                 return Path.Combine(folder, PmsExeRelativePath);
             }
             return null;
-        }
-
-        public string GetProviderIdByAppointmentInfo(DateTime date, string chewsiId)
-        {
-            var appts = GetAppointments(date);
-            return appts.FirstOrDefault(m => m.ChewsiId == chewsiId)?.ProviderId;
         }
     }
 }

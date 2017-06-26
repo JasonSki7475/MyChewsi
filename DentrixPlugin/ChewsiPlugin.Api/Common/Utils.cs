@@ -63,64 +63,12 @@ namespace ChewsiPlugin.Api.Common
         {
             return Math.Abs(d1 - d2) < 0.01;
         }
-
-        public static bool SafeCall<T>(Action<T> action, T arg)
-        {
-            try
-            {
-                action.Invoke(arg);
-                return true;
-            }
-            catch (TimeoutException)
-            {
-                Logger.Warn("Service timeout");
-            }
-            catch (FaultException ex)
-            {
-                Logger.Warn(ex, "Exception handled on server side");
-            }
-            catch (CommunicationException ex)
-            {
-                Logger.Warn(ex, "Communication error");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Unexpected WCF error");
-            }
-            return false;
-        }
-
+        
         public static bool SafeCall(Action action)
         {
             try
             {
                 action.Invoke();
-                return true;
-            }
-            catch (TimeoutException)
-            {
-                Logger.Warn("Service timeout");
-            }
-            catch (FaultException ex)
-            {
-                Logger.Warn(ex, "Exception handled on server side");
-            }
-            catch (CommunicationException ex)
-            {
-                Logger.Warn(ex, "Communication error");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Unexpected WCF error");
-            }
-            return false;
-        }
-
-        public static bool SafeCall<T1,T2,T3>(Action<T1,T2,T3> action, T1 arg1, T2 arg2, T3 arg3)
-        {
-            try
-            {
-                action.Invoke(arg1, arg2, arg3);
                 return true;
             }
             catch (TimeoutException)
@@ -166,60 +114,6 @@ namespace ChewsiPlugin.Api.Common
                 Logger.Error(ex, "Unexpected WCF error");
             }
             result = default(T);
-            return false;
-        }
-
-        public static bool TrySafeCall<T, R>(Func<T, R> action, T arg, out R result)
-        {
-            try
-            {
-                result = action.Invoke(arg);
-                return true;
-            }
-            catch (TimeoutException)
-            {
-                Logger.Warn("Service timeout");
-            }
-            catch (FaultException ex)
-            {
-                Logger.Warn(ex, "Exception handled on server side");
-            }
-            catch (CommunicationException ex)
-            {
-                Logger.Warn(ex, "Communication error");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Unexpected WCF error");
-            }
-            result = default(R);
-            return false;
-        }
-
-        public static bool TrySafeCall<T1, T2, T3, R>(Func<T1, T2, T3, R> action, T1 arg1, T2 arg2, T3 arg3, out R result)
-        {
-            try
-            {
-                result = action.Invoke(arg1, arg2, arg3);
-                return true;
-            }
-            catch (TimeoutException)
-            {
-                Logger.Warn("Service timeout");
-            }
-            catch (FaultException ex)
-            {
-                Logger.Warn(ex, "Exception handled on server side");
-            }
-            catch (CommunicationException ex)
-            {
-                Logger.Warn(ex, "Communication error");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Unexpected WCF error");
-            }
-            result = default(R);
             return false;
         }
 

@@ -8,7 +8,8 @@ namespace ChewsiPlugin.Api.Chewsi
     {
         string RegisterPlugin(RegisterPluginRequest request);
         void UpdatePluginRegistration(UpdatePluginRegistrationRequest request);
-        void ProcessClaim(string id, ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate);
+        void ProcessClaim(string id, ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate, 
+            double downPayment, int numberOfPayments);
         ValidateSubscriberAndProviderResponse ValidateSubscriberAndProvider(ProviderInformation provider,
             ProviderAddressInformation providerAddress, SubscriberInformation subscriber);
         Request835DownloadsResponse Get835Downloads(Request835Downloads request);

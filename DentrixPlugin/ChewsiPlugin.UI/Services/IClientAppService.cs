@@ -9,7 +9,7 @@ namespace ChewsiPlugin.UI.Services
 {
     internal interface IClientAppService : IDisposable
     {
-        void ValidateAndSubmitClaim(string id);
+        void ValidateAndSubmitClaim(string id, double downPayment, int numberOfPayments);
         void DownloadFile(string documentId, string postedDate, bool downloadReport);
         List<DownloadItemViewModel> GetDownloads();
         List<PaymentPlanHistoryViewModel> GetPayments();
@@ -23,6 +23,7 @@ namespace ChewsiPlugin.UI.Services
         void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher);
         Task<bool> Connect(string serverAddress = null);
         void DeleteClaimStatus(string providerId, string chewsiId, DateTime date);
+        CalculatedPaymentsDto GetCalculatedPayments(string id, double downPayment, int numberOfPayments, DateTime firstMonthlyPaymentDate);
 
         #region Server callbacks
         void LockClaim(string id);

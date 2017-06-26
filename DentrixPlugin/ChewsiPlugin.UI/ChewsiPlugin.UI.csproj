@@ -138,9 +138,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\InvalidDateTextEventArgs.cs" />
-    <Compile Include="Controls\MaskedDateTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Converters\BooleanInverseConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Converters\ClientServiceStatusToBooleanConverter.cs" />
@@ -152,9 +149,9 @@
     <Compile Include="Controls\LoadingControl.xaml.cs">
       <DependentUpon>LoadingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\HighlightPaymentDateInFlowDocumentConverter.cs" />
     <Compile Include="Converters\HighlightCalculatedPaymentsToFlowDocumentConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\GreaterThanToBooleanConverter.cs" />
     <Compile Include="Models\ClientState.cs" />
     <Compile Include="Services\CallbackHandler.cs" />
     <Compile Include="Services\ClientAppService.cs" />
@@ -168,6 +165,7 @@
     <Compile Include="ViewModels\ClaimItemViewModel.cs" />
     <Compile Include="ViewModels\DownloadItemViewModel.cs" />
     <Compile Include="ViewModels\IConnectViewModel.cs" />
+    <Compile Include="ViewModels\IPaymentsCalculationViewModel.cs" />
     <Compile Include="ViewModels\ISettingsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PaymentPlanHistoryViewModel.cs" />

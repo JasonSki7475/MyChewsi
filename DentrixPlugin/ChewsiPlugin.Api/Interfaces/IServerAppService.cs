@@ -18,7 +18,7 @@ namespace ChewsiPlugin.Api.Interfaces
         bool DeleteAppointment(string id);
 
         [OperationContract]
-        SubmitClaimResult ValidateAndSubmitClaim(string id);
+        SubmitClaimResult ValidateAndSubmitClaim(string id, double downPayment, int numberOfPayments);
 
         [OperationContract]
         void ReloadClaims();
@@ -49,6 +49,9 @@ namespace ChewsiPlugin.Api.Interfaces
 
         [OperationContract]
         bool DeleteClaimStatus(string providerId, string chewsiId, DateTime date);
+
+        [OperationContract]
+        CalculatedPaymentsDto GetCalculatedPayments(string id, double downPayment, int numberOfPayments, DateTime firstMonthlyPaymentDate);
 
         /// <summary>
         /// For tests, InitClient() should be used by clients

@@ -43,6 +43,18 @@ namespace ChewsiPlugin.Api.Common
         [DataMember]
         public DateTime PmsModifiedDate { get; set; }
 
+        [DataMember]
+        public int NumberOfPayments { get; set; }
+
+        [DataMember]
+        public double DownPayment { get; set; }
+
+        [DataMember]
+        public DateTime FirstMonthlyPaymentDate { get; set; }
+
+        [DataMember]
+        public bool EligibleForPayments { get; set; }
+        
         public bool IsCptError => IsClaimStatus && (ClaimNumber.StartsWith("Z") || ClaimNumber == "zz");
     }
 }

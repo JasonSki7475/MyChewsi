@@ -38,7 +38,7 @@ namespace ChewsiPlugin.Service.Services
             {
                 Parallel.ForEach(_callbackList.Values, callback =>
                 {
-                    Utils.SafeCall(callback.ShowLoadingIndicator, message);
+                    Utils.SafeCall(() => callback.ShowLoadingIndicator(message));
                 });
             });
         }
@@ -50,7 +50,7 @@ namespace ChewsiPlugin.Service.Services
                 Parallel.ForEach(_callbackList.Values, callback =>
                 {
                     Logger.Debug("Lock claim {0}", id);
-                    Utils.SafeCall(callback.LockClaim, id);
+                    Utils.SafeCall(() => callback.LockClaim(id));
                 });
             });
         }
@@ -62,7 +62,7 @@ namespace ChewsiPlugin.Service.Services
                 Parallel.ForEach(_callbackList.Values, callback =>
                 {
                     Logger.Debug("Unlock claim {0}", id);
-                    Utils.SafeCall(callback.UnlockClaim, id);
+                    Utils.SafeCall(() => callback.UnlockClaim(id));
                 });
             });
         }
@@ -74,7 +74,7 @@ namespace ChewsiPlugin.Service.Services
                 Parallel.ForEach(_callbackList.Values, callback =>
                 {
                     Logger.Debug("Broadcasting {0} updated claims", claims.Count);
-                    Utils.SafeCall(callback.SetClaims, claims);
+                    Utils.SafeCall(() => callback.SetClaims(claims));
                 });
             });
         }

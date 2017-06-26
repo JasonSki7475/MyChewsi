@@ -11,7 +11,6 @@ using System.Text;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 
 namespace ChewsiPlugin.Api.Dentrix
 {
@@ -161,7 +160,7 @@ namespace ChewsiPlugin.Api.Dentrix
                     new ProcedureInfo
                     {
                         Amount = double.Parse(proc["amt"]),
-                        Code = proc["proc_code"].TrimStart('D').Trim(),
+                        Code = proc["proc_code"].TrimStart(ProcedureCodeFirstCharToTrim).Trim(),
                         Date = DateTime.Parse(proc["proc_date"])
                     })
                     .ToList();

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
-using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
@@ -11,6 +12,7 @@ namespace ChewsiPlugin.UI.ViewModels
     internal class ClaimItemViewModel : ViewModelBase
     {
         private readonly IClientAppService _appService;
+        private readonly IPaymentsCalculationViewModel _paymentsCalculationViewModel;
         private DateTime _date;
         private string _chewsiId;
         private string _patientName;
@@ -21,19 +23,35 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _statusText;
         private AppointmentState _state;
         private ICommand _submitCommand;
+        private ICommand _calculatePaymentsCommand;
         private ICommand _deleteCommand;
         private bool _isClaimStatus;
         private string _id;
-        private string _numberOfPayments;
+        private int _numberOfPayments;
         private double _downPayment;
+        private DateTime _firstMonthlyPaymentDate;
         private DateTime _pmsModifiedDate;
         private bool _locked;
         private bool _isCptError;
+        private bool _eligibleForPayments;
 
-        public ClaimItemViewModel(IClientAppService appService)
+        public ClaimItemViewModel(IClientAppService appService, IPaymentsCalculationViewModel paymentsCalculationViewModel)
         {
             _appService = appService;
+            _paymentsCalculationViewModel = paymentsCalculationViewModel;
         }
+
+        public static readonly List<Tuple<int, string>> NumberOfPaymentsList = new List<Tuple<int, string>>(
+            new[]
+            {
+                new Tuple<int, string>(1, "Pay In Full"),
+                new Tuple<int, string>(6, "6"),
+                new Tuple<int, string>(12, "12"),
+                new Tuple<int, string>(18, "18"),
+                new Tuple<int, string>(24, "24"),
+                new Tuple<int, string>(30, "30"),
+                new Tuple<int, string>(36, "36")
+            });
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is an appointment from the PMS or a claim status returned back from the Chewsi server
@@ -73,13 +91,23 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
-        public string NumberOfPayments
+        public int NumberOfPayments
         {
             get { return _numberOfPayments; }
             set
             {
                 _numberOfPayments = value;
                 RaisePropertyChanged(() => NumberOfPayments);
+                RaisePropertyChanged(() => NumberOfPaymentsItem);
+            }
+        }
+
+        public Tuple<int, string> NumberOfPaymentsItem
+        {
+            get { return NumberOfPaymentsList.First(m => m.Item1 == NumberOfPayments); }
+            set
+            {
+                NumberOfPayments = value.Item1;
             }
         }
 
@@ -90,6 +118,16 @@ namespace ChewsiPlugin.UI.ViewModels
             {
                 _downPayment = value;
                 RaisePropertyChanged(() => DownPayment);
+            }
+        }
+
+        public DateTime FirstMonthlyPaymentDate
+        {
+            get { return _firstMonthlyPaymentDate; }
+            set
+            {
+                _firstMonthlyPaymentDate = value;
+                RaisePropertyChanged(() => FirstMonthlyPaymentDate);
             }
         }
 
@@ -182,7 +220,17 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => StatusText);
             }
         }
-        
+
+        public bool EligibleForPayments
+        {
+            get { return _eligibleForPayments; }
+            set
+            {
+                _eligibleForPayments = value;
+                RaisePropertyChanged(() => EligibleForPayments);
+            }
+        }
+
         public bool CanResubmit => State == AppointmentState.ValidationError;
         public bool ShowErrorView => State == AppointmentState.ValidationError || State == AppointmentState.ValidationErrorNoResubmit;
 
@@ -213,6 +261,20 @@ namespace ChewsiPlugin.UI.ViewModels
         }
 
         #region Commands
+
+        #region CalculatePaymentsCommand
+        public ICommand CalculatePaymentsCommand => _calculatePaymentsCommand ?? (_calculatePaymentsCommand = new RelayCommand(OnCalculatePaymentsCommandExecute));
+
+        private void OnCalculatePaymentsCommandExecute()
+        {
+            var result = _appService.GetCalculatedPayments(Id, DownPayment, NumberOfPayments, FirstMonthlyPaymentDate);
+            if (result != null)
+            {
+                _paymentsCalculationViewModel.Show(result);
+            }
+        }
+        #endregion
+
         #region SubmitCommand
         public ICommand SubmitCommand => _submitCommand ?? (_submitCommand = new RelayCommand(OnSubmitCommandExecute, CanSubmitCommandExecute));
 
@@ -224,7 +286,7 @@ namespace ChewsiPlugin.UI.ViewModels
         private void OnSubmitCommandExecute()
         {
             Lock();
-            _appService.ValidateAndSubmitClaim(Id);
+            _appService.ValidateAndSubmitClaim(Id, DownPayment, NumberOfPayments);
             Unlock();
         }
         #endregion
@@ -248,6 +310,7 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
         #endregion
+
         #endregion
 
         public void Lock()

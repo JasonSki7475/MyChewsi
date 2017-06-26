@@ -5,8 +5,8 @@
         public string DateOfService { get; set; }
         public string ProcedureCode { get; set; }
         public string ProcedureCharge { get; set; }
-        public int DownPaymentAmount { get; set; }
-        public string NumberOfPayments { get; set; }
+        public double DownPaymentAmount { get; set; }
+        public int NumberOfPayments { get; set; }
         public string FirstMonthlyPaymentDate { get; set; }
     }
 }

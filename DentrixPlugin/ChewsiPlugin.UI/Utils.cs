@@ -10,6 +10,11 @@ namespace ChewsiPlugin.UI
     {
         public static FlowDocument FormatDocument(this string input, params Tuple<string, Func<Inline, Inline>> [] formatters)
         {
+            var doc = new FlowDocument();
+
+            if (string.IsNullOrEmpty(input))
+                return doc;
+
             var pieces = new List<Tuple<int, string, Func<Inline, Inline>>>();
             foreach (var formatter in formatters)
             {
@@ -59,8 +64,6 @@ namespace ChewsiPlugin.UI
                     p.Inlines.Add(new Run(s));
                 }
             }
-
-            var doc = new FlowDocument();
             doc.Blocks.Add(p);
             return doc;
         }

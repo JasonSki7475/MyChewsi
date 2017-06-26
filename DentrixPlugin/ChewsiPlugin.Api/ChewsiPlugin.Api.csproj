@@ -107,6 +107,7 @@
     <Compile Include="Chewsi\ClaimProcessingStatusRequest.cs" />
     <Compile Include="Chewsi\UpdatePluginRegistrationRequest.cs" />
     <Compile Include="Chewsi\ValidateSubscriberAndProviderRequest.cs" />
+    <Compile Include="Common\CalculatedPaymentsDto.cs" />
     <Compile Include="Common\ClaimDto.cs" />
     <Compile Include="Common\DentalApi.cs" />
     <Compile Include="Common\DownloadDto.cs" />

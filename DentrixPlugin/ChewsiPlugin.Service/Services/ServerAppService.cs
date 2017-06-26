@@ -179,8 +179,8 @@ namespace ChewsiPlugin.Service.Services
         {
             Logger.Info("Client '{0}' loaded payments list", GetChannelId());
             var tin = _repository.GetSettingValue<string>(Settings.TIN);
-            var m1 = _chewsiApi.GetOrthoPaymentPlanHistory(tin);
-            return m1.Select(m => new PaymentPlanHistoryDto
+            var paymentPlanHistory = _chewsiApi.GetOrthoPaymentPlanHistory(tin);
+            return paymentPlanHistory.Select(m => new PaymentPlanHistoryDto
             {
                 PaymentSchedule = m.PaymentSchedule,
                 ChewsiId = m.ChewsiID,
@@ -224,6 +224,45 @@ namespace ChewsiPlugin.Service.Services
                 stream.Close();
             }
             return response;
+        }
+
+        private static readonly string[] ProceduresForPayments = { "8010", "8020", "8030", "8040", "8050", "8060", "8070", "8080", "8090" };
+
+        public CalculatedPaymentsDto GetCalculatedPayments(string id, double downPayment, int numberOfPayments, DateTime firstMonthlyPaymentDate)
+        {
+            Logger.Info("Client '{0}' requested payments calculation for {1}", GetChannelId(), id);
+            var claim = _repository.GetAppointmentById(id);
+            if (claim != null)
+            {
+                var procedures = GetDentalApi().GetProcedures(claim.PatientId, id, claim.DateTime);
+                var procedure = procedures.FirstOrDefault(m => ProceduresForPayments.Any(p => p == m.Code));
+                Logger.Info("GetCalculatedPayments: Found total {0} procedures, {1} payable procedure ({2}) for {3}", procedures.Count, procedure != null ? 1:0, procedure?.Code, id);
+                if (procedure != null)
+                {
+                    var response = _chewsiApi.GetCalculatedOrthoPayments(new CalculatedOrthoPaymentsRequest
+                    {
+                        NumberOfPayments = numberOfPayments,
+                        FirstMonthlyPaymentDate = firstMonthlyPaymentDate.ToString("d"),
+                        DownPaymentAmount = downPayment,
+                        DateOfService = procedure.Date.ToString("d"),
+                        ProcedureCode = procedure.Code,
+                        ProcedureCharge = procedure.Amount.ToString("F")
+                    });
+                    if (response != null)
+                    {
+                        return new CalculatedPaymentsDto
+                        {
+                            ChewsiMonthlyFee = response.ChewsiMonthlyFee,
+                            Note = response.Note,
+                            SubscribersReoccuringMonthlyCharge = response.SubscribersReoccuringMonthlyCharge,
+                            TotalProviderReimbursement = response.TotalProviderReimbursement,
+                            TotalProviderSubmittedCharge = response.TotalProviderSubmittedCharge,
+                            TotalSubscriberCharge = response.TotalSubscriberCharge
+                        };
+                    }
+                }
+            }
+            return null;
         }
 
         public string GetPmsExecutablePath()
@@ -353,7 +392,7 @@ namespace ChewsiPlugin.Service.Services
         }
 
         private SubmitClaimResult SubmitClaim(string id, DateTime appointmentDateTime, string patientId, ProviderInformation providerInformation, 
-            SubscriberInformation subscriberInformation, DateTime pmsModifiedDate)
+            SubscriberInformation subscriberInformation, DateTime pmsModifiedDate, double downPayment, int numberOfPayments)
         {
             var procedures = GetDentalApi().GetProcedures(patientId, id, appointmentDateTime);
             var submittedProcedures = _repository.GetSubmittedProcedures(patientId, providerInformation.Id, appointmentDateTime.Date).ToList();
@@ -387,7 +426,7 @@ namespace ChewsiPlugin.Service.Services
                     // Since we cannot match claim number to appointment (ProcessClaim response is empty; claim number was expected to be there, but API developers cannot implement it so)
                     // [Removed] We have to save current claim numbers for providerId+chewsiId+date+claimnumbers and wait till one more status appear for this combination in status lookup response; or till timeout
                     _chewsiApi.ProcessClaim(id, providerInformation, subscriberInformation, 
-                        procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList(), pmsModifiedDate);
+                        procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList(), pmsModifiedDate, downPayment, numberOfPayments);
                     SetAppointmentState(id, AppointmentState.ValidationCompletedAndClaimSubmitted);
                     Logger.Info("SubmitClaim: claim {0} has been sent to the API. Submitted procedures: {1}", id, string.Join(",", procedures.Select(m => m.Code)));
                     _repository.AddSubmittedProcedures(procedures.Select(m => new SubmittedProcedure
@@ -425,8 +464,11 @@ namespace ChewsiPlugin.Service.Services
                 // set provider id
                 statuses.ForEach(m =>
                 {
-                    var appt = _dentalApi.GetAppointmentById(m.PMS_ID);
-                    m.ProviderId = appt?.ProviderId;
+                    if (!string.IsNullOrEmpty(m.PMS_ID))
+                    {
+                        var appt = _dentalApi.GetAppointmentById(m.PMS_ID);
+                        m.ProviderId = appt?.ProviderId;                        
+                    }
                 });
                 return statuses;
             }
@@ -512,7 +554,7 @@ namespace ChewsiPlugin.Service.Services
             public const string ClaimNotFound = "Cannot find claim";
         }
 
-        public SubmitClaimResult ValidateAndSubmitClaim(string id)
+        public SubmitClaimResult ValidateAndSubmitClaim(string id, double downPayment, int numberOfPayments)
         {
             SubmitClaimResult result = SubmitClaimResult.Error;
             
@@ -542,7 +584,7 @@ namespace ChewsiPlugin.Service.Services
                             providerInformation.Id = validationResponse.ProviderID;
                             providerInformation.OfficeNbr = validationResponse.OfficeNumber;
                             result = SubmitClaim(id, claim.DateTime, claim.PatientId, providerInformation, subscriberInformation,
-                                claim.PmsModifiedDate);
+                                claim.PmsModifiedDate, downPayment, numberOfPayments);
                             if (result == SubmitClaimResult.NoCompletedProcedures)
                             {
                                 SetAppointmentState(id, null, StatusMessage.NoCompletedProcedures);
@@ -827,6 +869,7 @@ namespace ChewsiPlugin.Service.Services
                 #region PMS
 
                 var pms = GetDentalApi().GetAppointments(DateTime.Today);
+
                 pms.ForEach(m => Logger.Debug($"Loaded appointment from PMS: Date={m.Date}, Id={m.Id}, ChewsiId={m.ChewsiId}"));
                 cached.ForEach(m => Logger.Debug($"Cached appointment: Date={m.DateTime}, Id={m.Id}, ChewsiId={m.ChewsiId}"));
 
@@ -852,8 +895,7 @@ namespace ChewsiPlugin.Service.Services
                     var existing = _repository.GetAppointmentById(item.Id);
                     if (existing != null)
                     {
-                        Logger.Debug($"Updating PMS appointment in the cache. Id={item.Id}");
-                        _repository.UpdateAppointment(new Appointment
+                        var i = new Appointment
                         {
                             Id = item.Id,
                             DateTime = item.Date,
@@ -866,8 +908,27 @@ namespace ChewsiPlugin.Service.Services
 
                             State = existing.State,
                             StatusText = existing.StatusText,
-                        });
-                        repositoryUpdated = true;
+                            FirstMonthlyPaymentDate = existing.FirstMonthlyPaymentDate,
+                            DownPayment = existing.DownPayment,
+                            NumberOfPayments = existing.NumberOfPayments
+                        };
+                        if (existing.DateTime != i.DateTime
+                            || existing.PmsModifiedDate != i.PmsModifiedDate
+                            || existing.ChewsiId != i.ChewsiId
+                            || existing.PatientId != i.PatientId
+                            || existing.PatientName != i.PatientName
+                            || existing.ProviderId != i.ProviderId
+                            || existing.SubscriberFirstName != i.SubscriberFirstName
+                            || existing.State != i.State
+                            || existing.FirstMonthlyPaymentDate != i.FirstMonthlyPaymentDate
+                            || !Utils.AreAmountsEqual(existing.DownPayment, i.DownPayment)
+                            || existing.NumberOfPayments != i.NumberOfPayments
+                            )
+                        {
+                            Logger.Debug($"Updating PMS appointment in the cache. Id={item.Id}");
+                            _repository.UpdateAppointment(i);
+                            repositoryUpdated = true;
+                        }
                     }
                     else
                     {
@@ -883,7 +944,10 @@ namespace ChewsiPlugin.Service.Services
                             PatientId = item.PatientId,
                             PatientName = item.PatientName,
                             ProviderId = item.ProviderId,
-                            SubscriberFirstName = subscriberNames[item.PatientId]
+                            SubscriberFirstName = subscriberNames[item.PatientId],
+                            FirstMonthlyPaymentDate = DateTime.Today.AddDays(30),
+                            DownPayment = 0,
+                            NumberOfPayments = 1
                         });
                         repositoryUpdated = true;                        
                     }
@@ -904,10 +968,17 @@ namespace ChewsiPlugin.Service.Services
                     cached = _repository.GetAppointments();
                 }
 
+                var procedures = cached.Select(m => new
+                {
+                    id = m.Id,
+                    procedures = _dentalApi.GetProcedures(m.PatientId, m.Id, m.DateTime)
+                })
+                    .ToDictionary(m => m.id, m => m.procedures.Select(p => p.Code).ToList());
+
                 #endregion
-                
+
                 #region Chewsi claims: row statuses
-                
+
                 // load statuses from Chewsi API service
                 List<PluginClientRowStatus> clientRowStatuses = new List<PluginClientRowStatus>();
                 var tin = _repository.GetSettingValue<string>(Settings.TIN);
@@ -962,7 +1033,6 @@ namespace ChewsiPlugin.Service.Services
                     where
                         c.State != AppointmentState.Deleted &&
                         c.State != AppointmentState.ValidationCompletedAndClaimSubmitted
-                    //orderby c.State == AppointmentState.TreatmentCompleted descending
                     select new ClaimDto
                     {
                         Id = c.Id,
@@ -976,6 +1046,10 @@ namespace ChewsiPlugin.Service.Services
                         SubscriberFirstName = c.SubscriberFirstName,
                         IsClaimStatus = false,
                         PmsModifiedDate = c.PmsModifiedDate,
+                        DownPayment = c.DownPayment,
+                        FirstMonthlyPaymentDate = c.FirstMonthlyPaymentDate,
+                        NumberOfPayments = c.NumberOfPayments,
+                        EligibleForPayments = procedures[c.Id] != null && procedures[c.Id].Any(a => ProceduresForPayments.Any(p => p == a))
                         //ClaimNumber = c.ClaimNumber
                     })
                     // don't return deleted and submitted claims

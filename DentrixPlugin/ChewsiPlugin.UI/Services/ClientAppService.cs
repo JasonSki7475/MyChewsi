@@ -26,7 +26,6 @@ namespace ChewsiPlugin.UI.Services
 {
     internal class ClientAppService : ViewModelBase, IClientAppService
     {
-        public static string[] NumberOfPayments = {"Pay In Full", "1", "12", "18", "24", "30", "36"};
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly object _appointmentsLockObject = new object();
         private const int ServiceReadyTimeoutMs = 60000;
@@ -37,6 +36,7 @@ namespace ChewsiPlugin.UI.Services
         private readonly IRepository _repository;
         private readonly IConnectViewModel _connectViewModel;
         private readonly ILauncherService _launcherService;
+        private readonly IPaymentsCalculationViewModel _paymentsCalculationViewModel;
         private DuplexChannelFactory<IServerAppService> _factory;
         private ClientState _state;
         private bool _isLoadingClaims;
@@ -44,7 +44,7 @@ namespace ChewsiPlugin.UI.Services
         private readonly bool _isClient;
 
         public ClientAppService(IClientDialogService dialogService, ISettingsViewModel settingsViewModel, 
-            IRepository repository, IConnectViewModel connectViewModel, ILauncherService launcherService)
+            IRepository repository, IConnectViewModel connectViewModel, ILauncherService launcherService, IPaymentsCalculationViewModel paymentsCalculationViewModel)
         {
             SetState(ClientState.Initializing);
             _dialogService = dialogService;
@@ -52,6 +52,7 @@ namespace ChewsiPlugin.UI.Services
             _repository = repository;
             _connectViewModel = connectViewModel;
             _launcherService = launcherService;
+            _paymentsCalculationViewModel = paymentsCalculationViewModel;
             _connectViewModel.InjectAppServiceAndInit(this);
             ClaimItems = new ObservableCollection<ClaimItemViewModel>();
             _isClient = _repository.GetSettingValue<bool>(Settings.IsClient);
@@ -96,7 +97,7 @@ namespace ChewsiPlugin.UI.Services
             }
         }
 
-        public void ValidateAndSubmitClaim(string id)
+        public void ValidateAndSubmitClaim(string id, double downPayment, int numberOfPayments)
         {
             var worker = new BackgroundWorker();
             worker.DoWork += (i, j) =>
@@ -106,7 +107,7 @@ namespace ChewsiPlugin.UI.Services
                     LockClaim(id);
                     _dialogService.ShowLoadingIndicator("Submitting...");
                     SubmitClaimResult result;
-                    if (Api.Common.Utils.TrySafeCall(_serverAppService.ValidateAndSubmitClaim, id, out result))
+                    if (Api.Common.Utils.TrySafeCall(() => _serverAppService.ValidateAndSubmitClaim(id, downPayment, numberOfPayments), out result))
                     {
                         switch (result)
                         {
@@ -147,10 +148,9 @@ namespace ChewsiPlugin.UI.Services
             try
             {
                 File835Dto response;
-                if (Api.Common.Utils.TrySafeCall(_serverAppService.DownloadFile,
-                    downloadReport ? DownoadFileType.Pdf : DownoadFileType.Txt,
-                    documentId, 
-                    postedDate, out response) && response != null && response.Content != null && response.Content.Length > 0)
+                if (Api.Common.Utils.TrySafeCall(() => _serverAppService.DownloadFile(downloadReport ? DownoadFileType.Pdf : DownoadFileType.Txt,
+                        documentId, postedDate), out response) && response != null && response.Content != null &&
+                    response.Content.Length > 0)
                 {
                     var dialog = new SaveFileDialog
                     {
@@ -439,7 +439,7 @@ namespace ChewsiPlugin.UI.Services
         public void DeleteAppointment(string id)
         {
             bool result;
-            if (!Api.Common.Utils.TrySafeCall(_serverAppService.DeleteAppointment, id, out result) || !result)
+            if (!Api.Common.Utils.TrySafeCall(() => _serverAppService.DeleteAppointment(id), out result) || !result)
             {
                 _dialogService.Show("Cannot delete claim, error occured. Please try again.", "Error");
             }
@@ -448,16 +448,29 @@ namespace ChewsiPlugin.UI.Services
         public void DeleteClaimStatus(string providerId, string chewsiId, DateTime date)
         {
             bool result;
-            if (!Api.Common.Utils.TrySafeCall(status => _serverAppService.DeleteClaimStatus(providerId, chewsiId, date), providerId, out result) || !result)
+            if (!Api.Common.Utils.TrySafeCall(() => _serverAppService.DeleteClaimStatus(providerId, chewsiId, date), out result) || !result)
             {
                 _dialogService.Show("Cannot delete claim status, error occured. Please try again.", "Error");
             }
         }
 
+        public CalculatedPaymentsDto GetCalculatedPayments(string id, double downPayment, int numberOfPayments,
+            DateTime firstMonthlyPaymentDate)
+        {
+            _dialogService.ShowLoadingIndicator();
+            CalculatedPaymentsDto result;
+            if (!Api.Common.Utils.TrySafeCall(() => _serverAppService.GetCalculatedPayments(id, downPayment, numberOfPayments, firstMonthlyPaymentDate), out result) || result == null)
+            {
+                _dialogService.Show("Cannot calculate payments", "Error");
+            }
+            _dialogService.HideLoadingIndicator();
+            return result;
+        }
+
         public async void SaveSettings(SettingsDto settingsDto, string serverAddress, bool startLauncher)
         {
             bool result;
-            var called = Api.Common.Utils.TrySafeCall(_serverAppService.SaveSettings, settingsDto, out result);
+            var called = Api.Common.Utils.TrySafeCall(() => _serverAppService.SaveSettings(settingsDto), out result);
             if (called)
             {
                 if (result)
@@ -562,10 +575,19 @@ namespace ChewsiPlugin.UI.Services
             _dialogService.ShowLoadingIndicator("Loading...");
             DispatcherHelper.RunAsync(() =>
             {
+                // save payment settings
+                ClaimItemViewModel [] old = new ClaimItemViewModel[ClaimItems.Count];
+                ClaimItems.CopyTo(old, 0);
+
                 ClaimItems.Clear();
                 foreach (var c in claims)
                 {
-                    ClaimItems.Add(new ClaimItemViewModel(this)
+                    var oldClaim = old.FirstOrDefault(m => m.Id == c.Id);
+                    var numberOfPayments = oldClaim?.NumberOfPayments ?? c.NumberOfPayments;
+                    var firstMonthlyPaymentDate = oldClaim?.FirstMonthlyPaymentDate ?? c.FirstMonthlyPaymentDate;
+                    var downPayment = oldClaim?.DownPayment ?? c.DownPayment;
+
+                    ClaimItems.Add(new ClaimItemViewModel(this, _paymentsCalculationViewModel)
                     {
                         Id = c.Id,
                         ProviderId = c.ProviderId,
@@ -579,8 +601,12 @@ namespace ChewsiPlugin.UI.Services
                         IsClaimStatus = c.IsClaimStatus,
                         IsCptError = c.IsCptError,
                         ClaimNumber = c.ClaimNumber,
+                        FirstMonthlyPaymentDate = firstMonthlyPaymentDate,
+                        DownPayment = downPayment,
+                        NumberOfPayments = numberOfPayments,
                         Locked = false,
-                        PmsModifiedDate = c.PmsModifiedDate
+                        PmsModifiedDate = c.PmsModifiedDate,
+                        EligibleForPayments = c.EligibleForPayments
                     });
                 }
                 _dialogService.HideLoadingIndicator();

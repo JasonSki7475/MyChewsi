@@ -77,7 +77,7 @@ namespace ChewsiPlugin.Service
         protected override void OnStop()
         {
             //_clientBroadcastService.ShowLoadingIndicator("Application server is stopping...");
-            Utils.SafeCall(_serviceHost.Close);
+            Utils.SafeCall(() => _serviceHost.Close());
             _serverAppService.Dispose();
         }
     }

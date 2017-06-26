@@ -120,7 +120,7 @@ namespace ChewsiPlugin.OpenDentalApi
                     .Select(p => new ProcedureInfo
                     {
                         Amount = p.ProcFee,
-                        Code = _procedureCodes[p.CodeNum],
+                        Code = _procedureCodes[p.CodeNum].TrimStart(ProcedureCodeFirstCharToTrim),
                         Date = p.ProcDate
                     })
                     .ToList();

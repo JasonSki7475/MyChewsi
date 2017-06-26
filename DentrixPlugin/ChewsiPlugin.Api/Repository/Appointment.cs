@@ -14,5 +14,8 @@ namespace ChewsiPlugin.Api.Repository
         public DateTime PmsModifiedDate { get; set; }
         public string ProviderId { get; set; }
         public string PatientId { get; set; }
+        public int NumberOfPayments { get; set; }
+        public double DownPayment { get; set; }
+        public DateTime FirstMonthlyPaymentDate { get; set; }
     }
 }

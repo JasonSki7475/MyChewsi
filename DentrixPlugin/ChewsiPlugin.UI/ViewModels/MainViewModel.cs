@@ -37,14 +37,12 @@ namespace ChewsiPlugin.UI.ViewModels
 
             MessengerInstance.Register<PaymentPlanHistoryViewModel>(this, m =>
             {
-                if (SelectedPayment != m)
+                // deselect all
+                if (SelectedPayment != null && SelectedPayment != m)
                 {
-                    SelectedPayment = m;
+                    SelectedPayment.IsSelected = false;
                 }
-                else
-                {
-                    SelectedPayment = null;
-                }
+                m.IsSelected = !m.IsSelected;
             });
         }
 

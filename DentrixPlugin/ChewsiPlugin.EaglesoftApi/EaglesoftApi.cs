@@ -116,7 +116,10 @@ namespace ChewsiPlugin.EaglesoftApi
 
             using (var connection = GetConnection())
             {
-                return connection.Query<ProcedureInfo>($@"SELECT date_planned as ""Date"", fee as Amount, service_code as Code FROM planned_services WHERE appt_id={appointmentId}").ToList();
+                var list = connection.Query<ProcedureInfo>($@"SELECT date_planned as ""Date"", fee as Amount, service_code as Code FROM planned_services WHERE appt_id={appointmentId}")
+                    .ToList();
+                list.ForEach(m => m.Code = m.Code.TrimStart(ProcedureCodeFirstCharToTrim));
+                return list;
             }
         }
 

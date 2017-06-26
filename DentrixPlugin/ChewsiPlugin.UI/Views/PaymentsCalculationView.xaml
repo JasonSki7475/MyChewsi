@@ -5,20 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:ChewsiPlugin.UI.Controls"
              xmlns:viewModels="clr-namespace:ChewsiPlugin.UI.ViewModels"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type={x:Type viewModels:PaymentsCalculationViewModel}}"
              d:DesignHeight="500" 
              d:DesignWidth="1000">
     <controls:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ShowCloseButton="True"
-                       Header="Payments" ButtonText="Save" ButtonCommand="{Binding SaveCommand}">
+                       Header="Payments" ButtonText="Ok" ButtonCommand="{Binding CloseCommand}">
         <Grid Width="900">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="20"/>
+                <!--<ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="20"/>-->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Grid.Column="0" Header="Settings">
+            <!--<GroupBox Grid.Column="0" Header="Settings">
                 <Grid Margin="5">
                     <Grid.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -55,11 +54,11 @@
                     <TextBox Grid.Row="2" Grid.Column="2" />
                     <TextBox Grid.Row="4" Grid.Column="2" />
                 </Grid>                
-            </GroupBox>
+            </GroupBox>-->
 
-            <Grid Grid.Column="2">
+            <Grid> <!--Grid.Column="2"-->
                 <Grid.Resources>
-                    <Style TargetType="{x:Type TextBlock}" x:Key="ColumnHeaderStyle">
+                    <Style TargetType="{x:Type TextBlock}" x:Key="TextColumnHeaderStyle">
                         <Setter Property="FontWeight" Value="Bold"/>
                         <Setter Property="TextWrapping" Value="Wrap"/>
                     </Style>
@@ -68,7 +67,6 @@
                         <Setter Property="FontWeight" Value="SemiBold"/>
                         <Setter Property="Foreground" Value="#FF6CC2DF"/>
                     </Style>
-                    <system:String x:Key="q1">Note: ksdfbskj dfksjb kjsbdg jkds gfb  8080, 8090, 9090 edf rh  jsfjsdgvjs djs fsd f.sdf gskjdf sjdfsjd</system:String>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -88,18 +86,18 @@
                     <RowDefinition Height="20"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource ColumnHeaderStyle}" Text="Total provider submitted charge" />
-                <TextBlock Grid.Column="2" Grid.Row="0" Style="{StaticResource ColumnHeaderStyle}" Text="Total provider reimbusement" />
-                <TextBlock Grid.Column="4" Grid.Row="0" Style="{StaticResource ColumnHeaderStyle}" Text="Total subscriber charge" />
-                <TextBlock Grid.Column="6" Grid.Row="0" Style="{StaticResource ColumnHeaderStyle}" Text="Subscriber's reoccurring monthly charge" />
-                <TextBlock Grid.Column="8" Grid.Row="0" Style="{StaticResource ColumnHeaderStyle}" Text="Portion of Subscriber monthly payment applied to Chewsi fee" />
-                <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="$352.25" />
-                <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="$352.25" />
-                <TextBlock Grid.Column="4" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="$352.25" />
-                <TextBlock Grid.Column="6" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="$352.25" />
-                <TextBlock Grid.Column="8" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="$352.25" />
-                <FlowDocumentScrollViewer Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="9" VerticalScrollBarVisibility="Hidden" 
-                                          Document="{Binding Source={StaticResource q1}, Converter={StaticResource HighlightCalculatedPaymentsToFlowDocumentConverter}}" />
+                <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource TextColumnHeaderStyle}" Text="Total provider submitted charge" />
+                <TextBlock Grid.Column="2" Grid.Row="0" Style="{StaticResource TextColumnHeaderStyle}" Text="Total provider reimbusement" />
+                <TextBlock Grid.Column="4" Grid.Row="0" Style="{StaticResource TextColumnHeaderStyle}" Text="Total subscriber charge" />
+                <TextBlock Grid.Column="6" Grid.Row="0" Style="{StaticResource TextColumnHeaderStyle}" Text="Subscriber's reoccurring monthly charge" />
+                <TextBlock Grid.Column="8" Grid.Row="0" Style="{StaticResource TextColumnHeaderStyle}" Text="Portion of Subscriber monthly payment applied to Chewsi fee" />
+                <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="{Binding TotalProviderSubmittedCharge, StringFormat=c}" />
+                <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="{Binding TotalProviderReimbursement, StringFormat=c}" />
+                <TextBlock Grid.Column="4" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="{Binding TotalSubscriberCharge, StringFormat=c}" />
+                <TextBlock Grid.Column="6" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="{Binding SubscribersReoccuringMonthlyCharge, StringFormat=c}" />
+                <TextBlock Grid.Column="8" Grid.Row="2" Style="{StaticResource ColumnStyle}" Text="{Binding ChewsiMonthlyFee, StringFormat=c}" />
+                <FlowDocumentScrollViewer Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="9" VerticalScrollBarVisibility="Hidden"
+                                          Document="{Binding Note, Converter={StaticResource HighlightCalculatedPaymentsToFlowDocumentConverter}}" />
             </Grid>
         </Grid>
     </controls:LightBox>

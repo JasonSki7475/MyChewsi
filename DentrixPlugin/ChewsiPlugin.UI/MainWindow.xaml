@@ -9,7 +9,6 @@
         xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
-        xmlns:services="clr-namespace:ChewsiPlugin.UI.Services"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
         mc:Ignorable="d" DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
         Title="{Binding AppService.Title}" Height="600" Width="1250" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
@@ -41,7 +40,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
-                        <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
+                        <ContentControl Content="{StaticResource Logo}" Focusable="False" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshClaimsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource ClientServiceStatusToBooleanConverter}">
@@ -55,13 +54,13 @@
                     <DataGrid Grid.Row="3" Grid.Column="1" ItemsSource="{Binding AppService.ClaimItems}" ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}"
                               SelectedItem="{Binding SelectedClaim}" ScrollViewer.CanContentScroll="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding Date, StringFormat='d'}" Width="110" />
+                            <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding Date, StringFormat='d'}" Width="90" />
                             <DataGridTextColumn Header="Chewsi ID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*" />
                             <DataGridTextColumn Header="Patient" IsReadOnly="True" Binding="{Binding PatientName}" Width="*" />
-                            <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding ProviderId}" Width="*" />
+                            <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding ProviderId}" Width="0.7*" />
                             <DataGridTemplateColumn Header="Status" Width="3*" IsReadOnly="True">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:ClaimItemViewModel}">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
@@ -98,84 +97,77 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridComboBoxColumn Header="Number Of Payments" IsReadOnly="False" SelectedItemBinding="{Binding NumberOfPayments}"
-                                                    ItemsSource="{Binding Source={x:Static services:ClientAppService.NumberOfPayments}}" Width="*"/>
-                            <DataGridTextColumn Header="Down Payment" IsReadOnly="False" Binding="{Binding DownPayment}" Width="*" />
-                            <DataGridTemplateColumn MinWidth="140" Width="*">
+                            <DataGridTemplateColumn Header="Number Of Payments" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:ClaimItemViewModel}">
+                                        <ComboBox IsEnabled="{Binding EligibleForPayments}"
+                                                  VerticalAlignment="Top" 
+                                                  DisplayMemberPath="Item2" 
+                                                  SelectedItem="{Binding NumberOfPaymentsItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding Source={x:Static viewModels:ClaimItemViewModel.NumberOfPaymentsList}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Down Payment" Width="0.75*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:ClaimItemViewModel}">
+                                        <TextBox VerticalAlignment="Top" HorizontalContentAlignment="Right" 
+                                                 Text="{Binding DownPayment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                 IsEnabled="{Binding NumberOfPayments, Converter={StaticResource GreaterThanToBooleanConverter}, ConverterParameter=1}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn MinWidth="132" Width="*">
                                 <DataGridTemplateColumn.HeaderTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:ClaimItemViewModel}">
                                         <WrapPanel>
                                             <TextBlock Text="First Monthly Payment Date" Margin="0,0,5,0" FontWeight="Bold" TextWrapping="Wrap" />
-                                            <ContentControl Content="{StaticResource InfoIcon}" ToolTip="This is the date you expect the first of the reoccuring monthly payments to begin." />
+                                            <ContentControl Focusable="False" Height="15" Width="15" VerticalAlignment="Center" Content="{StaticResource InfoIcon}" ToolTip="This is the date you expect the first of the reoccuring monthly payments to begin." />
                                         </WrapPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.HeaderTemplate>                                
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="10"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Text="{Binding StatusText}" TextWrapping="Wrap" ToolTip="{Binding StatusText}" />
-                                            <Grid Grid.Row="2" Visibility="{Binding ShowErrorView, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="10"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid Grid.Column="0">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="10"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                    </Grid.RowDefinitions>
-                                                    <TextBlock Grid.Row="0" Text="Chewsi Subscriber ID"/>
-                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding ChewsiId}"/>
-                                                </Grid>
-                                                <Grid Grid.Column="2">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="10"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                    </Grid.RowDefinitions>
-                                                    <TextBlock Grid.Row="0" Text="Subscriber First Name"/>
-                                                    <TextBlock Foreground="#FF6CC2DF" Grid.Row="2" Text="{Binding SubscriberFirstName}"/>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
+                                    <DataTemplate DataType="{x:Type viewModels:ClaimItemViewModel}">
+                                        <DatePicker SelectedDateFormat="Short" SelectedDate="{Binding FirstMonthlyPaymentDate, 
+                                            Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Action" MinWidth="200">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid HorizontalAlignment="Center" Visibility="{Binding State, Converter={StaticResource EnumToVisibilityInverseConverter}, 
-                                                    ConverterParameter={x:Static repository:AppointmentState.ValidationCompletedAndClaimSubmitted}}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="5"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid Grid.Column="0" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
-                                                <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                        Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
-                                                        ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
-                                                        Command="{Binding Path=SubmitCommand}"/>
-                                                <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
-                                                        Visibility="{Binding CanResubmit, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Command="{Binding Path=SubmitCommand}"/>
-                                            </Grid>
-                                            <Grid Grid.Column="2" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
-                                                <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
-                                                        Visibility="{Binding CanDelete, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Command="{Binding Path=DeleteCommand}"/>
-                                            </Grid>
-                                            <Grid Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                <ContentControl Content="{StaticResource Lock}" Grid.Column="0"/>
-                                            </Grid>
-                                        </Grid>
+                                    <DataTemplate DataType="{x:Type viewModels:ClaimItemViewModel}">
+                                        <WrapPanel>
+                                            <Button Content="View Payments Calculation" Background="#FF2D9AF9" Template="{StaticResource BlueButton}"
+                                                        IsEnabled="{Binding NumberOfPayments, Converter={StaticResource GreaterThanToBooleanConverter}, ConverterParameter=1}"
+                                                        Command="{Binding Path=CalculatePaymentsCommand}"/>
+                                            <Grid HorizontalAlignment="Center" Visibility="{Binding State, Converter={StaticResource EnumToVisibilityInverseConverter}, 
+                                                        ConverterParameter={x:Static repository:AppointmentState.ValidationCompletedAndClaimSubmitted}}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="5"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid Grid.Column="0" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
+                                                    <Button Content="Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                                            Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, 
+                                                            ConverterParameter={x:Static repository:AppointmentState.TreatmentCompleted}}"
+                                                            Command="{Binding Path=SubmitCommand}"/>
+                                                    <Button Content="Re-Submit" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
+                                                            Visibility="{Binding CanResubmit, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                            Command="{Binding Path=SubmitCommand}"/>
+                                                </Grid>
+                                                <Grid Grid.Column="2" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">
+                                                    <Button Content="Delete" Background="#FFD9534F" BorderBrush="#FFD9534F" Template="{StaticResource RedButton}"
+                                                            Visibility="{Binding CanDelete, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                            Command="{Binding Path=DeleteCommand}"/>
+                                                </Grid>
+                                                <Grid Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Locked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <ContentControl Focusable="False" Content="{StaticResource Lock}" Grid.Column="0"/>
+                                                </Grid>
+                                            </Grid>                                            
+                                        </WrapPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -204,7 +196,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
-                        <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
+                        <ContentControl Focusable="False" Content="{StaticResource Logo}" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshDownloadsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"
                                 IsEnabled="{Binding AppService.Initialized}"/>
                     </Grid>
@@ -217,7 +209,7 @@
                             <DataGridTextColumn Header="Status" IsReadOnly="True" Binding="{Binding Status}"  Width="*"/>
                             <DataGridTemplateColumn Header="Action" Width="300">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:DownloadItemViewModel}">
                                         <StackPanel Orientation="Horizontal">
                                             <Button Content="Download Report" Background="#FF7BD77B" BorderBrush="#FF4CAE4C" Template="{StaticResource GreenButton}"
                                                 Command="{Binding Path=Data.DownloadReportCommand, Mode=OneWay, Source={StaticResource proxy}}"/>
@@ -252,21 +244,30 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
-                        <ContentControl Content="{StaticResource Logo}" Grid.Column="0"/>
+                        <ContentControl Content="{StaticResource Logo}" Focusable="False" Grid.Column="0"/>
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshPaymentsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"
                                 IsEnabled="{Binding AppService.Initialized}"/>
                     </Grid>
-                    <DataGrid Name="PaymentsDataGrid" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding PaymentItems}" ScrollViewer.CanContentScroll="False" RowDetailsVisibilityMode="VisibleWhenSelected"
+                    <DataGrid PreviewMouseUp="PaymentsDataGrid_OnPreviewMouseUp" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding PaymentItems}" ScrollViewer.CanContentScroll="False" RowDetailsVisibilityMode="VisibleWhenSelected"
                               SelectedItem="{Binding SelectedPayment}">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Template="{StaticResource TransparentButton}" Background="Gray" Padding="0" Height="40" Width="40"
-                                                Command="{Binding SelectCommand}">
+                                    <DataTemplate DataType="{x:Type viewModels:PaymentPlanHistoryViewModel}">
+                                        <Button Template="{StaticResource TransparentButton}" Background="Gray" Padding="0" Height="40" Width="40"> <!-- Command="{Binding SelectCommand}"-->
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <command:EventToCommand Command="{Binding SelectCommand}" PassEventArgsToCommand="True"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
                                             <StackPanel>
-                                                <TextBlock Margin="8,0,9,2" FontSize="24" Visibility="{Binding ShowDetails, Converter={StaticResource BooleanToVisibilityInverseConverter}}">+</TextBlock>
-                                                <TextBlock Margin="10,0,9,2" FontSize="24" Visibility="{Binding ShowDetails, Converter={StaticResource BooleanToVisibilityConverter}}">-</TextBlock>                                                
+                                                <TextBlock Margin="8,0,9,2" FontSize="24" Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityInverseConverter}}">+</TextBlock>
+                                                <TextBlock Margin="10,0,9,2" FontSize="24" Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">-</TextBlock>                                                
                                             </StackPanel>
                                         </Button>
                                     </DataTemplate>
@@ -279,7 +280,7 @@
                             <DataGridTextColumn Header="Payment Schedule" IsReadOnly="True" Binding="{Binding PaymentSchedule}" Width="180"/>
                             <DataGridTemplateColumn Header="Status" Width="400">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:PaymentPlanHistoryViewModel}">
                                         <TextBlock>
                                             <TextBlock Text="{Binding LastPaymentOn}"/>
                                             <TextBlock Text="{Binding NextPaymentOn}"/>
@@ -293,7 +294,7 @@
                             <DataTemplate>
                                 <ItemsControl ItemsSource="{Binding Items}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate DataType="{x:Type viewModels:PaymentPlanHistoryItemViewModel}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
@@ -326,7 +327,7 @@
         <Button Template="{StaticResource TransparentButton}" Background="Transparent" 
                             BorderBrush="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7" Height="35" Width="50"
                             Command="{Binding OpenSettingsCommand}">
-            <ContentControl Content="{StaticResource SettingsIcon}" />
+            <ContentControl Content="{StaticResource SettingsIcon}" Focusable="False" />
         </Button>
         <!-- Settings -->
         <controls1:LightBox d:IsHidden="true" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
@@ -337,6 +338,10 @@
                            ButtonCommand="{Binding SaveCommand}">
             <views:SettingsView />
         </controls1:LightBox>
+        <!-- Payment calculation -->
+        <views:PaymentsCalculationView d:IsHidden="True"
+            DataContext="{Binding PaymentsCalculationViewModel, Source={StaticResource ViewModelLocator}}"
+            Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <!-- Connection view -->
         <views:ConnectView DataContext="{Binding ConnectViewModel, Source={StaticResource ViewModelLocator}}" d:IsHidden="true"
                            Visibility="{Binding Shown, Converter={StaticResource BooleanToVisibilityConverter}}" />

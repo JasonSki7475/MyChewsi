@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Common;
 using GalaSoft.MvvmLight;
@@ -12,6 +13,7 @@ namespace ChewsiPlugin.UI.ViewModels
     {
         private bool _showDetails;
         private ICommand _selectCommand;
+        private bool _isSelected;
 
         public PaymentPlanHistoryViewModel(string chewsiId, List<PaymentPlanHistoryItemDto> items, string lastPaymentOn, string patientFirstName, string paymentSchedule, DateTime postedOn, string provider, string balanceRemaining, string nextPaymentOn)
         {
@@ -30,10 +32,12 @@ namespace ChewsiPlugin.UI.ViewModels
         }
 
         #region SelectPaymentCommand
-        public ICommand SelectCommand => _selectCommand ?? (_selectCommand = new RelayCommand(OnSelectCommandExecute));
+        public ICommand SelectCommand => _selectCommand ?? (_selectCommand = new RelayCommand<RoutedEventArgs>(OnSelectCommandExecute));
 
-        private void OnSelectCommandExecute()
+        private void OnSelectCommandExecute(RoutedEventArgs e)
         {
+            //e.Handled = true;
+            //IsSelected = !IsSelected;
             MessengerInstance.Send(this);
         }
         #endregion  
@@ -48,13 +52,13 @@ namespace ChewsiPlugin.UI.ViewModels
         public string NextPaymentOn { get; set; }
         public List<PaymentPlanHistoryItemViewModel> Items { get; set; }
 
-        public bool ShowDetails
+        public bool IsSelected
         {
-            get { return _showDetails; }
+            get { return _isSelected; }
             set
             {
-                _showDetails = value;
-                RaisePropertyChanged(() => ShowDetails);
+                _isSelected = value;
+                RaisePropertyChanged(() => IsSelected);
             }
         }
     }
