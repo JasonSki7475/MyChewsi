@@ -184,8 +184,7 @@ namespace ChewsiPlugin.Service.Services
             {
                 PaymentSchedule = m.PaymentSchedule,
                 ChewsiId = m.ChewsiID,
-                //TODO Provider
-                //Provider = ,
+                Provider = m.ProviderName,
                 PatientFirstName = m.PatientFirstName,
                 LastPaymentOn = m.LastPaymentOn,
                 PostedOn = DateTime.Parse(m.PostedOn),

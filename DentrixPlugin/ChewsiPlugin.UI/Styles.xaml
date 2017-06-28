@@ -17,6 +17,8 @@
     <converters:BooleanInverseConverter x:Key="BooleanInverseConverter"/>
     <converters:HighlightCalculatedPaymentsToFlowDocumentConverter x:Key="HighlightCalculatedPaymentsToFlowDocumentConverter"/>
     <converters:GreaterThanToBooleanConverter x:Key="GreaterThanToBooleanConverter"/>
+    <converters:GreaterThanToVisibilityConverter x:Key="GreaterThanToVisibilityConverter"/>
+    <converters:VisbilityToBooleanConverter x:Key="VisbilityToBooleanConverter"/>
     <viewModels:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True" />
 
     <Viewbox x:Key="Logo" Stretch="Uniform" x:Shared="False">
@@ -432,6 +434,8 @@
         <Setter Property="CanUserReorderColumns" Value="False"/>
         <Setter Property="CanUserSortColumns" Value="False"/>
         <Setter Property="Background" Value="White"/>
+        <Setter Property="SelectionMode" Value="Single"/>
+        <Setter Property="SelectionUnit" Value="FullRow"/>
     </Style>
 
     <Style TargetType="{x:Type DataGridColumnHeader}">

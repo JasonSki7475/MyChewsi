@@ -9,6 +9,7 @@
         xmlns:repository="clr-namespace:ChewsiPlugin.Api.Repository;assembly=ChewsiPlugin.Api"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
+        xmlns:converters="clr-namespace:ChewsiPlugin.UI.Converters"
         d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainViewModel}}" 
         mc:Ignorable="d" DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
         Title="{Binding AppService.Title}" Height="600" Width="1250" FontSize="15" MinHeight="400" MinWidth="750" Background="#FFEFEFEF">
@@ -248,37 +249,36 @@
                         <Button Content="Refresh" Background="#FF2D9AF9" Command="{Binding RefreshPaymentsCommand}" Grid.Column="2" Template="{DynamicResource BlueButton}"
                                 IsEnabled="{Binding AppService.Initialized}"/>
                     </Grid>
-                    <DataGrid PreviewMouseUp="PaymentsDataGrid_OnPreviewMouseUp" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding PaymentItems}" ScrollViewer.CanContentScroll="False" RowDetailsVisibilityMode="VisibleWhenSelected"
-                              SelectedItem="{Binding SelectedPayment}">
-                        <DataGrid.RowStyle>
-                            <Style TargetType="{x:Type DataGridRow}">
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            </Style>
-                        </DataGrid.RowStyle>
+                    <DataGrid Grid.Row="3" Grid.Column="1" SelectionMode="Single" SelectionUnit="FullRow" IsSynchronizedWithCurrentItem="True"
+                              ItemsSource="{Binding PaymentItems}" ScrollViewer.CanContentScroll="False" SelectedItem="{Binding SelectedPayment}">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn Header="" Width="55">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="{x:Type viewModels:PaymentPlanHistoryViewModel}">
-                                        <Button Template="{StaticResource TransparentButton}" Background="Gray" Padding="0" Height="40" Width="40"> <!-- Command="{Binding SelectCommand}"-->
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Click">
-                                                    <command:EventToCommand Command="{Binding SelectCommand}" PassEventArgsToCommand="True"/>
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
+                                        <ToggleButton Foreground="White" x:Name="ToggleButton"
+                                            Template="{StaticResource TransparentButton}" 
+                                            Visibility="{Binding Items.Count, Converter={StaticResource GreaterThanToVisibilityConverter}, ConverterParameter=0}"
+                                            Background="Gray" Padding="0" Height="40" Width="40"
+                                            IsChecked="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}
+                                            , Converter={StaticResource VisbilityToBooleanConverter}
+                                            , Path=DetailsVisibility
+                                            , Mode=OneWayToSource}">
                                             <StackPanel>
-                                                <TextBlock Margin="8,0,9,2" FontSize="24" Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityInverseConverter}}">+</TextBlock>
-                                                <TextBlock Margin="10,0,9,2" FontSize="24" Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">-</TextBlock>                                                
+                                                <TextBlock Margin="10,0,9,2" FontSize="24"
+                                                           Visibility="{Binding ElementName=ToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityInverseConverter}}">+</TextBlock>
+                                                <TextBlock Margin="8,0,9,2" FontSize="24" 
+                                                           Visibility="{Binding ElementName=ToggleButton, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">-</TextBlock>
                                             </StackPanel>
-                                        </Button>
+                                        </ToggleButton>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding PostedOn, StringFormat='d'}" Width="100"/>
+                            <DataGridTextColumn Header="Posted On" IsReadOnly="True" Binding="{Binding PostedOn, StringFormat='d'}" Width="95"/>
                             <DataGridTextColumn Header="ChewsiID" IsReadOnly="True" Binding="{Binding ChewsiId}" Width="*"/>
                             <DataGridTextColumn Header="Patient" IsReadOnly="True" Binding="{Binding PatientFirstName}" Width="*"/>
                             <DataGridTextColumn Header="Provider" IsReadOnly="True" Binding="{Binding Provider}" Width="*"/>
                             <DataGridTextColumn Header="Payment Schedule" IsReadOnly="True" Binding="{Binding PaymentSchedule}" Width="180"/>
-                            <DataGridTemplateColumn Header="Status" Width="400">
+                            <DataGridTemplateColumn Header="Status" Width="4*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="{x:Type viewModels:PaymentPlanHistoryViewModel}">
                                         <TextBlock>
@@ -297,18 +297,20 @@
                                         <DataTemplate DataType="{x:Type viewModels:PaymentPlanHistoryItemViewModel}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="55" />
+                                                    <ColumnDefinition Width="94" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="1" />
-                                                    <ColumnDefinition Width="10" />
-                                                    <ColumnDefinition Width="169" />
-                                                    <ColumnDefinition Width="10" />
-                                                    <ColumnDefinition Width="380" />
-                                                    <ColumnDefinition Width="11" />
+                                                    <ColumnDefinition Width="179" />
+                                                    <ColumnDefinition Width="1" />
+                                                    <ColumnDefinition Width="4*" />
                                                 </Grid.ColumnDefinitions>
-                                                <Rectangle Grid.Column="1" Width="1" Fill="LightGray" HorizontalAlignment="Left"/>                                                
-                                                <TextBlock Grid.Column="3" Text="{Binding PaymentSchedule}" />
-                                                <Rectangle Grid.Column="4" Width="1" Fill="LightGray" HorizontalAlignment="Left"/>
-                                                <TextBlock Grid.Column="5" TextWrapping="Wrap">
+                                                <Rectangle Grid.Column="5" Width="1" Fill="LightGray" HorizontalAlignment="Left"/>                                                
+                                                <TextBlock Grid.Column="6" Text="{Binding PaymentSchedule}" Margin="10,2" />
+                                                <Rectangle Grid.Column="7" Width="1" Fill="LightGray" HorizontalAlignment="Left"/>
+                                                <TextBlock Grid.Column="8" TextWrapping="Wrap" Margin="10,2">
                                                     <TextBlock FontWeight="Bold" Foreground="#FFB1B600" Text="{Binding PaymentMadeOn}"/>
                                                     <TextBlock Text="{Binding PatientPaymentOf}"/>
                                                     <TextBlock Text="{Binding ChewsiFeeAmount}"/>

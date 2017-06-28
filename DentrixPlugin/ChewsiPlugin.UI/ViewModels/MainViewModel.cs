@@ -34,16 +34,6 @@ namespace ChewsiPlugin.UI.ViewModels
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
             PaymentItems = new ObservableCollection<PaymentPlanHistoryViewModel>();
             AppService.Initialize();
-
-            MessengerInstance.Register<PaymentPlanHistoryViewModel>(this, m =>
-            {
-                // deselect all
-                if (SelectedPayment != null && SelectedPayment != m)
-                {
-                    SelectedPayment.IsSelected = false;
-                }
-                m.IsSelected = !m.IsSelected;
-            });
         }
 
         #region Properties

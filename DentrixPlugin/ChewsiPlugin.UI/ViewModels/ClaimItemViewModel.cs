@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using ChewsiPlugin.Api.Repository;
 using ChewsiPlugin.UI.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
@@ -267,12 +269,21 @@ namespace ChewsiPlugin.UI.ViewModels
 
         private void OnCalculatePaymentsCommandExecute()
         {
-            var result = _appService.GetCalculatedPayments(Id, DownPayment, NumberOfPayments, FirstMonthlyPaymentDate);
-            if (result != null)
+            var worker = new BackgroundWorker();
+            worker.DoWork += (i, j) =>
             {
-                _paymentsCalculationViewModel.Show(result);
-            }
+                var result = _appService.GetCalculatedPayments(Id, DownPayment, NumberOfPayments, FirstMonthlyPaymentDate);
+                if (result != null)
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        _paymentsCalculationViewModel.Show(result);
+                    });
+                }
+            };
+            worker.RunWorkerAsync();
         }
+
         #endregion
 
         #region SubmitCommand

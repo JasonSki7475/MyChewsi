@@ -149,9 +149,11 @@
     <Compile Include="Controls\LoadingControl.xaml.cs">
       <DependentUpon>LoadingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\GreaterThanToVisibilityConverter.cs" />
     <Compile Include="Converters\HighlightCalculatedPaymentsToFlowDocumentConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\GreaterThanToBooleanConverter.cs" />
+    <Compile Include="Converters\VisbilityToBooleanConverter.cs" />
     <Compile Include="Models\ClientState.cs" />
     <Compile Include="Services\CallbackHandler.cs" />
     <Compile Include="Services\ClientAppService.cs" />
