@@ -384,8 +384,12 @@
 		<row><td>ChewsiPlugin.Launcher.exe</td><td>{F816C3EA-7C71-437C-9EF2-AE8AFB14D67D}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.launcher.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.OpenDentalApi.dll</td><td>{1B24C815-1CD0-4F2C-B764-8C9496FD5593}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.opendentalapi.d</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.Service.exe</td><td>{A381000A-01CA-4E46-8923-BE2B577DD5B9}</td><td>INSTALLDIR</td><td>8</td><td>ISCLIENT="False"</td><td>chewsiplugin.service.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>{7696794E-FB77-4E30-AAE2-4B71AA66A293}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.customact</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
-		<row><td>ChewsiPlugin.Setup.Helper.exe</td><td>{D6723C06-B7D1-4774-939B-D7F6812AF8C5}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.helper.ex</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>{7696794E-FB77-4E30-AAE2-4B71AA66A293}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Setup.CustomActions.dll1</td><td>{000CDA77-FABD-4CD7-B81C-4C60102640C3}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Setup.CustomActions.dll2</td><td>{3AF6DB3C-6E99-468C-BEA9-B5137E4D89CF}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.customact</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe</td><td>{D6723C06-B7D1-4774-939B-D7F6812AF8C5}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe1</td><td>{62560642-A708-4D03-91D5-2C84FDFBD33F}</td><td>INSTALLDIR</td><td>8</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe2</td><td>{897BF943-EC74-4425-B6FE-8D1FD5227114}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.helper.ex</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.UI.exe</td><td>{FB636077-2899-4F49-B645-9C116DADFE37}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.ui.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td>{143CB5EB-8C57-4368-B180-DDF1FEFBFA33}</td><td>INSTALLDIR</td><td>8</td><td/><td>createuser_dbna5agn.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Dapper.dll</td><td>{89C1434E-E05F-409C-9C64-BBB890B9BAC0}</td><td>INSTALLDIR</td><td>8</td><td/><td>dapper.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1142,6 +1146,10 @@
 		<row><td>CHEWSI</td><td>AllOtherFiles8</td></row>
 		<row><td>CHEWSI</td><td>AllOtherFiles9</td></row>
 		<row><td>CommonAppDataFolder</td><td>AllOtherFiles3</td></row>
+		<row><td>INSTALLDIR</td><td>ChewsiPlugin.Setup.CustomActions.dll</td></row>
+		<row><td>INSTALLDIR</td><td>ChewsiPlugin.Setup.CustomActions.dll1</td></row>
+		<row><td>INSTALLDIR</td><td>ChewsiPlugin.Setup.Helper.exe</td></row>
+		<row><td>INSTALLDIR</td><td>ChewsiPlugin.Setup.Helper.exe1</td></row>
 		<row><td>INSTALLDIR</td><td>ShortcutsDesktopClient</td></row>
 		<row><td>INSTALLDIR</td><td>ShortcutsDesktopServer</td></row>
 		<row><td>INSTALLDIR</td><td>ShortcutsStartMenuClient</td></row>
@@ -2006,7 +2014,11 @@
 		<row><td>Default</td><td>ChewsiPlugin.OpenDentalApi.dll</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.Service.exe</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.Setup.CustomActions.dll</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Setup.CustomActions.dll1</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Setup.CustomActions.dll2</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.Setup.Helper.exe</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Setup.Helper.exe1</td></row>
+		<row><td>Default</td><td>ChewsiPlugin.Setup.Helper.exe2</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.UI.exe</td></row>
 		<row><td>Default</td><td>CreateUser_dBNa5Agn.exe</td></row>
 		<row><td>Default</td><td>Dapper.dll</td></row>
@@ -2046,9 +2058,8 @@
 		<row><td>chewsiplugin.opendentalapi.d</td><td>ChewsiPlugin.OpenDentalApi.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.OpenDentalApi.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.OpenDentalApi.dll</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.service.exe</td><td>ChewsiPlugin.Service.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.Service.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Service\bin\Release\ChewsiPlugin.Service.exe</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.service.exe.con</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.Service.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Service\bin\Release\ChewsiPlugin.Service.exe.config</td><td>1</td><td/></row>
-		<row><td>chewsiplugin.setup.customact</td><td>ChewsiPlugin.Setup.CustomActions.dll</td><td>CHEWSI~1.DLL|ChewsiPlugin.Setup.CustomActions.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.Setup.CustomActions.dll</td><td>1</td><td/></row>
-		<row><td>chewsiplugin.setup.customact1</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.Setup.CustomActions.dll.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.Setup.CustomActions.dll.config</td><td>1</td><td/></row>
-		<row><td>chewsiplugin.setup.helper.ex</td><td>ChewsiPlugin.Setup.Helper.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.Setup.Helper.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.Helper\bin\Release\ChewsiPlugin.Setup.Helper.exe</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.setup.customact</td><td>ChewsiPlugin.Setup.CustomActions.dll2</td><td>CHEWSI~1.DLL|ChewsiPlugin.Setup.CustomActions.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.Setup.CustomActions.dll</td><td>1</td><td/></row>
+		<row><td>chewsiplugin.setup.helper.ex</td><td>ChewsiPlugin.Setup.Helper.exe2</td><td>CHEWSI~1.EXE|ChewsiPlugin.Setup.Helper.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.Helper\bin\Release\ChewsiPlugin.Setup.Helper.exe</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe</td><td>ChewsiPlugin.UI.exe</td><td>CHEWSI~1.EXE|ChewsiPlugin.UI.exe</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.UI.exe</td><td>1</td><td/></row>
 		<row><td>chewsiplugin.ui.exe.config</td><td>AllOtherFiles</td><td>CHEWSI~1.CON|ChewsiPlugin.UI.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\ChewsiPlugin.UI.exe.config</td><td>1</td><td/></row>
 		<row><td>clientlog.txt</td><td>AllOtherFiles4</td><td>CLIENT~1.TXT|ClientLog.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\ClientLog.txt</td><td>1</td><td/></row>
@@ -2147,10 +2158,12 @@
 		<row><td>Setup</td><td>Dependency4</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\Newtonsoft.Json.dll</td></row>
 		<row><td>Setup</td><td>Dependency5</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\System.Data.SQLite.dll</td></row>
 		<row><td>Setup</td><td>Dependency6</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.Setup.CustomActions\bin\Release\ChewsiPlugin.EaglesoftApi.dll</td></row>
+		<row><td>Setup</td><td>Dependency7</td><td>&lt;VSSolutionFolder&gt;\Installer\InstallShield.Interop.Msi.dll</td></row>
 		<row><td>Setup</td><td>Method</td><td>Setup</td></row>
 		<row><td>Setup</td><td>Param1</td><td>[PMSTYPE]</td></row>
 		<row><td>Setup</td><td>Param2</td><td>[INSTALLDIR]</td></row>
 		<row><td>Setup</td><td>Param3</td><td>[ISCLIENT]</td></row>
+		<row><td>Setup</td><td>Param4</td><td>MsiHandle</td></row>
 		<row><td>Setup</td><td>Return</td><td>-</td></row>
 		<row><td>Setup</td><td>Type</td><td>16</td></row>
 	</table>
@@ -2265,7 +2278,11 @@
 		<row><td>ChewsiPlugin.OpenDentalApi.dll</td><td/><td/><td>_417C2F7D_7AF8_44B8_A21D_0A80357CC975_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Service.exe</td><td/><td/><td>_760676D3_E3D1_4EDC_B871_62AA1D5D6570_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Setup.CustomActions.dll</td><td/><td/><td>_5863EA36_0F4E_4C39_A7BA_8A9D3315738E_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Setup.CustomActions.dll1</td><td/><td/><td>_4CACA8F9_997F_4E2E_8D66_1A9622A83279_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Setup.CustomActions.dll2</td><td/><td/><td>_BB627489_5605_4628_A919_56ACEDBE1276_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.Setup.Helper.exe</td><td/><td/><td>_2848BB36_5A10_426F_9C07_2F6EE93BCCF0_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe1</td><td/><td/><td>_2FD86E47_BEA8_40ED_9FD6_0184CECA2A76_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe2</td><td/><td/><td>_E0F1DF60_CDB3_454A_8410_A65D199FA3E2_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.UI.exe</td><td/><td/><td>_928F9BC1_2992_4077_B683_6452BB78715E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td/><td/><td>_DB6670EC_78CD_4BA4_A693_2EA5C84D0016_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Dapper.dll</td><td/><td/><td>_D9F5076B_1A8D_46C7_A154_B58640AD64E6_FILTER</td><td/><td/><td/><td/></row>
@@ -3734,6 +3751,7 @@
 		<row><td>IDS_SETUPEXE_EXPIRE_MSG</td><td>1033</td><td>This setup works until %s. The setup will now exit.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_SETUPEXE_LAUNCH_COND_E</td><td>1033</td><td>This setup was built with an evaluation version of InstallShield and can only be launched from setup.exe.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME1</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1985623827</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME10</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.Setup.Helper.exe</td><td>0</td><td/><td>732286384</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME2</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.UI.exe</td><td>0</td><td/><td>-1985613999</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME3</td><td>1033</td><td>Chewsi</td><td>0</td><td/><td>-1046113231</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME4</td><td>1033</td><td>LAUNCH~1.EXE|Launch CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td>-1046131727</td></row>
@@ -3741,6 +3759,7 @@
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME6</td><td>1033</td><td>LAUNCH~1.EXE|Launch CreateUser_dBNa5Agn.exe</td><td>0</td><td/><td>572852085</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME7</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.Service.exe</td><td>0</td><td/><td>715507776</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME8</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.Setup.Helper.exe</td><td>0</td><td/><td>-224018432</td></row>
+		<row><td>IDS_SHORTCUT_DISPLAY_NAME9</td><td>1033</td><td>LAUNCH~1.EXE|Launch ChewsiPlugin.Setup.Helper.exe</td><td>0</td><td/><td>732284748</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO</td><td>1033</td><td>From the list of servers below, select the database server you would like to target.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_DB</td><td>1033</td><td>From the list of catalog names below, select the database catalog you would like to target.</td><td>0</td><td/><td>1495601858</td></row>
 		<row><td>IDS_SQLBROWSE_INTRO_TEMPLATE</td><td>1033</td><td>[IS_SQLBROWSE_INTRO]</td><td>0</td><td/><td>1495601858</td></row>
@@ -4213,6 +4232,8 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProjectFolder&gt;\icon.ico</td><td>0</td></row>
+		<row><td>ChewsiPlugin.Setup_6736AE8A0B544CEA84A4A2E483F949D0.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\GenericExe.ico</td><td>0</td></row>
+		<row><td>ChewsiPlugin.Setup_7E9781EE36F34B1F8A56A074B95D07C9.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\GenericExe.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4308,7 +4329,7 @@
 		<row><td>SetAllUsersProfileNT</td><td>VersionNT = 400</td><td>970</td><td/><td/></row>
 		<row><td>SetODBCFolders</td><td/><td>1200</td><td>SetODBCFolders</td><td/></row>
 		<row><td>SetSetupParams</td><td>1</td><td>6401</td><td/><td/></row>
-		<row><td>Setup</td><td>NOT Installed</td><td>6404</td><td/><td/></row>
+		<row><td>Setup</td><td>NOT Installed</td><td>6403</td><td/><td/></row>
 		<row><td>SetupHelper</td><td>NOT Installed AND ISCLIENT="False" AND PMSTYPE="Dentrix"</td><td>6406</td><td>Dentrix API loads PMS folder from user-space registry key</td><td/></row>
 		<row><td>SetupHelperAdmin</td><td>NOT Installed AND ISCLIENT="False" AND PMSTYPE&lt;&gt;"Dentrix"</td><td>6407</td><td/><td/></row>
 		<row><td>StartServices</td><td>VersionNT</td><td>6408</td><td>StartServices</td><td/></row>
@@ -4816,6 +4837,8 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="L255">FileName</col>
 		<col def="s72">DirProperty</col>
 		<col def="i2">InstallMode</col>
+		<row><td>ChewsiPlugin.Setup.Helper.exe</td><td>ChewsiPlugin.Setup.Helper.exe1</td><td/><td>chewsi_1_chewsi_plugin</td><td>2</td></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe1</td><td>ChewsiPlugin.Setup.Helper.exe2</td><td/><td>chewsi_1_chewsi_plugin</td><td>2</td></row>
 		<row><td>FileKey1</td><td>ChewsiPlugin.Setup.Helper.exe</td><td/><td>chewsi_1_chewsi_plugin</td><td>2</td></row>
 		<row><td>NewShortcut1</td><td>ShortcutsStartMenuServer</td><td/><td>chewsi_1_chewsi_dental</td><td>2</td></row>
 		<row><td>NewShortcut3</td><td>ShortcutsStartMenuClient</td><td/><td>chewsi_1_chewsi_dental</td><td>2</td></row>
@@ -4927,6 +4950,8 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
+		<row><td>ChewsiPlugin.Setup.Helper.exe</td><td>chewsi_1_chewsi_plugin</td><td>##IDS_SHORTCUT_DISPLAY_NAME9##</td><td>ChewsiPlugin.Setup.Helper.exe1</td><td>Default</td><td/><td/><td/><td>ChewsiPlugin.Setup_6736AE8A0B544CEA84A4A2E483F949D0.exe</td><td>0</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>ChewsiPlugin.Setup.Helper.exe1</td><td>chewsi_1_chewsi_plugin</td><td>##IDS_SHORTCUT_DISPLAY_NAME10##</td><td>ChewsiPlugin.Setup.Helper.exe2</td><td>Default</td><td/><td/><td/><td>ChewsiPlugin.Setup_7E9781EE36F34B1F8A56A074B95D07C9.exe</td><td>0</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ShortcutDesktopClient</td><td>DesktopFolder</td><td>##ID_STRING16##</td><td>ShortcutsDesktopClient</td><td>[INSTALLDIR]ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ShortcutDesktopServer</td><td>DesktopFolder</td><td>##ID_STRING19##</td><td>ShortcutsDesktopServer</td><td>[INSTALLDIR]ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 		<row><td>ShortcutStartMenuClient</td><td>chewsi_1_chewsi_dental</td><td>##ID_STRING17##</td><td>ShortcutsStartMenuClient</td><td>[INSTALLDIR]ChewsiPlugin.UI.exe</td><td/><td/><td/><td/><td/><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>

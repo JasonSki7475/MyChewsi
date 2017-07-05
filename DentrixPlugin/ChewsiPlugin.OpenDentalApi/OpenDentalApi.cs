@@ -213,9 +213,11 @@ namespace ChewsiPlugin.OpenDentalApi
                 if (File.Exists(path))
                 {
                     folder = Path.GetDirectoryName(path);
+                    Logger.Info("Found OpenDental API in '{0}'", folder);
                     return true;
                 }
             }
+            Logger.Error("Cannot find OpenDental folder");
             folder = null;
             return false;
         }

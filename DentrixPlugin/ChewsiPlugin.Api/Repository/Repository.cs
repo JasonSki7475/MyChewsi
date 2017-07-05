@@ -294,10 +294,11 @@ namespace ChewsiPlugin.Api.Repository
                                   )");
                     }
                 }
+                Logger.Info("Database initialized");
             }
             catch (SQLiteException e)
             {
-                Logger.Error(e, "Cannot create tables in the DB");
+                Logger.Error(e, "Cannot initialize database");
             }
         }
 

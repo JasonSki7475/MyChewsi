@@ -448,6 +448,7 @@ namespace ChewsiPlugin.Api.Dentrix
                     if (value != null)
                     {
                         path = value.ToString();
+                        Logger.Info("Found Dentrix API in '{0}'", path);
                         result = true;
                     }
                 }

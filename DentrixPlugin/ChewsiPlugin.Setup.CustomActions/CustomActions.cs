@@ -2,6 +2,7 @@
 using ChewsiPlugin.Api.Repository;
 using Microsoft.Win32;
 using NLog;
+using NLog.Config;
 
 namespace ChewsiPlugin.Setup.CustomActions
 {
@@ -13,8 +14,16 @@ namespace ChewsiPlugin.Setup.CustomActions
         const uint ERROR_INSTALL_FAILURE = 1603;
         const uint ERROR_SUCCESS = 0;
 
-        public static uint Setup(string pmsType, string installDir, string isClient)
+        public static uint Setup(string pmsType, string installDir, string isClient, string msiHandle)
         {
+            if (!string.IsNullOrEmpty(msiHandle))
+            {
+                ConfigurationItemFactory.Default.Targets.RegisterDefinition("MsiTarget", typeof (MsiTarget));
+                LogManager.Configuration = new LoggingConfiguration();
+                LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, new MsiTarget(int.Parse(msiHandle))));
+                LogManager.ReconfigExistingLoggers();
+            }
+
             uint result;
             try
             {

@@ -33,19 +33,29 @@ namespace ChewsiPlugin.EaglesoftApi
 
         public string GetConnectionString()
         {
-            string path;
             string connectionString = null;
-            if (TryGetFolder(out path))
+            try
             {
-                AppDomainSetup setup = new AppDomainSetup
+                string path;
+                if (TryGetFolder(out path))
                 {
-                    ApplicationBase = path
-                };
-                var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
-                var obj = domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
-                var proxy = (Proxy) obj;
-                connectionString = proxy.GetConnectionString(path);
-                AppDomain.Unload(domain);                
+                    AppDomainSetup setup = new AppDomainSetup
+                    {
+                        ApplicationBase = path
+                    };
+                    var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
+                    Logger.Info("Loading connection string: app domain created");
+                    var obj = domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+                    var proxy = (Proxy) obj;
+                    connectionString = proxy.GetConnectionString(path);
+                    Logger.Info("Loaded connection string for Eaglesoft");
+                    AppDomain.Unload(domain);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Cannot load connection string");
+                throw;
             }
             return connectionString;
         }
@@ -187,9 +197,11 @@ namespace ChewsiPlugin.EaglesoftApi
                 if (File.Exists(path))
                 {
                     folder = Path.GetDirectoryName(path);
+                    Logger.Info("Found Eaglesoft API in '{0}'", folder);
                     return true;
                 }
             }
+            Logger.Error("Cannot find Eaglesoft folder");
             folder = null;
             return false;
         }
