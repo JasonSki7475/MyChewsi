@@ -1,9 +1,7 @@
 ﻿using System.Windows.Input;
-using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using NLog;
 
 namespace ChewsiPlugin.UI.ViewModels
 {
@@ -15,7 +13,6 @@ namespace ChewsiPlugin.UI.ViewModels
         private string _totalProviderReimbursement;
         private string _totalProviderSubmittedCharge;
         private string _totalSubscriberCharge;
-        private string _note;
         private bool _isVisible;
 
         #region CloseCommand
@@ -34,7 +31,6 @@ namespace ChewsiPlugin.UI.ViewModels
             TotalProviderReimbursement = m.TotalProviderReimbursement;
             TotalProviderSubmittedCharge = m.TotalProviderSubmittedCharge;
             TotalSubscriberCharge = m.TotalSubscriberCharge;
-            Note = m.Note;
             IsVisible = true;
         }
 
@@ -92,17 +88,7 @@ namespace ChewsiPlugin.UI.ViewModels
                 RaisePropertyChanged(() => TotalSubscriberCharge);
             }
         }
-
-        public string Note
-        {
-            get { return _note; }
-            set
-            {
-                _note = value;
-                RaisePropertyChanged(() => Note);
-            }
-        }
-
+        
         public bool IsVisible
         {
             get { return _isVisible; }

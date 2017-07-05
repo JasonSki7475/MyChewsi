@@ -21,9 +21,9 @@ namespace ChewsiPlugin.Api.Chewsi
         private int _proxyPort;
         private string _proxyUserName;
         private string _proxyPassword;
-        //TODO use staging
-        private const string Url = //"http://chewsi-stage-txapi.azurewebsites.net";
-                                   "http://chewsi-dev-txapi.azurewebsites.net";
+
+        private const string Url = "http://chewsi-stage-txapi.azurewebsites.net";
+                                   //"http://chewsi-dev-txapi.azurewebsites.net";
         private const string ValidateSubscriberAndProviderUri = "ValidateSubscriberAndProvider";
         private const string ProcessClaimUri = "ProcessClaim";
         private const string RegisterPluginUri = "RegisterPlugin";

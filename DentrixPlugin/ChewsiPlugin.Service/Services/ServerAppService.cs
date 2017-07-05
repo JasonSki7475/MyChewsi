@@ -160,19 +160,23 @@ namespace ChewsiPlugin.Service.Services
             var state = _repository.GetSettingValue<string>(Settings.StateKey);
             var address1 = _repository.GetSettingValue<string>(Settings.Address1Key);
             var address2 = _repository.GetSettingValue<string>(Settings.Address2Key);
-            var list = _chewsiApi.Get835Downloads(new Request835Downloads
+            var response = _chewsiApi.Get835Downloads(new Request835Downloads
             {
                 TIN = tin,
                 State = state,
                 Address = $"{address1} {address2}"
-            }).Select(m => new DownloadDto
+            });
+            if (response != null)
             {
-                Status = m.Status,
-                PostedDate = m.PostedDate,
-                Edi = m.EDI_835_EDI,
-                Report = m.EDI_835_Report
-            }).ToList();
-            return list;
+                return response.Select(m => new DownloadDto
+                {
+                    Status = m.Status,
+                    PostedDate = m.PostedDate,
+                    Edi = m.EDI_835_EDI,
+                    Report = m.EDI_835_Report
+                }).ToList();
+            }
+            return new List<DownloadDto>();
         }
 
         public List<PaymentPlanHistoryDto> GetPayments()
@@ -180,25 +184,29 @@ namespace ChewsiPlugin.Service.Services
             Logger.Info("Client '{0}' loaded payments list", GetChannelId());
             var tin = _repository.GetSettingValue<string>(Settings.TIN);
             var paymentPlanHistory = _chewsiApi.GetOrthoPaymentPlanHistory(tin);
-            return paymentPlanHistory.Select(m => new PaymentPlanHistoryDto
+            if (paymentPlanHistory != null)
             {
-                PaymentSchedule = m.PaymentSchedule,
-                ChewsiId = m.ChewsiID,
-                Provider = m.ProviderName,
-                PatientFirstName = m.PatientFirstName,
-                LastPaymentOn = m.LastPaymentOn,
-                PostedOn = DateTime.Parse(m.PostedOn),
-                BalanceRemaining = m.BalanceRemaining,
-                NextPaymentOn = m.NextPaymentOn,
-                Items = m.Items?.Select(i => new PaymentPlanHistoryItemDto
+                return paymentPlanHistory.Select(m => new PaymentPlanHistoryDto
                 {
-                    ChewsiFeeAmount = i.ChewsiFeeAmount,
-                    PaymentSchedule = i.PaymentSchedule,
-                    PatientPaymentOf = i.PatientPaymentOf,
-                    PaymentMadeOn = i.PaymentMadeOn,
-                    ProviderReceives = i.ProviderReceives
-                }).ToList() ?? new List<PaymentPlanHistoryItemDto>()
-            }).ToList();
+                    PaymentSchedule = m.PaymentSchedule,
+                    ChewsiId = m.ChewsiID,
+                    Provider = m.ProviderName,
+                    PatientFirstName = m.PatientFirstName,
+                    LastPaymentOn = m.LastPaymentOn,
+                    PostedOn = DateTime.Parse(m.PostedOn),
+                    BalanceRemaining = m.BalanceRemaining,
+                    NextPaymentOn = m.NextPaymentOn,
+                    Items = m.Items?.Select(i => new PaymentPlanHistoryItemDto
+                    {
+                        ChewsiFeeAmount = i.ChewsiFeeAmount,
+                        PaymentSchedule = i.PaymentSchedule,
+                        PatientPaymentOf = i.PatientPaymentOf,
+                        PaymentMadeOn = i.PaymentMadeOn,
+                        ProviderReceives = i.ProviderReceives
+                    }).ToList() ?? new List<PaymentPlanHistoryItemDto>()
+                }).ToList();                
+            }
+            return new List<PaymentPlanHistoryDto>();
         }
 
         public File835Dto DownloadFile(string documentType, string documentId, string postedDate)
@@ -252,7 +260,6 @@ namespace ChewsiPlugin.Service.Services
                         return new CalculatedPaymentsDto
                         {
                             ChewsiMonthlyFee = response.ChewsiMonthlyFee,
-                            Note = response.Note,
                             SubscribersReoccuringMonthlyCharge = response.SubscribersReoccuringMonthlyCharge,
                             TotalProviderReimbursement = response.TotalProviderReimbursement,
                             TotalProviderSubmittedCharge = response.TotalProviderSubmittedCharge,

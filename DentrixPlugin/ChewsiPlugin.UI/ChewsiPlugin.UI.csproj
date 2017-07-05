@@ -138,6 +138,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\InvalidDateTextEventArgs.cs" />
+    <Compile Include="Controls\NumericTextBoxBehavior.cs" />
     <Compile Include="Converters\BooleanInverseConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityInverseConverter.cs" />
     <Compile Include="Converters\ClientServiceStatusToBooleanConverter.cs" />

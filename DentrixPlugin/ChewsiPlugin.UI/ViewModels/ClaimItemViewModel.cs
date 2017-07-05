@@ -106,7 +106,7 @@ namespace ChewsiPlugin.UI.ViewModels
 
         public Tuple<int, string> NumberOfPaymentsItem
         {
-            get { return NumberOfPaymentsList.First(m => m.Item1 == NumberOfPayments); }
+            get { return NumberOfPayments != 0 ? NumberOfPaymentsList.First(m => m.Item1 == NumberOfPayments) : null; }
             set
             {
                 NumberOfPayments = value.Item1;

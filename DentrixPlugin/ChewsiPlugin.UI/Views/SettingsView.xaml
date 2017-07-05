@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:ChewsiPlugin.UI.ViewModels"
+             xmlns:controls="clr-namespace:ChewsiPlugin.UI.Controls"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance Type={x:Type viewModels:SettingsViewModel}}">
     <StackPanel>
         <TextBlock Visibility="{Binding IsClient, Converter={StaticResource BooleanToVisibilityConverter}}" 
@@ -77,7 +78,7 @@
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Host"/>
                         <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding ProxyAddress}" IsEnabled="{Binding UseProxy}"/>
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Port"/>
-                        <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding ProxyPort}" IsEnabled="{Binding UseProxy}"/>
+                        <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding ProxyPort}" IsEnabled="{Binding UseProxy}" controls:NumericTextBoxBehavior.Enabled="True"/>
                         <TextBlock Grid.Row="6" Grid.Column="0" Text="User name"/>
                         <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding ProxyLogin}" IsEnabled="{Binding UseProxy}"/>
                         <TextBlock Grid.Row="8" Grid.Column="0" Text="Password"/>

@@ -7,6 +7,5 @@
         public string TotalProviderReimbursement { get; set; }
         public string TotalProviderSubmittedCharge { get; set; }
         public string TotalSubscriberCharge { get; set; }
-        public string Note { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace ChewsiPlugin.UI
 
             int lastIndex = 0;
             var list = pieces.OrderBy(m => m.Item1).ToList();
-            //list.Dump();
+
             for (int i = 0; i < list.Count; i++)
             {
                 var piece = list[i];

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Odbc;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using ChewsiPlugin.Api.Common;
@@ -32,16 +33,21 @@ namespace ChewsiPlugin.EaglesoftApi
 
         public string GetConnectionString()
         {
-            AppDomainSetup setup = new AppDomainSetup
+            string path;
+            string connectionString = null;
+            if (TryGetFolder(out path))
             {
-                ApplicationBase = @"C:\EagleSoft\Shared Files\"
-            };
-            var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
-            var obj = domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
-            var proxy = (Proxy) obj;
-            var cs = proxy.GetConnectionString();
-            AppDomain.Unload(domain);
-            return cs;
+                AppDomainSetup setup = new AppDomainSetup
+                {
+                    ApplicationBase = path
+                };
+                var domain = AppDomain.CreateDomain("EaglesoftDomain", null, setup);
+                var obj = domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
+                var proxy = (Proxy) obj;
+                connectionString = proxy.GetConnectionString(path);
+                AppDomain.Unload(domain);                
+            }
+            return connectionString;
         }
 
         private void Initialize()
@@ -171,8 +177,21 @@ namespace ChewsiPlugin.EaglesoftApi
 
         public override bool TryGetFolder(out string folder)
         {
-            folder = @"C:\EagleSoft\Shared Files\";
-            return true;
+            List<string> paths = new List<string>();
+            foreach (var drive in DriveInfo.GetDrives().Where(m => m.IsReady && m.DriveType == DriveType.Fixed))
+            {
+                paths.Add($"{drive}EagleSoft\\Shared Files\\EaglesoftSettings.dll");
+            }
+            foreach (var path in paths)
+            {
+                if (File.Exists(path))
+                {
+                    folder = Path.GetDirectoryName(path);
+                    return true;
+                }
+            }
+            folder = null;
+            return false;
         }
 
         public Appointment GetAppointmentById(string id)

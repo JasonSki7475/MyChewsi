@@ -7,6 +7,15 @@ namespace ChewsiPlugin.UI.Controls
     [TemplatePart(Name = "PART_Container")]
     internal class LightBox : HeaderedContentControl
     {
+        private static readonly RoutedUICommand EscapeKeyCommand = new RoutedUICommand("EscapeKeyCommand",
+            "EscapeKeyCommand", typeof (LightBox), new InputGestureCollection(new InputGesture[]
+            {new KeyGesture(Key.Escape, ModifierKeys.None, "Close")}));
+
+        public LightBox()
+        {
+            CommandBindings.Add(new CommandBinding(EscapeKeyCommand, (sender, e) => { CloseCommand.Execute(null); }));
+        }
+
         public static readonly DependencyProperty ButtonTextProperty = DependencyProperty.Register(
             "ButtonText", typeof (string), typeof (LightBox), new PropertyMetadata("Ok"));
 

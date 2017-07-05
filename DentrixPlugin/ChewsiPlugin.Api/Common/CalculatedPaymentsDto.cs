@@ -19,8 +19,5 @@ namespace ChewsiPlugin.Api.Common
 
         [DataMember]
         public string TotalSubscriberCharge { get; set; }
-
-        [DataMember]
-        public string Note { get; set; }
     }
 }

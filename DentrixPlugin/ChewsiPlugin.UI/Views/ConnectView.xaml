@@ -9,6 +9,7 @@
              d:DesignHeight="300" 
              d:DataContext="{d:DesignInstance Type={x:Type viewModels:ConnectViewModel}}">
     <controls:LightBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                       ShowCloseButton="False"
                        Header="Connect to PMS server" ButtonText="Connect" ButtonCommand="{Binding ConnectCommand}">
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
@@ -20,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Host name or IP address:" VerticalAlignment="Center"/>
             <TextBox Grid.Column="2" Text="{Binding Host}" Width="130" VerticalAlignment="Center" TextAlignment="Center" />
-            <Button Grid.Column="4" Background="White" Foreground="Black" BorderBrush="LightGray" Content="Auto-detect server"
+            <Button Grid.Column="4" Background="White" Foreground="{StaticResource PrimaryTextColor}" BorderBrush="LightGray" Content="Auto-detect server"
                     Template="{StaticResource WhiteButton}" HorizontalAlignment="Right" Margin="0,0" Padding="5" Command="{Binding DetectCommand}"/>
         </Grid>
     </controls:LightBox>

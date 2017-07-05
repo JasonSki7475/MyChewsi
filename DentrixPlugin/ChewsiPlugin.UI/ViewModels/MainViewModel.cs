@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
@@ -12,20 +13,20 @@ namespace ChewsiPlugin.UI.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
+        private const int ClaimsTabIndex = 0;
         private const int DownloadsTabIndex = 1;
         private const int PaymentsTabIndex = 2;
         private bool _downloadsLoaded;
         private bool _paymentsLoaded;
         private ICommand _downloadReportCommand;
         private ICommand _downloadCommand;
-        private ICommand _refreshDownloadsCommand;
-        private ICommand _refreshPaymentsCommand;
         private ICommand _openSettingsCommandCommand;
-        private ICommand _refreshClaimsCommand;
+        private ICommand _refreshCommand;
         private ICommand _tabChangedCommand;
         private ClaimItemViewModel _selectedClaim;
         private DownloadItemViewModel _selectedDownloadItem;
         private PaymentPlanHistoryViewModel _selectedPayment;
+        private int _selectedTab;
 
         public MainViewModel(IClientDialogService dialogService, IClientAppService appService)
         {
@@ -33,12 +34,14 @@ namespace ChewsiPlugin.UI.ViewModels
             AppService = appService;
             DownloadItems = new ObservableCollection<DownloadItemViewModel>();
             PaymentItems = new ObservableCollection<PaymentPlanHistoryViewModel>();
+            DesignClaimItems = new ObservableCollection<ClaimItemViewModel>();
             AppService.Initialize();
         }
 
         #region Properties
         public ObservableCollection<DownloadItemViewModel> DownloadItems { get; }
         public ObservableCollection<PaymentPlanHistoryViewModel> PaymentItems { get; }
+        public ObservableCollection<ClaimItemViewModel> DesignClaimItems { get; }
 
         public IDialogService DialogService { get; }
 
@@ -74,91 +77,98 @@ namespace ChewsiPlugin.UI.ViewModels
             }
         }
 
+        public int SelectedTab
+        {
+            get { return _selectedTab; }
+            set
+            {
+                _selectedTab = value;
+                RaisePropertyChanged(() => SelectedTab);
+            }
+        }
+
         #endregion
 
         #region Commands       
         
         #region RefreshAppointmentsCommand
-        public ICommand RefreshClaimsCommand => _refreshClaimsCommand ?? (_refreshClaimsCommand = new RelayCommand(OnRefreshClaimsCommandExecute));
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new RelayCommand(OnRefreshCommandExecute));
 
-        private void OnRefreshClaimsCommandExecute()
+        private void OnRefreshCommandExecute()
         {
-            AppService.ReloadClaims();
+            switch (SelectedTab)
+            {
+                case ClaimsTabIndex:
+                    AppService.ReloadClaims();
+                    break;
+                case DownloadsTabIndex:
+                    var worker = new BackgroundWorker();
+                    worker.DoWork += (i, j) =>
+                    {
+                        var list = AppService.GetDownloads();
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            DownloadItems.Clear();
+                            foreach (var item in list)
+                            {
+                                DownloadItems.Add(item);
+                            }
+                        });
+                    };
+                    worker.RunWorkerAsync();
+                    break;
+                case PaymentsTabIndex:
+                    worker = new BackgroundWorker();
+                    worker.DoWork += (i, j) =>
+                    {
+                        var list = AppService.GetPayments();
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            PaymentItems.Clear();
+                            foreach (var item in list)
+                            {
+                                PaymentItems.Add(item);
+                            }
+                        });
+                    };
+                    worker.RunWorkerAsync();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
         #endregion
         
-        #region RefreshDownloadsCommand
-        public ICommand RefreshDownloadsCommand => _refreshDownloadsCommand ?? (_refreshDownloadsCommand = new RelayCommand(OnRefreshDownloadsCommandExecute));
-
-        private void OnRefreshDownloadsCommandExecute()
-        {
-            var worker = new BackgroundWorker();
-            worker.DoWork += (i, j) =>
-            {
-                var list = AppService.GetDownloads();
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    DownloadItems.Clear();
-                    foreach (var item in list)
-                    {
-                        DownloadItems.Add(item);
-                    }
-                });
-            };
-            worker.RunWorkerAsync();
-        }
-        #endregion
-
         #region TabChangedCommand
         public ICommand TabChangedCommand => _tabChangedCommand ?? (_tabChangedCommand = new RelayCommand<SelectionChangedEventArgs>(OnTabChangedCommandExecute));
 
         private void OnTabChangedCommandExecute(SelectionChangedEventArgs e)
         {
-            var a = e.Source as TabControl;
-            if (a != null)
+            switch (SelectedTab)
             {
-                if (a.SelectedIndex == DownloadsTabIndex)
-                {
-                    if (!_downloadsLoaded && RefreshDownloadsCommand.CanExecute(null))
+                case ClaimsTabIndex:
+
+                    break;
+                case DownloadsTabIndex:
+                    if (!_downloadsLoaded && RefreshCommand.CanExecute(null))
                     {
                         _downloadsLoaded = true;
-                        RefreshDownloadsCommand.Execute(null);
+                        RefreshCommand.Execute(null);
                     }
-                }
-                if (a.SelectedIndex == PaymentsTabIndex)
-                {
-                    if (!_paymentsLoaded && RefreshPaymentsCommand.CanExecute(null))
+                    break;
+                case PaymentsTabIndex:
+                    if (!_paymentsLoaded && RefreshCommand.CanExecute(null))
                     {
                         _paymentsLoaded = true;
-                        RefreshPaymentsCommand.Execute(null);
-                    }                    
-                }
+                        RefreshCommand.Execute(null);
+                    }    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         #endregion
-
-        #region RefreshPaymentsCommand
-        public ICommand RefreshPaymentsCommand => _refreshPaymentsCommand ?? (_refreshPaymentsCommand = new RelayCommand(OnRefreshPaymentsCommandExecute));
-
-        private void OnRefreshPaymentsCommandExecute()
-        {
-            var worker = new BackgroundWorker();
-            worker.DoWork += (i, j) =>
-            {
-                var list = AppService.GetPayments();
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    PaymentItems.Clear();
-                    foreach (var item in list)
-                    {
-                        PaymentItems.Add(item);
-                    }
-                });
-            };
-            worker.RunWorkerAsync();
-        }
-        #endregion
-
+        
         #region OpenSettingsCommand
         public ICommand OpenSettingsCommand => _openSettingsCommandCommand ?? (_openSettingsCommandCommand = new RelayCommand(OnOpenSettingsCommandCommandExecute));
 
@@ -185,6 +195,7 @@ namespace ChewsiPlugin.UI.ViewModels
             AppService.DownloadFile(SelectedDownloadItem.EdiDocumentId, SelectedDownloadItem.PostedDate, false);
         }
         #endregion
+
         #endregion
     }
 }

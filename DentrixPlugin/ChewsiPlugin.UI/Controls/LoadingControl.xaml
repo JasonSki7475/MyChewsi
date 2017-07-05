@@ -13,7 +13,7 @@
                 <Setter Property="Canvas.Left" Value="0"/>
                 <Setter Property="Canvas.Top" Value="0"/>
                 <Setter Property="Stretch" Value="Fill"/>
-                <Setter Property="Fill" Value="#FFB1B600"/>
+                <Setter Property="Fill" Value="{StaticResource AccentTextColor}"/>
             </Style.Setters>
         </Style>
     </UserControl.Resources>

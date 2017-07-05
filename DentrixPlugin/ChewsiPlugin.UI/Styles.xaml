@@ -6,7 +6,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     mc:Ignorable="d">
-    
+
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:BooleanToVisibilityInverseConverter x:Key="BooleanToVisibilityInverseConverter"/>
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
@@ -21,7 +21,25 @@
     <converters:VisbilityToBooleanConverter x:Key="VisbilityToBooleanConverter"/>
     <viewModels:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True" />
 
-    <Viewbox x:Key="Logo" Stretch="Uniform" x:Shared="False">
+    <SolidColorBrush x:Key="PrimaryColor" Color="#FF7BD77B"/>
+    <SolidColorBrush x:Key="SecondaryColor" Color="#FF2D9AF9"/>
+    <SolidColorBrush x:Key="TertiaryColor" Color="DimGray"/>
+
+    <SolidColorBrush x:Key="PrimaryTextColor" Color="Black"/>
+    <SolidColorBrush x:Key="SecondaryTextColor" Color="DimGray"/>
+    <SolidColorBrush x:Key="AccentTextColor" Color="#FFB1B600"/>
+     
+    <Style TargetType="{x:Type TextBlock}" x:Key="SecondaryText">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}"/>
+        <Setter Property="FontSize" Value="14"/>        
+    </Style>
+    <Style TargetType="{x:Type TextBlock}" x:Key="LabelText">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0,0,0,5"/>
+    </Style>
+
+    <Viewbox x:Key="LogoIcon" Stretch="Uniform" x:Shared="False">
         <Canvas x:Name="svg4136" Width="540" Height="270">
             <Canvas.Resources>
                 <PathGeometry x:Key="clipPath4150" Figures="M 0 216 432 216 432 0 0 0 0 216 Z" FillRule="NonZero"/>
@@ -118,37 +136,56 @@
             </Canvas>
         </Canvas>
     </Viewbox>
-    
-    <Viewbox x:Key="Lock" Stretch="Uniform" x:Shared="False">
+
+    <Viewbox x:Key="LockIcon" Stretch="Uniform" x:Shared="False">
         <Canvas Width="76.0106" Height="76.0106" Clip="F1 M 0,0L 76.0106,0L 76.0106,76.0106L 0,76.0106L 0,0">
-            <Path Width="31.6711" Height="38.0053" Canvas.Left="22.17" Canvas.Top="19.0027" Stretch="Fill" Fill="#FF727272" Data="F1 M 22.17,36.4216L 25.3369,36.4216L 25.3369,31.6711C 25.3369,24.6745 31.0087,19.0027 38.0053,19.0027C 45.0019,19.0027 50.6737,24.6745 50.6737,31.6711L 50.6737,36.4216L 53.841,36.4216L 53.8411,57.008L 22.17,57.008L 22.17,36.4216 Z M 45.9231,31.6711C 45.9231,27.2982 42.3782,23.7533 38.0053,23.7533C 33.6324,23.7533 30.0875,27.2982 30.0875,31.6711L 30.0875,36.4216L 45.923,36.4216L 45.9231,31.6711 Z "/>
+            <Path Width="31.6711" Height="38.0053" Canvas.Left="22.17" Canvas.Top="19.0027" Stretch="Fill" Fill="{StaticResource SecondaryColor}" Data="F1 M 22.17,36.4216L 25.3369,36.4216L 25.3369,31.6711C 25.3369,24.6745 31.0087,19.0027 38.0053,19.0027C 45.0019,19.0027 50.6737,24.6745 50.6737,31.6711L 50.6737,36.4216L 53.841,36.4216L 53.8411,57.008L 22.17,57.008L 22.17,36.4216 Z M 45.9231,31.6711C 45.9231,27.2982 42.3782,23.7533 38.0053,23.7533C 33.6324,23.7533 30.0875,27.2982 30.0875,31.6711L 30.0875,36.4216L 45.923,36.4216L 45.9231,31.6711 Z "/>
         </Canvas>
     </Viewbox>
     
+    <Viewbox x:Key="TrashIcon" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="24" Height="24">
+            <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="{StaticResource TertiaryColor}" />
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="PaymentsIcon" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="76.0106" Height="76.0106" Clip="F1 M 0,0L 76.0106,0L 76.0106,76.0106L 0,76.0106L 0,0">
+            <Path Width="41.0063" Height="41.4512" Canvas.Left="18.0025" Canvas.Top="18.0023" Stretch="Fill" Fill="#FF000000" Data="F1 M 18.0025,57.0082L 18.0025,23.0033L 23.0032,23.0033L 23.0032,20.0029C 23.0033,18.898 23.8988,18.0026 25.0035,18.0026L 29.004,18.0026C 30.1087,18.0026 31.0042,18.898 31.0043,20.0026L 31.0043,23.0033L 45.0063,23.0033L 45.0062,20.0026C 45.0062,18.8979 45.9018,18.0023 47.0065,18.0023L 51.0071,18.0023C 52.1118,18.0023 53.0074,18.8979 53.0074,20.0026L 53.0074,23.0033L 58.0081,23.0033L 58.0081,36.7029L 55.0076,34.1972L 55.0076,31.0044L 21.0029,31.0044L 21.0029,54.0078L 44.149,54.0078L 43.2917,57.0082L 18.0025,57.0082 Z M 23.0032,47.0066L 29.004,47.0066L 29.004,52.0073L 23.0032,52.0073L 23.0032,47.0066 Z M 31.0043,47.0066L 37.0051,47.0066L 37.0051,52.0073L 31.0043,52.0073L 31.0043,47.0066 Z M 39.0054,47.0066L 45.0062,47.0066L 45.0063,51.0071L 44.7205,52.0073L 39.0054,52.0073L 39.0054,47.0066 Z M 23.0032,40.0057L 29.004,40.0057L 29.004,45.0064L 23.0032,45.0064L 23.0032,40.0057 Z M 31.0043,40.0057L 37.0051,40.0057L 37.0051,45.0064L 31.0043,45.0064L 31.0043,40.0057 Z M 39.0054,40.0057L 44.6399,40.0057C 44.5531,40.3435 44.0061,40.678 44.0061,41.0057C 44.0061,42.3023 44.0713,43.704 44.4973,45.0064L 39.0054,45.0064L 39.0054,40.0057 Z M 31.0043,33.0048L 37.0051,33.0048L 37.0051,38.0055L 31.0043,38.0055L 31.0043,33.0048 Z M 39.0054,33.0048L 45.0062,33.0048L 45.0062,38.0055L 39.0054,38.0055L 39.0054,33.0048 Z M 47.0065,33.0048L 51.1046,33.0049C 50.1692,33.6512 48.0387,35.5656 47.0065,36.6128L 47.0065,33.0048 Z M 48.5067,20.0029C 47.6782,20.0029 47.0065,20.6746 47.0065,21.5031L 47.0065,24.5036C 47.0065,25.3321 47.6782,26.0038 48.5067,26.0038L 49.5068,26.0038C 50.3354,26.0038 51.007,25.3321 51.007,24.5036L 51.007,21.5031C 51.007,20.6746 50.3354,20.0029 49.5068,20.0029L 48.5067,20.0029 Z M 26.5037,20.0029C 25.6751,20.0029 25.0035,20.6746 25.0035,21.5031L 25.0035,24.5035C 25.0035,25.3321 25.6751,26.0037 26.5037,26.0037L 27.5038,26.0037C 28.3324,26.0037 29.004,25.3321 29.004,24.5035L 29.004,21.5031C 29.004,20.6746 28.3324,20.0029 27.5038,20.0029L 26.5037,20.0029 Z M 58.2327,38.8268L 57.3705,42.1775L 55.7765,41.5185C 55.066,41.2801 54.1341,41.1503 52.9807,41.1291C 52.0363,41.1478 51.3729,41.3275 50.9903,41.6682C 50.6077,42.0089 50.4233,42.3982 50.4371,42.8361C 50.4256,43.3032 50.7087,43.731 51.2864,44.1196C 51.8642,44.5081 52.8059,44.9285 54.1115,45.3806C 55.8671,45.9949 57.1265,46.7496 57.8898,47.6446C 58.653,48.5395 59.0258,49.6609 59.0082,51.0086C 59.0077,52.3618 58.5634,53.5298 57.6752,54.5124C 56.787,55.495 55.458,56.1381 53.6882,56.4416L 53.6882,59.4535L 50.7696,59.4535L 50.7696,56.6755C 49.7616,56.6232 48.8219,56.4794 47.9506,56.2442C 47.0793,56.0091 46.3836,55.7337 45.8634,55.4182L 46.7304,51.9666C 47.3397,52.3227 48.0536,52.6283 48.8721,52.8834C 49.6906,53.1385 50.5786,53.2719 51.5361,53.2838C 52.4123,53.2794 53.1387,53.116 53.7152,52.7936C 54.2917,52.4711 54.5906,52.0159 54.6118,51.4277C 54.6096,50.8683 54.3242,50.3856 53.7557,49.9796C 53.1872,49.5736 52.3491,49.1881 51.2413,48.8233C 49.6671,48.305 48.4125,47.6202 47.4775,46.7689C 46.5424,45.9176 46.0635,44.7763 46.0407,43.345C 46.0472,41.9985 46.4797,40.859 47.3383,39.9265C 48.1969,38.9941 49.4428,38.3717 51.0762,38.0593L 51.0762,35.2549L 53.9728,35.2549L 53.9728,37.8527L 58.2327,38.8268 Z "/>
+        </Canvas>
+    </Viewbox>
+
+    <Viewbox x:Key="RefreshIcon" Stretch="Uniform" x:Shared="False">
+        <Canvas Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Path Width="34.8333" Height="41.1667" Canvas.Left="20.5833" Canvas.Top="17.4167" Stretch="Fill" Fill="{StaticResource SecondaryColor}" Data="F1 M 38,20.5833C 42.9908,20.5833 47.4912,22.6825 50.6667,26.046L 50.6667,17.4167L 55.4166,22.1667L 55.4167,34.8333L 42.75,34.8333L 38,30.0833L 46.8512,30.0833C 44.6768,27.6539 41.517,26.125 38,26.125C 31.9785,26.125 27.0037,30.6068 26.2296,36.4167L 20.6543,36.4167C 21.4543,27.5397 28.9148,20.5833 38,20.5833 Z M 38,49.875C 44.0215,49.875 48.9963,45.3932 49.7703,39.5833L 55.3457,39.5833C 54.5457,48.4603 47.0852,55.4167 38,55.4167C 33.0092,55.4167 28.5088,53.3175 25.3333,49.954L 25.3333,58.5833L 20.5833,53.8333L 20.5833,41.1667L 33.25,41.1667L 38,45.9167L 29.1487,45.9167C 31.3231,48.3461 34.483,49.875 38,49.875 Z "/>
+        </Canvas>
+    </Viewbox>
+
     <Viewbox x:Key="WarningIcon" Stretch="Uniform" x:Shared="False">
         <Canvas Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-            <Path Width="43.9488" Height="40.9682" Canvas.Left="16.0256" Canvas.Top="14.4489" Stretch="Fill" Fill="#FF000000" Data="F1 M 58.5832,55.4172L 17.4169,55.4171C 15.5619,53.5621 15.5619,50.5546 17.4168,48.6996L 35.201,15.8402C 37.056,13.9852 40.0635,13.9852 41.9185,15.8402L 58.5832,48.6997C 60.4382,50.5546 60.4382,53.5622 58.5832,55.4172 Z M 34.0417,25.7292L 36.0208,41.9584L 39.9791,41.9583L 41.9583,25.7292L 34.0417,25.7292 Z M 38,44.3333C 36.2511,44.3333 34.8333,45.7511 34.8333,47.5C 34.8333,49.2489 36.2511,50.6667 38,50.6667C 39.7489,50.6667 41.1666,49.2489 41.1666,47.5C 41.1666,45.7511 39.7489,44.3333 38,44.3333 Z "/>
+            <Path Width="43.9488" Height="40.9682" Canvas.Left="16.0256" Canvas.Top="14.4489" Stretch="Fill" Fill="{StaticResource SecondaryColor}" Data="F1 M 58.5832,55.4172L 17.4169,55.4171C 15.5619,53.5621 15.5619,50.5546 17.4168,48.6996L 35.201,15.8402C 37.056,13.9852 40.0635,13.9852 41.9185,15.8402L 58.5832,48.6997C 60.4382,50.5546 60.4382,53.5622 58.5832,55.4172 Z M 34.0417,25.7292L 36.0208,41.9584L 39.9791,41.9583L 41.9583,25.7292L 34.0417,25.7292 Z M 38,44.3333C 36.2511,44.3333 34.8333,45.7511 34.8333,47.5C 34.8333,49.2489 36.2511,50.6667 38,50.6667C 39.7489,50.6667 41.1666,49.2489 41.1666,47.5C 41.1666,45.7511 39.7489,44.3333 38,44.3333 Z "/>
         </Canvas>
     </Viewbox>
-    
+
     <Viewbox x:Key="SettingsIcon" Stretch="Uniform" x:Shared="False">
-        <Canvas Width="35" Height="35" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-            <Path Width="38.9239" Height="38.9239" Stretch="Fill" Fill="#FF000000" Data="F1 M 38,23.5C 38.8643,23.5 39.7109,23.5756 40.5337,23.7206L 42.6275,18.5381L 48.1901,20.787L 46.0964,25.9692C 47.6473,27.0149 48.9851,28.3527 50.0308,29.9036L 55.213,27.8099L 57.4619,33.3725L 52.2794,35.4664C 52.4244,36.2891 52.5,37.1357 52.5,38C 52.5,38.8643 52.4244,39.7109 52.2794,40.5337L 57.4619,42.6275L 55.213,48.1901L 50.0308,46.0964C 49.0795,47.5073 47.8865,48.7418 46.5112,49.7405L 48.7844,54.8462L 43.3041,57.2891L 41.0307,52.1828C 40.0533,52.3906 39.0394,52.5 38,52.5C 37.1357,52.5 36.2891,52.4244 35.4664,52.2794L 33.3725,57.462L 27.8099,55.213L 29.9036,50.0309C 28.3527,48.9851 27.0149,47.6473 25.9691,46.0964L 20.787,48.1901L 18.538,42.6275L 23.7206,40.5336C 23.5756,39.7109 23.5,38.8643 23.5,38C 23.5,37.1357 23.5756,36.2891 23.7206,35.4664L 18.538,33.3725L 20.787,27.8099L 25.9691,29.9036C 26.9205,28.4927 28.1135,27.2582 29.4889,26.2594L 27.2157,21.1537L 32.6959,18.7109L 34.9694,23.8172C 35.9468,23.6094 36.9606,23.5 38,23.5 Z M 38,28C 32.4771,28 28,32.4772 28,38C 28,43.5229 32.4771,48 38,48C 43.5228,48 48,43.5229 48,38C 48,32.4772 43.5228,28 38,28 Z "/>
+        <Canvas Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Path Width="38.9239" Height="38.9239" Canvas.Left="20.5833" Canvas.Top="17.4167" Stretch="Fill" Fill="{StaticResource TertiaryColor}" Data="F1 M 38,23.5C 38.8643,23.5 39.7109,23.5756 40.5337,23.7206L 42.6275,18.5381L 48.1901,20.787L 46.0964,25.9692C 47.6473,27.0149 48.9851,28.3527 50.0308,29.9036L 55.213,27.8099L 57.4619,33.3725L 52.2794,35.4664C 52.4244,36.2891 52.5,37.1357 52.5,38C 52.5,38.8643 52.4244,39.7109 52.2794,40.5337L 57.4619,42.6275L 55.213,48.1901L 50.0308,46.0964C 49.0795,47.5073 47.8865,48.7418 46.5112,49.7405L 48.7844,54.8462L 43.3041,57.2891L 41.0307,52.1828C 40.0533,52.3906 39.0394,52.5 38,52.5C 37.1357,52.5 36.2891,52.4244 35.4664,52.2794L 33.3725,57.462L 27.8099,55.213L 29.9036,50.0309C 28.3527,48.9851 27.0149,47.6473 25.9691,46.0964L 20.787,48.1901L 18.538,42.6275L 23.7206,40.5336C 23.5756,39.7109 23.5,38.8643 23.5,38C 23.5,37.1357 23.5756,36.2891 23.7206,35.4664L 18.538,33.3725L 20.787,27.8099L 25.9691,29.9036C 26.9205,28.4927 28.1135,27.2582 29.4889,26.2594L 27.2157,21.1537L 32.6959,18.7109L 34.9694,23.8172C 35.9468,23.6094 36.9606,23.5 38,23.5 Z M 38,28C 32.4771,28 28,32.4772 28,38C 28,43.5229 32.4771,48 38,48C 43.5228,48 48,43.5229 48,38C 48,32.4772 43.5228,28 38,28 Z "/>
         </Canvas>
-    </Viewbox>      
-    
+    </Viewbox>
+
     <Viewbox x:Key="InfoIcon" Stretch="Uniform" x:Shared="False">
         <Canvas Width="15" Height="15" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-            <Path Width="15" Height="15" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="#FF2D9AF9" Data="F1 M 38,19C 48.4934,19 57,27.5066 57,38C 57,48.4934 48.4934,57 38,57C 27.5066,57 19,48.4934 19,38C 19,27.5066 27.5066,19 38,19 Z M 33.25,33.25L 33.25,36.4167L 36.4166,36.4167L 36.4166,47.5L 33.25,47.5L 33.25,50.6667L 44.3333,50.6667L 44.3333,47.5L 41.1666,47.5L 41.1666,36.4167L 41.1666,33.25L 33.25,33.25 Z M 38.7917,25.3333C 37.48,25.3333 36.4167,26.3967 36.4167,27.7083C 36.4167,29.02 37.48,30.0833 38.7917,30.0833C 40.1033,30.0833 41.1667,29.02 41.1667,27.7083C 41.1667,26.3967 40.1033,25.3333 38.7917,25.3333 Z "/>
+            <Path Width="15" Height="15" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Fill="{StaticResource SecondaryColor}" Data="F1 M 38,19C 48.4934,19 57,27.5066 57,38C 57,48.4934 48.4934,57 38,57C 27.5066,57 19,48.4934 19,38C 19,27.5066 27.5066,19 38,19 Z M 33.25,33.25L 33.25,36.4167L 36.4166,36.4167L 36.4166,47.5L 33.25,47.5L 33.25,50.6667L 44.3333,50.6667L 44.3333,47.5L 41.1666,47.5L 41.1666,36.4167L 41.1666,33.25L 33.25,33.25 Z M 38.7917,25.3333C 37.48,25.3333 36.4167,26.3967 36.4167,27.7083C 36.4167,29.02 37.48,30.0833 38.7917,30.0833C 40.1033,30.0833 41.1667,29.02 41.1667,27.7083C 41.1667,26.3967 40.1033,25.3333 38.7917,25.3333 Z "/>
         </Canvas>
-    </Viewbox>    
-    
+    </Viewbox>
+
     <Style TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="Padding" Value="16,7,16,9"/>
         <Setter Property="Template" Value="{DynamicResource BlueButton}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>
 
     <ControlTemplate x:Key="BlueButton" TargetType="{x:Type ButtonBase}">
@@ -192,7 +229,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="RedButton" TargetType="{x:Type ButtonBase}">
         <Border CornerRadius="2" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
             <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
@@ -213,7 +250,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="WhiteButton" TargetType="{x:Type ButtonBase}">
         <Border CornerRadius="2" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
             <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
@@ -234,7 +271,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="TransparentButton" TargetType="{x:Type ButtonBase}">
         <Border CornerRadius="2" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
             <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
@@ -253,7 +290,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <Style TargetType="{x:Type TabControl}">
         <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -269,6 +306,14 @@
                             <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
                             <RowDefinition x:Name="RowDefinition1" Height="*"/>
                         </Grid.RowDefinitions>
+                        <Rectangle Grid.Column="0" Height="5" VerticalAlignment="Bottom" >
+                            <Rectangle.Fill>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="DarkGray"/>
+                                    <GradientStop Color="White" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
                         <TabPanel x:Name="HeaderPanel" Background="Transparent" Grid.Column="0" IsItemsHost="True" Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
                         <Border x:Name="ContentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentTemplate="{TemplateBinding SelectedContentTemplate}" Content="{TemplateBinding SelectedContent}" ContentStringFormat="{TemplateBinding SelectedContentStringFormat}" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
@@ -315,21 +360,9 @@
 
     <Style TargetType="{x:Type TabItem}">
         <Setter Property="Background" Value="#FFEFEFEF"/>
-        <Setter Property="FocusVisualStyle">
-            <Setter.Value>
-                <Style>
-                    <Setter Property="Control.Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Foreground" Value="#FF555A6A"/>
-        <Setter Property="Padding" Value="22,15"/>
+        <Setter Property="Padding" Value="30,5,30,25"/>
         <Setter Property="BorderBrush" Value="#FFACACAC"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -342,7 +375,51 @@
                             <Border x:Name="innerBorder" BorderBrush="#FFACACAC" BorderThickness="1,1,1,0" Background="#FFEFEFEF" Margin="0" Opacity="0" Visibility="Collapsed"/>
                         </Border>
                         <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Focusable="False" HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
-                        <Path x:Name="sign" Data="M10,0 20,10 0,10 10,0Z" Height="10" Width="20" VerticalAlignment="Bottom" />
+                        <Rectangle Height="5" VerticalAlignment="Bottom" >
+                            <Rectangle.Fill>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="DarkGray"/>
+                                    <GradientStop Color="White" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Path x:Name="rect1" Data="M0,0 16,0 8,8 4,4 0,4" Height="16" Width="16" Visibility="Collapsed"
+                              VerticalAlignment="Bottom" Margin="0,0,0,-4" RenderTransformOrigin="0.5,0.5">
+                            <Path.Fill>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="DarkGray" Offset="0"/>
+                                    <GradientStop Color="White" Offset="1"/>
+                                    <GradientStop Color="#FFFFFCFC" Offset="0.5"/>
+                                </LinearGradientBrush>
+                            </Path.Fill>
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="1" ScaleX="-1"/>
+                                    <SkewTransform AngleY="0" AngleX="0"/>
+                                    <RotateTransform Angle="45"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path x:Name="rect2" Data="M0,0 16,0 8,8 4,4 0,4" Height="16" Width="16" Visibility="Collapsed"
+                              VerticalAlignment="Bottom" Margin="0,0,0,-4" RenderTransformOrigin="0.5,0.5">
+                            <Path.Fill>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="DarkGray" Offset="0"/>
+                                    <GradientStop Color="White" Offset="1"/>
+                                    <GradientStop Color="#FFFFFCFC" Offset="0.5"/>
+                                </LinearGradientBrush>
+                            </Path.Fill>
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="-45"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path x:Name="rect3" Data="M10,0 20,10 0,10" Height="10" Width="20" VerticalAlignment="Bottom" Margin="0,0,0,0" Fill="White" Visibility="Collapsed"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <MultiDataTrigger>
@@ -408,7 +485,10 @@
                                 <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Panel.ZIndex" Value="1"/>
-                            <Setter Property="Fill" TargetName="sign" Value="White"/>
+                            <Setter Property="Visibility" TargetName="rect1" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="rect2" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="rect3" Value="Visible"/>
+                            <Setter Property="TextElement.FontWeight" TargetName="contentPresenter" Value="SemiBold"/>
                         </MultiDataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -419,11 +499,10 @@
     <Style TargetType="{x:Type DataGrid}">
         <Setter Property="AlternatingRowBackground" Value="#FFF9F9F9"/>
         <Setter Property="RowBackground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="HorizontalGridLinesBrush" Value="#FFDDDDDD"/>
         <Setter Property="VerticalGridLinesBrush" Value="#FFDDDDDD"/>
-        <Setter Property="HeadersVisibility" Value="Column"/>
-        <Setter Property="ColumnHeaderHeight" Value="50"/>
+        <Setter Property="ColumnHeaderHeight" Value="20"/>
         <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="CanUserAddRows" Value="False"/>
@@ -434,8 +513,8 @@
         <Setter Property="CanUserReorderColumns" Value="False"/>
         <Setter Property="CanUserSortColumns" Value="False"/>
         <Setter Property="Background" Value="White"/>
-        <Setter Property="SelectionMode" Value="Single"/>
         <Setter Property="SelectionUnit" Value="FullRow"/>
+        <Setter Property="HeadersVisibility" Value="None"/>
     </Style>
 
     <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -444,21 +523,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
                     <Grid>
-                        <Border Background="{TemplateBinding Background}" BorderBrush="#FFDDDDDD" BorderThickness="0,0,1,2">
-                            <Border.Resources>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="TextWrapping" Value="Wrap" />
-                                    <Setter Property="FontSize" Value="8" />
-                                </Style>
-                            </Border.Resources>
-                            <ContentPresenter Margin="10,0" 
+                        <Border Background="{TemplateBinding Background}" BorderBrush="#FFDDDDDD" BorderThickness="0,0,0,1">
+                            <ContentPresenter Margin="10,0"
                                               TextElement.FontWeight="Bold"
+                                              TextElement.FontSize="12"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" 
                                               Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" 
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" 
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
-                        <!--</Themes:DataGridHeaderBorder>-->
                         <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left">
                             <Thumb.Style>
                                 <Style TargetType="{x:Type Thumb}">
@@ -496,11 +569,11 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type DataGridCell}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
@@ -513,21 +586,14 @@
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Foreground" Value="Black"/>
-                <!--<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>-->
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                <!--<Setter Property="BorderBrush" Value="{DynamicResource {ComponentResourceKey ResourceId=FocusBorderBrushKey, TypeInTargetAssembly={x:Type DataGrid}}}"/>-->
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsSelected" Value="True"/>
                     <Condition Property="Selector.IsSelectionActive" Value="False"/>
                 </MultiTrigger.Conditions>
-                <!--<Setter Property="Background" Value="{DynamicResource}"/>
-                <Setter Property="BorderBrush" Value="{DynamicResource}"/>
-                <Setter Property="Foreground" Value="{DynamicResource}"/>-->
             </MultiTrigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -540,8 +606,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:LightBox}">
                     <Grid>
-                        <Border x:Name="Border1" Background="Black" Opacity="0.5" />
-                        <Border Margin="5,5,0,0" Background="Black" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                        <Border x:Name="Border1" Background="Black" Opacity="0.3" />
+                        <Border Margin="5,5,0,0" Background="DimGray" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
                                 Width="{Binding ElementName=PART_Container, Path=ActualWidth}" Height="{Binding ElementName=PART_Container, Path=ActualHeight}"/>
                         <Border Background="White" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                             <Grid x:Name="PART_Container">
@@ -562,13 +628,14 @@
                                 <Grid Visibility="{TemplateBinding ShowHeaderAndFooter, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                       Height="57" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="15,0,0,0">
                                     <TextBlock Text="{TemplateBinding Header}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center"/>
-                                    <Button Template="{StaticResource TransparentButton}" Background="White" 
-                                            BorderBrush="White" HorizontalAlignment="Right" Margin="0,0,0,15"
+
+                                </Grid>
+                                <Button Grid.Row="0" Grid.RowSpan="7" Grid.Column="0" Grid.ColumnSpan="3" Template="{StaticResource TransparentButton}" Background="White" 
+                                            BorderBrush="White" HorizontalAlignment="Right" Margin="0,5,0,15" VerticalAlignment="Top" IsCancel="True"
                                             Visibility="{TemplateBinding ShowCloseButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             Command="{TemplateBinding CloseCommand}">
-                                        <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
-                                    </Button>
-                                </Grid>
+                                    <TextBlock FontWeight="Bold" Foreground="LightGray" FontFamily="Arial" >x</TextBlock>
+                                </Button>
                                 <Rectangle Visibility="{TemplateBinding ShowHeaderAndFooter, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="1" Fill="LightGray"/>
                                 <ContentPresenter Grid.Row="3" Grid.Column="1" x:Name="PART_Content" Content="{TemplateBinding Content}" SnapsToDevicePixels="True" />
