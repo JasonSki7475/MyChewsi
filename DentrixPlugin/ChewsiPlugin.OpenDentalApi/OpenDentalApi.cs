@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ChewsiPlugin.Api.Common;
@@ -16,6 +17,7 @@ using Provider = ChewsiPlugin.Api.Common.Provider;
 
 namespace ChewsiPlugin.OpenDentalApi
 {
+    [Serializable]
     public class OpenDentalApi : DentalApi, IDentalApi
     {
         private readonly IRepository _repository;
@@ -85,7 +87,8 @@ namespace ChewsiPlugin.OpenDentalApi
                     ApplicationBase = _openDentalInstallationDirectory
                 };
                 _domain = AppDomain.CreateDomain("OpenDentalApiDomain", null, setup);
-                _proxy = (Proxy)_domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName);
+                _domain.AssemblyResolve += DomainOnAssemblyResolve;
+                _proxy = (Proxy)_domain.CreateInstanceFromAndUnwrap(typeof(Proxy).Assembly.Location, typeof(Proxy).FullName, true, BindingFlags.Default, null, new [] {Logger}, null, null);
                 Logger.Debug("Created proxy class");
                 _proxy.InstantiateObject(Path.Combine(_openDentalInstallationDirectory, OpenDentalExeName), "OpenDental.FormChooseDatabase", null);
                 // Set these fields to make it load values from config file
@@ -107,6 +110,15 @@ namespace ChewsiPlugin.OpenDentalApi
                     throw new InvalidOperationException(@"Failed to initialize OpenDental API");
                 }
             }
+        }
+
+        /// <summary>
+        /// This handler is called when CLR fails to load an assembly. When it tries to resolve NLog or other our reference from OpenDental's folder
+        /// </summary>
+        private static Assembly DomainOnAssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{args.Name.Substring(0, args.Name.IndexOf(", "))}.dll");
+            return File.Exists(path) ? Assembly.LoadFrom(path) : null;
         }
 
         public List<ProcedureInfo> GetProcedures(string patientId, string appointmentId, DateTime appointmentDate)
@@ -249,6 +261,7 @@ namespace ChewsiPlugin.OpenDentalApi
             _tokenSource.Cancel();
             if (_domain != null)
             {
+                _domain.AssemblyResolve -= DomainOnAssemblyResolve;
                 AppDomain.Unload(_domain);
                 _domain = null;
             }

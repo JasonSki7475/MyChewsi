@@ -190,7 +190,7 @@ namespace ChewsiPlugin.Service.Services
                 {
                     PaymentSchedule = m.PaymentSchedule,
                     ChewsiId = m.ChewsiID,
-                    Provider = m.ProviderName,
+                    Provider = m.ProviderFirstName,
                     PatientFirstName = m.PatientFirstName,
                     LastPaymentOn = m.LastPaymentOn,
                     PostedOn = DateTime.Parse(m.PostedOn),
@@ -397,10 +397,10 @@ namespace ChewsiPlugin.Service.Services
             return ClaimValidationCalled.ClaimNotFound;
         }
 
-        private SubmitClaimResult SubmitClaim(string id, DateTime appointmentDateTime, string patientId, ProviderInformation providerInformation, 
-            SubscriberInformation subscriberInformation, DateTime pmsModifiedDate, double downPayment, int numberOfPayments)
+        private SubmitClaimResult SubmitClaim(string id, DateTime appointmentDateTime, string patientId, ProviderInformation providerInformation, SubscriberInformation subscriberInformation, DateTime pmsModifiedDate, double downPayment, int numberOfPayments)
         {
             var procedures = GetDentalApi().GetProcedures(patientId, id, appointmentDateTime);
+            bool elegibleForPayments = procedures.Any(m => ProceduresForPayments.Any(p => p == m.Code));
             var submittedProcedures = _repository.GetSubmittedProcedures(patientId, providerInformation.Id, appointmentDateTime.Date).ToList();
             int total = procedures.Count;
             procedures = procedures
@@ -432,7 +432,7 @@ namespace ChewsiPlugin.Service.Services
                     // Since we cannot match claim number to appointment (ProcessClaim response is empty; claim number was expected to be there, but API developers cannot implement it so)
                     // [Removed] We have to save current claim numbers for providerId+chewsiId+date+claimnumbers and wait till one more status appear for this combination in status lookup response; or till timeout
                     _chewsiApi.ProcessClaim(id, providerInformation, subscriberInformation, 
-                        procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList(), pmsModifiedDate, downPayment, numberOfPayments);
+                        procedures.Select(m => new ClaimLine(m.Date, m.Code, m.Amount)).ToList(), pmsModifiedDate, downPayment, numberOfPayments, elegibleForPayments);
                     SetAppointmentState(id, AppointmentState.ValidationCompletedAndClaimSubmitted);
                     Logger.Info("SubmitClaim: claim {0} has been sent to the API. Submitted procedures: {1}", id, string.Join(",", procedures.Select(m => m.Code)));
                     _repository.AddSubmittedProcedures(procedures.Select(m => new SubmittedProcedure

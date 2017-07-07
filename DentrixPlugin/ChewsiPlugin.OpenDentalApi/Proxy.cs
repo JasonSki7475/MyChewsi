@@ -14,6 +14,7 @@ namespace ChewsiPlugin.OpenDentalApi
 {
     internal class Proxy : MarshalByRefObject
     {
+        private ILogger _logger;
         private Type _type;
         private Object _object;
         private string _openDentBusinessDllPath;
@@ -28,6 +29,11 @@ namespace ChewsiPlugin.OpenDentalApi
 
             LifetimeServices.LeaseTime = TimeSpan.FromMinutes(10);
             LifetimeServices.RenewOnCallTime = TimeSpan.FromMinutes(15);
+        }
+
+        public Proxy(ILogger logger)
+        {
+            _logger = logger;
         }
 
         public void InstantiateObject(string assemblyPath, string typeName, object[] args)
@@ -114,11 +120,11 @@ namespace ChewsiPlugin.OpenDentalApi
             }
             catch (RemotingException e)
             {
-                //_logger?.Error(e, "Remoting exception has been handled");
+                _logger.Error(e, "Remoting exception has been handled");
             }
             catch (Exception e)
             {
-                //_logger?.Error(e);
+                _logger.Error(e);
                 throw;
             }
             return null;

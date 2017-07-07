@@ -23,6 +23,6 @@ namespace ChewsiPlugin.Api.Chewsi
         public List<ClaimLine> ClaimLines { get; set; }
         public string PMSModifiedDate { get; set; }
         public string OrthoDownPayment { get; set; }
-        public int OrthoNumberOfPayments { get; set; }
+        public int? OrthoNumberOfPayments { get; set; }
     }
 }

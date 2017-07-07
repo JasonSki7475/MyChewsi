@@ -87,7 +87,7 @@ namespace ChewsiPlugin.Api.Chewsi
                 ValidateSubscriberAndProviderUri);
         }
 
-        public void ProcessClaim(string id, ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate, double downPayment, int numberOfPayments)
+        public void ProcessClaim(string id, ProviderInformation provider, SubscriberInformation subscriber, List<ClaimLine> procedures, DateTime pmsModifiedDate, double downPayment, int numberOfPayments, bool elegibleForPayments)
         {
             Post<string>(new ProcessClaimRequest
             {
@@ -105,8 +105,9 @@ namespace ChewsiPlugin.Api.Chewsi
                 SubscriberLastName = subscriber.SubscriberLastName,
                 PatientLastName = subscriber.PatientLastName,
                 PMSModifiedDate = pmsModifiedDate.FormatForApiRequest(),
-                OrthoDownPayment = downPayment.ToString("F"),
-                OrthoNumberOfPayments = numberOfPayments
+                
+                OrthoDownPayment = elegibleForPayments ? downPayment.ToString("F") : null,
+                OrthoNumberOfPayments = elegibleForPayments ? numberOfPayments : (int?)null
             },
             ProcessClaimUri);
         }
