@@ -47,8 +47,16 @@ namespace ChewsiPlugin.EaglesoftApi
                     Logger.Info("Loading connection string: app domain created");
                     var obj = domain.CreateInstanceFromAndUnwrap(typeof (Proxy).Assembly.Location, typeof (Proxy).FullName);
                     var proxy = (Proxy) obj;
-                    connectionString = proxy.GetConnectionString(path);
-                    Logger.Info("Loaded connection string for Eaglesoft");
+                    string message;
+                    connectionString = proxy.GetConnectionString(path, out message);
+                    if (connectionString != null)
+                    {
+                        Logger.Info(message);
+                    }
+                    else
+                    {
+                        Logger.Error(message);
+                    }
                     AppDomain.Unload(domain);
                 }
             }
@@ -156,8 +164,8 @@ namespace ChewsiPlugin.EaglesoftApi
                             JOIN insurance_company ic ON ic.insurance_company_id = e.insurance_company_id 
                             WHERE a.walkout_time IS NOT NULL
                             AND ic.name = 'Chewsi'
-                            AND a.start_time >= '{dateRange.Item1.ToString("O")}' 
-                            AND a.start_time <= '{dateRange.Item2.ToString("O")}'"));
+                            AND a.start_time >= '{dateRange.Item1.ToString("yyyy-MM-dd HH:mm:ss")}' 
+                            AND a.start_time <= '{dateRange.Item2.ToString("yyyy-MM-dd HH:mm:ss")}'"));
             }
         }
 
@@ -190,7 +198,7 @@ namespace ChewsiPlugin.EaglesoftApi
             List<string> paths = new List<string>();
             foreach (var drive in DriveInfo.GetDrives().Where(m => m.IsReady && m.DriveType == DriveType.Fixed))
             {
-                paths.Add($"{drive}EagleSoft\\Shared Files\\EaglesoftSettings.dll");
+                paths.Add($"{drive}EagleSoft\\Shared Files\\Eaglesoft.exe");
             }
             foreach (var path in paths)
             {
