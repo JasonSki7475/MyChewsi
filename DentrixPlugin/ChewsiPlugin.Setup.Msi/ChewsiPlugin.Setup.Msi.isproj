@@ -28,4 +28,39 @@
 		</TaggedOutputs> -->
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2016\InstallShield.targets"/>
+	<ItemGroup/>
+	<ItemGroup>
+		<ProjectReference Include="..\ChewsiPlugin.Api\ChewsiPlugin.Api.csproj">
+			<Name>ChewsiPlugin.Api</Name>
+			<Project>{5AD8EBA3-CE26-4343-8BA4-EE832EA839BD}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.EaglesoftApi\ChewsiPlugin.EaglesoftApi.csproj">
+			<Name>ChewsiPlugin.EaglesoftApi</Name>
+			<Project>{54AE715C-E37B-40CB-833F-F3C9EE812C06}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.Launcher\ChewsiPlugin.Launcher.csproj">
+			<Name>ChewsiPlugin.Launcher</Name>
+			<Project>{35159BDE-9AE6-47C8-8978-9907498DC523}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.OpenDentalApi\ChewsiPlugin.OpenDentalApi.csproj">
+			<Name>ChewsiPlugin.OpenDentalApi</Name>
+			<Project>{D1582BD8-EF79-493A-AAD9-4F39CA3995D2}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.Service\ChewsiPlugin.Service.csproj">
+			<Name>ChewsiPlugin.Service</Name>
+			<Project>{1968015A-3642-440C-86B2-51B809A077D5}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.Setup.CustomActions\ChewsiPlugin.Setup.CustomActions.csproj">
+			<Name>ChewsiPlugin.Setup.CustomActions</Name>
+			<Project>{C0FE5D5D-4948-4706-8591-CD44C620400C}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.Setup.Helper\ChewsiPlugin.Setup.Helper.csproj">
+			<Name>ChewsiPlugin.Setup.Helper</Name>
+			<Project>{9B5349D2-18E9-4384-9C94-0EF15B27EC7D}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\ChewsiPlugin.UI\ChewsiPlugin.UI.csproj">
+			<Name>ChewsiPlugin.UI</Name>
+			<Project>{2A3F38EB-1C8E-4EBF-A2A4-D1D7839B0875}</Project>
+		</ProjectReference>
+	</ItemGroup>
 </Project>

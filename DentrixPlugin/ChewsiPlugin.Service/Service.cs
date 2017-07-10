@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.ServiceProcess;
+using System.Threading;
 using ChewsiPlugin.Api.Chewsi;
 using ChewsiPlugin.Api.Common;
 using ChewsiPlugin.Api.Interfaces;

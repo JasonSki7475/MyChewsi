@@ -343,7 +343,7 @@ namespace ChewsiPlugin.UI.Services
                                 _dialogService.ShowLoadingIndicator("Waiting while service is starting...");
                                 while ((DateTime.UtcNow - startTime).TotalMilliseconds < ServiceReadyTimeoutMs)
                                 {
-                                    await Task.Delay(1000);
+                                    await TaskEx.Delay(1000);
                                     if (Api.Common.Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState) && serverState != ServerState.Initializing)
                                     {
                                         break;
@@ -384,7 +384,7 @@ namespace ChewsiPlugin.UI.Services
                                 }
                                 else
                                 {
-                                    await Task.Delay(2000);
+                                    await TaskEx.Delay(2000);
                                     await Connect(serverAddress);
                                 }
                                 break;
@@ -397,7 +397,7 @@ namespace ChewsiPlugin.UI.Services
                     }
                     else
                     {
-                        await Task.Delay(2000);
+                        await TaskEx.Delay(2000);
                         await Connect(serverAddress).ConfigureAwait(false);
                     }
                 }        
