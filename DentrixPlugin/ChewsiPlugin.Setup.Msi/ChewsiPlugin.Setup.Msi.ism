@@ -388,6 +388,7 @@
 		<row><td>ChewsiPlugin.Setup.Helper.Primary_output</td><td>{323802DA-D1C3-46F5-A2AA-B038D5BC949C}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.setup.helper.pr</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ChewsiPlugin.UI.Primary_output</td><td>{A04EF8E3-F60B-47F0-A1B2-E842F8819DE7}</td><td>INSTALLDIR</td><td>8</td><td/><td>chewsiplugin.ui.primary_outp</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td>{143CB5EB-8C57-4368-B180-DDF1FEFBFA33}</td><td>INSTALLDIR</td><td>8</td><td/><td>createuser_dbna5agn.exe</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Microsoft.Practices.ServiceLocation.dll</td><td>{A4E007ED-F807-4D1A-A5E1-E4BFAFDDEDD3}</td><td>INSTALLDIR</td><td>8</td><td/><td>microsoft.practices.servicel</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>SQLite.Interop.dll</td><td>{86A04DDA-81E1-41D0-AB69-276DAFB22E19}</td><td>X64</td><td>8</td><td/><td>sqlite.interop.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>SQLite.Interop.dll1</td><td>{42A5742C-2633-42B3-AC72-3D509A799315}</td><td>X86</td><td>8</td><td/><td>sqlite.interop.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ShortcutsDesktopClient</td><td>{AF1668B2-B912-49F3-970C-FB9C8EDAB2C6}</td><td>INSTALLDIR</td><td>8</td><td>ISCLIENT="True" AND CREATE_SHORTCUT_DESKTOP=1</td><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -2002,6 +2003,7 @@
 		<row><td>Default</td><td>ChewsiPlugin.Setup.Helper.Primary_output</td></row>
 		<row><td>Default</td><td>ChewsiPlugin.UI.Primary_output</td></row>
 		<row><td>Default</td><td>CreateUser_dBNa5Agn.exe</td></row>
+		<row><td>Default</td><td>Microsoft.Practices.ServiceLocation.dll</td></row>
 		<row><td>Default</td><td>SQLite.Interop.dll</td></row>
 		<row><td>Default</td><td>SQLite.Interop.dll1</td></row>
 		<row><td>Default</td><td>ShortcutsDesktopClient</td></row>
@@ -2040,6 +2042,7 @@
 		<row><td>database.sqlite</td><td>AllOtherFiles4</td><td>DATABA~1.SQL|Database.sqlite</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\Database.sqlite</td><td>1</td><td/></row>
 		<row><td>dbna5agn.dtxkey</td><td>AllOtherFiles</td><td>DBNA5A~1.DTX|dBNa5Agn.dtxkey</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\dBNa5Agn.dtxkey</td><td>1</td><td/></row>
 		<row><td>launcherlog.txt</td><td>AllOtherFiles4</td><td>LAUNCH~1.TXT|LauncherLog.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\LauncherLog.txt</td><td>1</td><td/></row>
+		<row><td>microsoft.practices.servicel</td><td>Microsoft.Practices.ServiceLocation.dll</td><td>MICROS~1.DLL|Microsoft.Practices.ServiceLocation.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</td><td>1</td><td/></row>
 		<row><td>readme.txt</td><td>AllOtherFiles</td><td>Readme.txt</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\Readme.txt</td><td>1</td><td/></row>
 		<row><td>servicelog.txt</td><td>AllOtherFiles4</td><td>SERVIC~1.TXT|ServiceLog.txt</td><td>0</td><td/><td/><td>0</td><td>1</td><td>&lt;VSSolutionFolder&gt;\Installer\ServiceLog.txt</td><td>1</td><td/></row>
 		<row><td>sqlite.interop.dll</td><td>SQLite.Interop.dll</td><td>SQLITE~1.DLL|SQLite.Interop.dll</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\ChewsiPlugin.UI\bin\Release\x64\SQLite.Interop.dll</td><td>1</td><td/></row>
@@ -2251,6 +2254,7 @@
 		<row><td>ChewsiPlugin.Setup.Helper.Primary_output</td><td/><td/><td>_E6B2249E_2E99_4BC1_A97B_2460BDBAABCC_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ChewsiPlugin.UI.Primary_output</td><td/><td/><td>_DAAF1361_329B_4952_8694_E8FFB0711D35_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>CreateUser_dBNa5Agn.exe</td><td/><td/><td>_DB6670EC_78CD_4BA4_A693_2EA5C84D0016_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Microsoft.Practices.ServiceLocation.dll</td><td/><td/><td>_6C1822E4_BA35_4AF0_857A_5DC87B9746C3_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>SQLite.Interop.dll</td><td/><td/><td>_60F24055_F88D_4EF3_8B5B_68B0086142B7_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>SQLite.Interop.dll1</td><td/><td/><td>_7C3FAD12_C18E_4BDD_88F3_64B083B007F4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ShortcutsDesktopClient</td><td/><td/><td>_33057712_A267_4178_904D_E2D4263A5B74_FILTER</td><td/><td/><td/><td/></row>
@@ -2324,7 +2328,7 @@
 		<row><td>ENTITYFRAMEWORK</td><td>1</td></row>
 		<row><td>GALASOFT.MVVMLIGHT.DLL</td><td>0</td></row>
 		<row><td>GALASOFT.MVVMLIGHT.EXTRAS.DLL</td><td>0</td></row>
-		<row><td>MICROSOFT.PRACTICES.SERVICELOCATION.DLL</td><td>0</td></row>
+		<row><td>MICROSOFT.PRACTICES.SERVICELOCATION.DLL</td><td>1</td></row>
 		<row><td>NEWTONSOFT.JSON.DLL</td><td>0</td></row>
 		<row><td>NLOG.DLL</td><td>0</td></row>
 		<row><td>SQLITE.INTEROP.DLL</td><td>1</td></row>
@@ -4891,6 +4895,8 @@ UgBlAGwAZQBhAHMAZQABAEQAZQBmAGEAdQBsAHQAIABDAG8AbgBmAGkAZwB1AHIAYQB0AGkAbwBuAA==
 		<col def="S255">Arguments</col>
 		<col def="I2">Wait</col>
 		<col def="s72">Component_</col>
+		<row><td>NewEvent1</td><td>ChewsiService</td><td>1</td><td/><td>1</td><td>ChewsiPlugin.Service.Primary_output</td></row>
+		<row><td>NewEvent2</td><td>ChewsiService</td><td>160</td><td/><td>1</td><td>ChewsiPlugin.Service.Primary_output</td></row>
 	</table>
 
 	<table name="ServiceInstall">
