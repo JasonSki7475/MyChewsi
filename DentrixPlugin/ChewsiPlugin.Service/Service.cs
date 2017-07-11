@@ -44,6 +44,8 @@ namespace ChewsiPlugin.Service
         protected override void OnStart(string[] args)
         {
             //Thread.Sleep(20000);
+            Logger.Info("Service is starting. Operating system: {0}", Utils.GetOperatingSystemInfo());
+
             AppDomain.CurrentDomain.UnhandledException += ApplicationDomainUnhandledException;
 
             _repository = new Repository();
@@ -73,10 +75,12 @@ namespace ChewsiPlugin.Service
                 new EndpointAddress(Utils.GetAddressFromHost(System.Net.Dns.GetHostName())));
             _serviceHost.AddServiceEndpoint(endpoint);
             _serviceHost.Open();
+            Logger.Info("The service is ready at {0}", string.Join(", ", _serviceHost.BaseAddresses));
         }
 
         protected override void OnStop()
         {
+            Logger.Info("Service is stopping");
             //_clientBroadcastService.ShowLoadingIndicator("Application server is stopping...");
             Utils.SafeCall(() => _serviceHost.Close());
             _serverAppService.Dispose();

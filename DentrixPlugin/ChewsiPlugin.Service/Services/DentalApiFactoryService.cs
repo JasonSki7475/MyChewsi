@@ -21,7 +21,7 @@ namespace ChewsiPlugin.Service.Services
                 case Settings.PMS.Types.Dentrix:
                     return new DentrixApi();
                 case Settings.PMS.Types.OpenDental:
-                    return new OpenDentalApi.OpenDentalApi(_repository);
+                    return new OpenDentalApi.OpenDentalApi2(_repository);
                 case Settings.PMS.Types.Eaglesoft:
                     return new EaglesoftApi.EaglesoftApi(_repository);
                 default:

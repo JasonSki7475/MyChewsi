@@ -96,6 +96,7 @@
     <Compile Include="DTO\ProviderInfo.cs" />
     <Compile Include="DTO\SubscriberInfo.cs" />
     <Compile Include="OpenDentalApi.cs" />
+    <Compile Include="OpenDentalApi2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SharedAssemblyInfo.cs" />
     <Compile Include="Proxy.cs" />

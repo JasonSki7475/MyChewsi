@@ -17,6 +17,11 @@ using Provider = ChewsiPlugin.Api.Common.Provider;
 
 namespace ChewsiPlugin.OpenDentalApi
 {
+    /// <summary>
+    /// First version of OpenDental API. Uses an app domain to load OD assembly and get data from it.
+    /// It's harder to support different OD versions than in SQL version - OpenDentalApi2.
+    /// </summary>
+    /// <seealso cref="OpenDentalApi2" />
     [Serializable]
     public class OpenDentalApi : DentalApi, IDentalApi
     {

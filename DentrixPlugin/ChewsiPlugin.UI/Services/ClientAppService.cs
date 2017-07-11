@@ -28,7 +28,7 @@ namespace ChewsiPlugin.UI.Services
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly object _appointmentsLockObject = new object();
-        private const int ServiceReadyTimeoutMs = 60000;
+        private const int ServiceReadyTimeoutMs = 120000;
 
         private IServerAppService _serverAppService;
         private readonly IClientDialogService _dialogService;
@@ -320,6 +320,7 @@ namespace ChewsiPlugin.UI.Services
             {
                 serverAddress = Api.Common.Utils.GetAddressFromHost("localhost");
             }
+            Logger.Info("Connecting to {0}", serverAddress);
 
             if (serverAddress != null)
             {
@@ -330,15 +331,17 @@ namespace ChewsiPlugin.UI.Services
                 bool response;
                 if (Api.Common.Utils.TrySafeCall(() => _serverAppService.Ping(), out response) && response)
                 {
+                    Logger.Info("Server responded to ping request, initializing client");
                     _repository.SaveSetting(Settings.ServerAddress, serverAddress);
 
                     ServerState serverState;
                     if (Api.Common.Utils.TrySafeCall(() => _serverAppService.InitClient(), out serverState))
                     {
+                        Logger.Info("Service state is '{0}'", serverState);
                         switch (serverState)
                         {
                             case ServerState.Initializing:
-                                // Wait 60s while service is starting
+                                // Wait 120s while service is starting
                                 var startTime = DateTime.UtcNow;
                                 _dialogService.ShowLoadingIndicator("Waiting while service is starting...");
                                 while ((DateTime.UtcNow - startTime).TotalMilliseconds < ServiceReadyTimeoutMs)
@@ -400,10 +403,15 @@ namespace ChewsiPlugin.UI.Services
                         await TaskEx.Delay(2000);
                         await Connect(serverAddress).ConfigureAwait(false);
                     }
+                }
+                else
+                {
+                    Logger.Warn("Server didn't respond to ping request");
                 }        
             }
             else
             {
+                Logger.Warn("Server address is null, showing 'Connection' view");
                 serverAddress = Api.Common.Utils.GetAddressFromHost("localhost");
                 _connectViewModel.Show(serverAddress);
             }

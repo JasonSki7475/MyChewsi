@@ -411,7 +411,7 @@ namespace ChewsiPlugin.Service.Services
             {
                 var tin = _repository.GetSettingValue<string>(Settings.TIN);
                 var claimStatuses = _chewsiApi.RetrievePluginClientRowStatuses(tin);
-                var status = claimStatuses.FirstOrDefault(m => m.PMSClaimNbr == id && Utils.ArePMSModifiedDatesEqual(DateTime.Parse(m.PMSModifiedDate), pmsModifiedDate));
+                var status = claimStatuses.FirstOrDefault(m => m.PMSClaimNbr == id && Utils.ArePmsModifiedDatesEqual(DateTime.Parse(m.PMSModifiedDate), pmsModifiedDate));
                 if (status != null)
                 {
                     var s = (PluginClientRowStatus.Statuses)Enum.Parse(typeof (PluginClientRowStatus.Statuses), status.Status);
@@ -1059,7 +1059,7 @@ namespace ChewsiPlugin.Service.Services
                         //ClaimNumber = c.ClaimNumber
                     })
                     // don't return deleted and submitted claims
-                    .Where(m => !clientRowStatuses.Any(n => Utils.ArePMSModifiedDatesEqual(DateTime.Parse(n.PMSModifiedDate), m.PmsModifiedDate) && n.PMSClaimNbr == m.Id))
+                    .Where(m => !clientRowStatuses.Any(n => Utils.ArePmsModifiedDatesEqual(DateTime.Parse(n.PMSModifiedDate), m.PmsModifiedDate) && n.PMSClaimNbr == m.Id))
                     .Concat(serviceClaims)
                     .OrderByDescending(m => m.State == AppointmentState.TreatmentCompleted || m.IsCptError)
                     .ToList();

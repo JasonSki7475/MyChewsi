@@ -42,7 +42,7 @@ namespace ChewsiPlugin.Api.Common
         /// <summary>
         /// Compares two DateTimes with 1s accuracy
         /// </summary>
-        public static bool ArePMSModifiedDatesEqual(DateTime d1, DateTime d2)
+        public static bool ArePmsModifiedDatesEqual(DateTime d1, DateTime d2)
         {
             return Math.Abs((d1 - d2).TotalSeconds) < 1;
         }

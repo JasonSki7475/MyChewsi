@@ -60,12 +60,15 @@ namespace ChewsiPlugin.Setup.Helper
                         api = new DentrixApi();
                         break;
                     case Settings.PMS.Types.OpenDental:
-                        // copy config file into installation folder
-                        api = new OpenDentalApi.OpenDentalApi(repository);
+                        Logger.Info("Getting connection string");
+                        api = new OpenDentalApi.OpenDentalApi2(repository);
+                        var cs = ((OpenDentalApi.OpenDentalApi2)api).GetConnectionString();
+                        repository.SaveSetting(Settings.PMS.ConnectionStringKey, cs);
                         break;
                     case Settings.PMS.Types.Eaglesoft:
+                        Logger.Info("Getting connection string");
                         api = new EaglesoftApi.EaglesoftApi(repository);
-                        var cs = ((EaglesoftApi.EaglesoftApi)api).GetConnectionString();
+                        cs = ((EaglesoftApi.EaglesoftApi)api).GetConnectionString();
                         repository.SaveSetting(Settings.PMS.ConnectionStringKey, cs);
                         break;
                     default:
@@ -75,11 +78,13 @@ namespace ChewsiPlugin.Setup.Helper
                 string folder;
                 if (api.TryGetFolder(out folder))
                 {
-                    if (pmsType == Settings.PMS.Types.OpenDental)
-                    {
-                        File.Copy(Path.Combine(folder, OpenDentalConfigFileName), Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), OpenDentalConfigFileName), true);
-                        Logger.Info("Copied OpenDental configuration file");
-                    }
+                    // Copy config file into installation folder
+                    // Disabled for OpenDentalApi2
+                    //if (pmsType == Settings.PMS.Types.OpenDental)
+                    //{
+                    //    File.Copy(Path.Combine(folder, OpenDentalConfigFileName), Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), OpenDentalConfigFileName), true);
+                    //    Logger.Info("Copied OpenDental configuration file");
+                    //}
                 }
                 repository.SaveSetting(Settings.PMS.PathKey, folder);
 
